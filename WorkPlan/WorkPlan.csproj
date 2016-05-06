@@ -46,6 +46,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChildForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgChooseDuty.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgChooseDuty.Designer.cs">
+      <DependentUpon>DlgChooseDuty.cs</DependentUpon>
+    </Compile>
     <Compile Include="DlgDuty.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -53,6 +62,8 @@
       <DependentUpon>DlgDuty.cs</DependentUpon>
     </Compile>
     <Compile Include="Duty.cs" />
+    <Compile Include="DutyList.cs" />
+    <Compile Include="DutyRepository.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="EmployeeRepository.cs" />
     <Compile Include="Form1.cs">
@@ -63,21 +74,34 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="ScheduleView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ScheduleView.Designer.cs">
+      <DependentUpon>ScheduleView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="StringUtils.cs" />
+    <EmbeddedResource Include="DlgChooseDuty.resx">
+      <DependentUpon>DlgChooseDuty.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DlgDuty.resx">
       <DependentUpon>DlgDuty.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
+    <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
+    <EmbeddedResource Include="ScheduleView.resx">
+      <DependentUpon>ScheduleView.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,6 +114,58 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="res\abacus.png" />
+    <Content Include="res\basket.png" />
+    <Content Include="res\book.png" />
+    <Content Include="res\cactus.png" />
+    <Content Include="res\calculator.png" />
+    <Content Include="res\calendar.png" />
+    <Content Include="res\clip-1.png" />
+    <Content Include="res\clip.png" />
+    <Content Include="res\clock.png" />
+    <Content Include="res\compass.png" />
+    <Content Include="res\computer.png" />
+    <Content Include="res\copier.png" />
+    <Content Include="res\copy.png" />
+    <Content Include="res\cup.png" />
+    <Content Include="res\cutter.png" />
+    <Content Include="res\document.png" />
+    <Content Include="res\documentation.png" />
+    <Content Include="res\eraser.png" />
+    <Content Include="res\folder-1.png" />
+    <Content Include="res\folder.png" />
+    <Content Include="res\folders.png" />
+    <Content Include="res\glue.png" />
+    <Content Include="res\id-card.png" />
+    <Content Include="res\lamp.png" />
+    <Content Include="res\laptop.png" />
+    <Content Include="res\letter.png" />
+    <Content Include="res\letters.png" />
+    <Content Include="res\marker.png" />
+    <Content Include="res\mouse.png" />
+    <Content Include="res\note.png" />
+    <Content Include="res\notebook.png" />
+    <Content Include="res\paper-knife.png" />
+    <Content Include="res\pen-1.png" />
+    <Content Include="res\pen-2.png" />
+    <Content Include="res\pen.png" />
+    <Content Include="res\pencil.png" />
+    <Content Include="res\pencils.png" />
+    <Content Include="res\phone.png" />
+    <Content Include="res\portfolio.png" />
+    <Content Include="res\printer.png" />
+    <Content Include="res\puncher.png" />
+    <Content Include="res\push-pins.png" />
+    <Content Include="res\router.png" />
+    <Content Include="res\ruler.png" />
+    <Content Include="res\scissors.png" />
+    <Content Include="res\sharpener.png" />
+    <Content Include="res\stamp.png" />
+    <Content Include="res\stapler-remover.png" />
+    <Content Include="res\tape.png" />
+    <Content Include="res\writing-tool.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

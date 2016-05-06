@@ -90,5 +90,39 @@ namespace WorkPlan
             txNotes.Text = duty.Notes;
             Text = string.Format("Modifica turno per {0}", mEmployee.FullName);
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
+        }
+
+        private void ShowError(string message)
+        {
+            MessageBox.Show(this, message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        }
+
+        private void DlgDuty_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (DialogResult == DialogResult.OK)
+            {
+                e.Cancel = true;
+
+                if (DutyEnd <= DutyStart)
+                {
+                    ShowError("La data finale deve essere successiva all'inizio");
+                    tmPickerEnd.Focus();
+                    return;
+                }
+
+                if (cbPositions.SelectedIndex < 0)
+                {
+                    ShowError("Selezionare una posizione");
+                    cbPositions.Focus();
+                    return;
+                }
+
+                e.Cancel = false;
+            }
+        }
     }
 }
