@@ -65,6 +65,12 @@
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
     <Compile Include="Employee.cs" />
+    <Compile Include="EmployeeListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EmployeeListView.Designer.cs">
+      <DependentUpon>EmployeeListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="EmployeeRepository.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -91,6 +97,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DlgDuty.resx">
       <DependentUpon>DlgDuty.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EmployeeListView.resx">
+      <DependentUpon>EmployeeListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

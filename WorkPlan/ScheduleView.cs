@@ -314,7 +314,7 @@ namespace WorkPlan
                         // Draw the inset highlight box.
                         Duty duty = duties[d];
 
-                        int padding = 2;
+                        int padding = 5;
                         int spacing = 5;
                         //int width = e.CellBounds.Width - (padding * 2);
                         //int height = (e.CellBounds.Height / duties.Count) - (padding * 2);
@@ -322,13 +322,18 @@ namespace WorkPlan
                         //int Y = (e.CellBounds.Y) + (height * d) + padding;
 
                         int height = 32;
-                        int X = e.CellBounds.X + padding;
+                        int X = e.CellBounds.X + (2 * padding);
                         int Y = e.CellBounds.Y + (height * d) + (spacing * d) + padding;
-                        int width = e.CellBounds.Width - (spacing * 2);
-                        
+                        int width = e.CellBounds.Width - (padding * 3);
 
+                        Pen navyPen = new Pen(Color.Navy, 2);
+                        Pen leftBorderPen = new Pen(Color.Navy, 8);
+                        //navyPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
                         Rectangle rect = new Rectangle(X, Y, width, height);
-                        e.Graphics.DrawRectangle(Pens.White, rect);
+                        e.Graphics.DrawRectangle(navyPen, rect);
+                        Point p2 = rect.Location;
+                        p2.Offset(0, rect.Height);
+                        e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
                         e.Graphics.FillRectangle(brushes[d], rect);
                         e.Graphics.DrawString(duty.ToString(), e.CellStyle.Font, Brushes.Crimson, rect);
                         e.Graphics.DrawString(string.Format("\n{0}", duty.Notes.Truncate(20)), e.CellStyle.Font, Brushes.BlueViolet, rect.X, rect.Y + 1);

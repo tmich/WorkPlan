@@ -58,5 +58,14 @@ namespace WorkPlan
                 child.Print();
             }
         }
+
+        private void dipendentiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            EmployeeRepository employeeRepo = new EmployeeRepository();
+            EmployeeListView employeesView = new EmployeeListView();
+            employeesView.SetEmployees(employeeRepo.All());
+
+            ShowChild(employeesView);
+        }
     }
 }
