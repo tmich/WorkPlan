@@ -11,7 +11,7 @@ using System.Drawing.Printing;
 
 namespace WorkPlan
 {
-    public partial class ScheduleView : ChildForm
+    public partial class ScheduleView : PrintableUserControl
     {
         const int DaysToShow = 7;
         private EmployeeRepository repo;

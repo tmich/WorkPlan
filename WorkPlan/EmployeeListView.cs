@@ -10,13 +10,18 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public partial class EmployeeListView : ChildForm
+    public partial class EmployeeListView : PrintableUserControl
     {
         private List<Employee> mEmployees;
 
         public EmployeeListView()
         {
             InitializeComponent();
+        }
+
+        public override void Print()
+        {
+            throw new NotImplementedException();
         }
 
         public void SetEmployees(List<Employee> employees)
@@ -36,9 +41,6 @@ namespace WorkPlan
             }
         }
 
-        public override void Print()
-        {
-            //
-        }
+        
     }
 }

@@ -39,8 +39,12 @@
             this.nuovoTurnoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modificaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eliminaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.containerPanel = new System.Windows.Forms.Panel();
+            this.tabContainer = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.menuStrip1.SuspendLayout();
+            this.tabContainer.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -51,7 +55,7 @@
             this.visualizzaToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(755, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(859, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -122,21 +126,54 @@
             this.eliminaToolStripMenuItem.Name = "eliminaToolStripMenuItem";
             this.eliminaToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
             // 
-            // containerPanel
+            // tabContainer
             // 
-            this.containerPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.containerPanel.Location = new System.Drawing.Point(0, 24);
-            this.containerPanel.Margin = new System.Windows.Forms.Padding(2);
-            this.containerPanel.Name = "containerPanel";
-            this.containerPanel.Size = new System.Drawing.Size(755, 347);
-            this.containerPanel.TabIndex = 1;
+            this.tabContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabContainer.Controls.Add(this.tabPage1);
+            this.tabContainer.Controls.Add(this.tabPage2);
+            this.tabContainer.Location = new System.Drawing.Point(0, 52);
+            this.tabContainer.Name = "tabContainer";
+            this.tabContainer.SelectedIndex = 0;
+            this.tabContainer.Size = new System.Drawing.Size(859, 361);
+            this.tabContainer.TabIndex = 1;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(851, 335);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Turni";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(747, 281);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Dipendenti";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // toolStrip1
+            // 
+            this.toolStrip1.Location = new System.Drawing.Point(0, 24);
+            this.toolStrip1.Name = "toolStrip1";
+            this.toolStrip1.Size = new System.Drawing.Size(859, 25);
+            this.toolStrip1.TabIndex = 2;
+            this.toolStrip1.Text = "toolStrip1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(755, 371);
-            this.Controls.Add(this.containerPanel);
+            this.ClientSize = new System.Drawing.Size(859, 435);
+            this.Controls.Add(this.toolStrip1);
+            this.Controls.Add(this.tabContainer);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
@@ -144,6 +181,7 @@
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tabContainer.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,10 +197,13 @@
         private System.Windows.Forms.ToolStripMenuItem eliminaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem visualizzaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem plannerToolStripMenuItem;
-        private System.Windows.Forms.Panel containerPanel;
         private System.Windows.Forms.ToolStripMenuItem stampaToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem dipendentiToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabContainer;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.ToolStrip toolStrip1;
     }
 }
 
