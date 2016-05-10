@@ -20,7 +20,7 @@ namespace WorkPlan
                     {
                         Name = "Tiziano",
                         LastName = "Michelessi",
-                        DateHired = new DateTime(2010, 1, 1)
+                        HireDate = new DateTime(2010, 1, 1)
                     },
                     Id = 1,
                     StartDate = new DateTime(2016, 05, 06, 12, 0, 0),
@@ -35,7 +35,7 @@ namespace WorkPlan
                     {
                         Name = "Tiziano",
                         LastName = "Michelessi",
-                        DateHired = new DateTime(2010, 1, 1)
+                        HireDate = new DateTime(2010, 1, 1)
                     },
                     Id = 2,
                     StartDate = new DateTime(2016, 05, 06, 19, 0, 0),
@@ -50,7 +50,7 @@ namespace WorkPlan
                     {
                         Name = "Mario",
                         LastName = "Rossi",
-                        DateHired = new DateTime(2005, 7, 1)
+                        HireDate = new DateTime(2005, 7, 1)
                     },
                     Id = 3,
                     StartDate = new DateTime(2016, 05, 06, 14, 0, 0),

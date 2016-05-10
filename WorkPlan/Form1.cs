@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace WorkPlan
@@ -35,34 +28,7 @@ namespace WorkPlan
 
             //stampaToolStripMenuItem.Enabled = false;
         }
-
-        //private TabControl TabContainer
-        //{
-        //    get
-        //    {
-        //        return (TabControl)Controls["tabContainer"];
-        //    }
-        //}
-
-        //private Panel ContainerPanel
-        //{
-        //    get
-        //    {
-        //        return (Panel)Controls["containerPanel"];
-        //    }
-        //}
-
-        //private void ShowChild(ChildForm childForm)
-        //{
-        //    ContainerPanel.Controls.Clear();
-        //    childForm.Dock = DockStyle.Fill;
-        //    childForm.TopLevel = false;
-        //    child = childForm;
-        //    ContainerPanel.Controls.Add(childForm);
-        //    stampaToolStripMenuItem.Enabled = true;
-        //    childForm.Show();
-        //}
-
+        
         private void esciToolStripMenuItem_Click(object sender, EventArgs e)
         {
             this.Close();
@@ -76,7 +42,7 @@ namespace WorkPlan
 
         private void stampaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var uc = (PrintableUserControl)tabContainer.SelectedTab.Controls["uc"];
+            var uc = (PrintableUC)tabContainer.SelectedTab.Controls["uc"];
             uc.Print();
         }
 

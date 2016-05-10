@@ -8,29 +8,34 @@ namespace WorkPlan
 {
     public class Employee
     {
-        private string mName;
-        public string Name
-        {
-            get { return mName; }
-            set { mName = value; }
-        }
+        public int Id { get; set; }
 
-        private string mLastName;
-        public string LastName
-        {
-            get { return mLastName; }
-            set { mLastName = value; }
-        }
+        public string Name { get; set; }
 
-        private DateTime mDateHired;
-        public DateTime DateHired
-        {
-            get { return mDateHired; }
-            set { mDateHired = value; }
-        }
+        public string LastName { get; set; }
+        
+        public DateTime HireDate { get; set; }
+
+        public string Address { get; set; }
+
+        public string City { get; set; }
+
+        public DateTime BirthDate { get; set; }
+
+        public string CodFisc { get; set; }
+
+        public string Telephone { get; set; }
+
+        public string MobileNo { get; set; }
+
+        public string Matr { get; set; }
+
+        public string Qual { get; set; }
+
+        public string Email { get; set; }
 
         public string FullName {
-            get { return string.Format("{0} {1}", mName, mLastName); } 
+            get { return string.Format("{0} {1}", Name, LastName); } 
         }
     }
 }

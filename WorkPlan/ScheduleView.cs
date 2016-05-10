@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing.Printing;
 
 namespace WorkPlan
 {
-    public partial class ScheduleView : PrintableUserControl
+    public partial class ScheduleView : PrintableUC
     {
         const int DaysToShow = 7;
         private EmployeeRepository repo;
@@ -148,7 +144,10 @@ namespace WorkPlan
 
             // create rows
             dataGridView1.Rows.Clear();
-            dataGridView1.Rows.Add(employees.Count);
+            if (employees.Count > 0)
+            {
+                dataGridView1.Rows.Add(employees.Count);
+            }
 
             int e = 0;
             foreach (var emp in employees)

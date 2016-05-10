@@ -33,6 +33,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
+      <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -61,6 +65,12 @@
     <Compile Include="DlgDuty.Designer.cs">
       <DependentUpon>DlgDuty.cs</DependentUpon>
     </Compile>
+    <Compile Include="DlgEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgEmployee.Designer.cs">
+      <DependentUpon>DlgEmployee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Duty.cs" />
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
@@ -78,8 +88,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="PrintableUserControl.cs">
+    <Compile Include="PrintableUC.cs">
       <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PrintableUC.Designer.cs">
+      <DependentUpon>PrintableUC.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,6 +120,9 @@
     <EmbeddedResource Include="DlgDuty.resx">
       <DependentUpon>DlgDuty.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DlgEmployee.resx">
+      <DependentUpon>DlgEmployee.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EmployeeListView.resx">
       <DependentUpon>EmployeeListView.cs</DependentUpon>
     </EmbeddedResource>
@@ -120,6 +136,7 @@
     <EmbeddedResource Include="ScheduleView.resx">
       <DependentUpon>ScheduleView.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
