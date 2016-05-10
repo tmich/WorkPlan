@@ -12,9 +12,12 @@ namespace WorkPlan
         const int DaysToShow = 7;
         private EmployeeRepository repo;
         private DutyRepository dutyRepo;
-        //private DutyList duties;
+        private DutyList duties;
+        private DutyService dutyService;
         List<Employee> employees;
         private List<Duty>[,] dutiesToDraw;
+
+        private DateTime startDate, endDate;
              
         public ScheduleView()
         {
@@ -24,6 +27,10 @@ namespace WorkPlan
             //duties = dutyRepo.All
             employees = repo.All();
             dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
+            dutyService = new DutyService();
+
+            startDate = monthCalendar1.SelectionStart.AddDays(-15);
+            endDate = monthCalendar1.SelectionStart.AddDays(15);
 
             updateGrid(monthCalendar1.SelectionStart);
         }
@@ -134,16 +141,22 @@ namespace WorkPlan
         
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
+            startDate = e.Start.AddDays(-15);
+            endDate = e.Start.AddDays(15);
             updateGrid(e.Start);
         }
 
-        public void Update()
+        public void UpdateData()
         {
+            employees = repo.All();
             updateGrid(monthCalendar1.SelectionStart);
         }
 
         private void updateGrid(DateTime dateStart)
         {
+            // get last month
+            duties = dutyService.GetBy(startDate, endDate);
+
             // create columns
             dataGridView1.Columns.Clear();
             for (int i = 0; i < DaysToShow; i++)
@@ -155,7 +168,6 @@ namespace WorkPlan
             }
 
             // create rows
-            employees = repo.All();
             dataGridView1.Rows.Clear();
             if (employees.Count > 0)
             {
@@ -367,15 +379,16 @@ namespace WorkPlan
                     Employee employee = (Employee)dataGridView1.Rows[e.RowIndex].Tag;
                     DateTime datetime = (DateTime)dataGridView1.Columns[e.ColumnIndex].Tag;
 
-                    var duties = dutyRepo.GetBy(employee, datetime);
+                    var duties_ = dutyRepo.GetBy(employee, datetime);
+                    //var duties_ = duties.GetBy(employee, datetime);
                     
-                    if (duties.Count > 0)
+                    if (duties_.Count > 0)
                     {
-                        drawDutiesToCell(e, duties);
+                        drawDutiesToCell(e, duties_);
                     }
 
                     var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
-                    cell.Tag = duties;
+                    cell.Tag = duties_;
                 }
             }
             catch(IndexOutOfRangeException)

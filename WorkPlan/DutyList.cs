@@ -13,7 +13,7 @@ namespace WorkPlan
             var results = FindAll(
                 delegate (Duty duty)
                 {
-                    return duty.Employee.FullName.Equals(employee.FullName) && duty.StartDate.ToShortDateString().Equals(startDate.ToShortDateString());
+                    return duty.Employee.Id == employee.Id && duty.StartDate.Date.Equals(startDate.Date);
                 }
                 );
 

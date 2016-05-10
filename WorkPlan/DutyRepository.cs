@@ -12,6 +12,49 @@ namespace WorkPlan
         {
         }
         
+        public List<Duty> GetBy(Employee employee, DateTime startDate, DateTime endDate)
+        {
+            var results = new List<Duty>();
+
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandText = "GetTurniByDipDateRange";
+                    cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = employee.Id;
+                    cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;
+                    cmd.Parameters.Add("pData2", MySqlDbType.DateTime).Value = endDate.Date;
+
+                    var rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        results.Add(new Duty()
+                        {
+                            Id = rdr.GetInt32(0),
+                            Employee = employee,
+                            StartDate = rdr.GetDateTime(2),
+                            EndDate = rdr.GetDateTime(3),
+                            Position = rdr.GetString(4),
+                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
+                        });
+                    }
+
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
+
+            results.Sort((x, y) => x.StartDate.CompareTo(y.StartDate));
+            return results;
+        }
+
         public List<Duty> GetBy(Employee employee, DateTime startDate)
         {
             var results = new List<Duty>();

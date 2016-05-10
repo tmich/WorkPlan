@@ -75,6 +75,7 @@
     <Compile Include="Duty.cs" />
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
+    <Compile Include="DutyService.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="EmployeeListView.cs">
       <SubType>UserControl</SubType>

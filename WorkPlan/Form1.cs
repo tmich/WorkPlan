@@ -60,7 +60,7 @@ namespace WorkPlan
             if(tabContainer.SelectedIndex == 0)
             {
                 var scheduleView = (ScheduleView)tabContainer.SelectedTab.Controls["uc"];
-                scheduleView.Update();
+                scheduleView.UpdateData();
             }
         }
     }
