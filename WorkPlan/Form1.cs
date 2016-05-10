@@ -54,5 +54,14 @@ namespace WorkPlan
 
             //ShowChild(employeesView);
         }
+
+        private void tabContainer_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(tabContainer.SelectedIndex == 0)
+            {
+                var scheduleView = (ScheduleView)tabContainer.SelectedTab.Controls["uc"];
+                scheduleView.Update();
+            }
+        }
     }
 }

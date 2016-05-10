@@ -71,7 +71,7 @@ namespace WorkPlan
             }
         }
 
-        private void lvEmployees_ItemActivate(object sender, EventArgs e)
+        private void EditEmployee()
         {
             ListViewItem item = lvEmployees.SelectedItems[0];
             int id = (int)item.Tag;
@@ -103,6 +103,58 @@ namespace WorkPlan
 
                 // update list
                 SetEmployees(empRepo.All());
+            }
+        }
+
+        private void lvEmployees_ItemActivate(object sender, EventArgs e)
+        {
+            EditEmployee();
+        }
+
+        private void tbNuovo_Click(object sender, EventArgs e)
+        {
+            var dlgEmp = new DlgEmployee();
+
+            if (dlgEmp.ShowDialog() == DialogResult.OK)
+            {
+                Employee emp = new Employee();
+                FromDialog(ref dlgEmp, ref emp);
+                EmployeeRepository empRepo = new EmployeeRepository();
+                empRepo.Add(ref emp);
+
+                // update list
+                SetEmployees(empRepo.All());
+            }
+        }
+
+        private void tbEdit_Click(object sender, EventArgs e)
+        {
+            if (lvEmployees.SelectedItems.Count > 0)
+            {
+                EditEmployee();
+            }
+        }
+
+        private void DeleteEmployee()
+        {
+            ListViewItem item = lvEmployees.SelectedItems[0];
+            int EmployeeId = (int)item.Tag;
+            
+            if (MessageBox.Show("Eliminare il dipendente?", "Attenzione", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            {
+                EmployeeRepository empRepo = new EmployeeRepository();
+                empRepo.Delete(EmployeeId);
+
+                // update list
+                SetEmployees(empRepo.All());
+            }
+        }
+
+        private void tbDelete_Click(object sender, EventArgs e)
+        {
+            if (lvEmployees.SelectedItems.Count > 0)
+            {
+                DeleteEmployee();
             }
         }
     }

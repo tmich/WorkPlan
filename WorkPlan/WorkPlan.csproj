@@ -38,6 +38,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -166,8 +167,10 @@
     <Content Include="res\copy.png" />
     <Content Include="res\cup.png" />
     <Content Include="res\cutter.png" />
+    <None Include="res\delete.png" />
     <Content Include="res\document.png" />
     <Content Include="res\documentation.png" />
+    <None Include="res\edit.png" />
     <Content Include="res\eraser.png" />
     <Content Include="res\folder-1.png" />
     <Content Include="res\folder.png" />
@@ -180,6 +183,7 @@
     <Content Include="res\letters.png" />
     <Content Include="res\marker.png" />
     <Content Include="res\mouse.png" />
+    <None Include="res\new.png" />
     <Content Include="res\note.png" />
     <Content Include="res\notebook.png" />
     <Content Include="res\paper-knife.png" />

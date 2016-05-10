@@ -12,7 +12,7 @@ namespace WorkPlan
         const int DaysToShow = 7;
         private EmployeeRepository repo;
         private DutyRepository dutyRepo;
-        private DutyList duties;
+        //private DutyList duties;
         List<Employee> employees;
         private List<Duty>[,] dutiesToDraw;
              
@@ -21,7 +21,7 @@ namespace WorkPlan
             InitializeComponent();
             repo = new EmployeeRepository();
             dutyRepo = new DutyRepository();
-            duties = dutyRepo.All();
+            //duties = dutyRepo.All
             employees = repo.All();
             dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
 
@@ -74,6 +74,10 @@ namespace WorkPlan
                     {
                         e.Graphics.DrawString(dataGridView1.Columns[c].HeaderText, this.Font, Brushes.Black, cell);
                     }
+                    else
+                    {
+                        e.Graphics.DrawString("Dipendente", this.Font, Brushes.Black, cell);
+                    }
                     
                     leftMargin += cell.Width + 2;
                 }
@@ -82,6 +86,8 @@ namespace WorkPlan
                 int i = 0;
                 foreach (var employee in repo.All())
                 {
+                    topMargin += 60;
+                    leftMargin += 100;
                     foreach (DataGridViewColumn column in dataGridView1.Columns)
                     {
                         var cell = new Rectangle(leftMargin, topMargin, 100, 60);
@@ -117,7 +123,8 @@ namespace WorkPlan
                         }
                         i++;
                     }
-                    topMargin += 60;
+//                    leftMargin += 50;
+                    //topMargin += 60;
                 }
 
             }
@@ -128,6 +135,11 @@ namespace WorkPlan
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
         {
             updateGrid(e.Start);
+        }
+
+        public void Update()
+        {
+            updateGrid(monthCalendar1.SelectionStart);
         }
 
         private void updateGrid(DateTime dateStart)
@@ -143,6 +155,7 @@ namespace WorkPlan
             }
 
             // create rows
+            employees = repo.All();
             dataGridView1.Rows.Clear();
             if (employees.Count > 0)
             {
@@ -198,7 +211,7 @@ namespace WorkPlan
                     dutyToDelete.Employee.FullName, dutyToDelete.ToString()), 
                     "Conferma", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
-                    dutyRepo.Delete(dutyToDelete);
+                    dutyRepo.Delete(dutyToDelete.Id);
                 }
             }
         }
@@ -280,10 +293,10 @@ namespace WorkPlan
         {
             List<Brush> brushes = new List<Brush>()
             {
-                Brushes.AliceBlue,
-                Brushes.Beige,
-                Brushes.BlanchedAlmond,
-                Brushes.DimGray
+                Brushes.AliceBlue
+                //Brushes.Beige,
+                //Brushes.BlanchedAlmond,
+                //Brushes.DimGray
             };
 
             using (Brush gridBrush = new SolidBrush(this.dataGridView1.GridColor),
@@ -333,7 +346,7 @@ namespace WorkPlan
                         Point p2 = rect.Location;
                         p2.Offset(0, rect.Height);
                         e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
-                        e.Graphics.FillRectangle(brushes[d], rect);
+                        e.Graphics.FillRectangle(brushes[0], rect);
                         e.Graphics.DrawString(duty.ToString(), e.CellStyle.Font, Brushes.Crimson, rect);
                         e.Graphics.DrawString(string.Format("\n{0}", duty.Notes.Truncate(20)), e.CellStyle.Font, Brushes.BlueViolet, rect.X, rect.Y + 1);
                     }
@@ -416,6 +429,11 @@ namespace WorkPlan
         {
             EditDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
                 dataGridView1.SelectedCells[0].RowIndex);
+        }
+
+        private void tbPrint_Click(object sender, EventArgs e)
+        {
+            Print();
         }
     }
 }

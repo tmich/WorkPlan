@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
+using System.Data.SqlClient;
 
 namespace WorkPlan
 {
     public class EmployeeRepository
     {
-        protected string connstr = "server=192.168.56.1;uid=scott;pwd=tiger;database=turni;";
+        protected string connstr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"].ToString();
 
         public EmployeeRepository()
         {
@@ -100,6 +101,32 @@ namespace WorkPlan
                     }
 
                     return employees;
+                }
+                catch (SqlException)
+                {
+                    throw;
+                }
+            }
+        }
+
+        public void Delete(int EmployeeId)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = "DeleteDipendente";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    var pid = new MySqlParameter("pid", MySqlDbType.Int32);
+                    pid.Direction = System.Data.ParameterDirection.Input;
+                    pid.Value = EmployeeId;
+                    cmd.Parameters.Add(pid);
+
+                    cmd.ExecuteNonQuery();
+
+                    conn.Close();
                 }
                 catch (MySqlException)
                 {
