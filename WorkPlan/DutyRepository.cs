@@ -23,6 +23,7 @@ namespace WorkPlan
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    //cmd.CommandText = "GetTurniByEmployeeAndDateRange";
                     cmd.CommandText = "GetTurniByDipDateRange";
                     cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = employee.Id;
                     cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;

@@ -60,6 +60,92 @@ namespace WorkPlan
         // The PrintPage event is raised for each page to be printed. 
         private void pd_PrintPage(object sender, PrintPageEventArgs e)
         {
+            int leftMargin = e.MarginBounds.Left;
+            int topMargin = e.MarginBounds.Top;
+
+            int cellWidth = 120;
+            int cellHeight = 60;
+
+            int cellHeadHeight = 20;
+
+            DutyService dutyService = new DutyService();
+            startDate = monthCalendar1.SelectionStart;
+            endDate = startDate.AddDays(DaysToShow);
+            Dictionary<Employee, List<Duty>> dutiesMap = dutyService.GetDutiesBy(startDate, endDate);
+
+            using (Font headerPrintFont = new Font("Arial", 9.0f, FontStyle.Bold))
+            {
+                Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
+                var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
+                e.Graphics.DrawString(string.Format("Turni dal {0} al {1}", startDate.ToShortDateString(), endDate.ToShortDateString()), titleFont, Brushes.Black, title);
+                
+                // TESTATA (DATE)
+                topMargin += cellHeight;
+                leftMargin += cellWidth;
+                do
+                {
+                    var cellHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeadHeight);
+                    e.Graphics.FillRectangle(Brushes.LightGray, cellHead);
+                    e.Graphics.DrawRectangle(Pens.Black, cellHead);
+                    e.Graphics.DrawString(startDate.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
+                    leftMargin += cellWidth;
+                    startDate = startDate.AddDays(1);
+                } while (!startDate.Date.Equals(endDate.Date));
+
+                leftMargin = e.MarginBounds.Left;
+                topMargin += cellHeadHeight;
+
+                using (Font printFont = new Font("Arial", 9.0f, FontStyle.Regular))
+                {
+                    foreach (var employee in dutiesMap.Keys)
+                    {
+                        // RIGA (DIPENDENTE)
+                        var cell = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                        e.Graphics.DrawRectangle(Pens.Black, cell);
+                        e.Graphics.DrawString(employee.FullName, headerPrintFont, Brushes.Black, cell);
+                        leftMargin += cellWidth;
+
+                        var duties = dutiesMap[employee];
+
+                        startDate = monthCalendar1.SelectionStart;
+
+                        while (!startDate.Date.Equals(endDate.Date))
+                        {
+                            // GIORNI
+
+                            var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                            e.Graphics.DrawRectangle(Pens.Black, cellDay);
+                            //e.Graphics.DrawString(dd.ToString(), this.Font, Brushes.Black, cell2);
+
+                            var dutiesOfDay = duties.FindAll(delegate (Duty duty)
+                                {
+                                    return duty.StartDate.Date.Equals(startDate.Date);
+                                }
+                            );
+
+                            int _d = 0;
+                            foreach (var dd in dutiesOfDay)
+                            {
+                                var cellDuty = new Rectangle(leftMargin, cellDay.Top + (20 * _d), cellWidth, 20);
+                                e.Graphics.DrawRectangle(Pens.Black, cellDuty);
+                                e.Graphics.DrawString(dd.ToString(), printFont, Brushes.Black, cellDuty);
+                                _d++;
+                            }
+
+                            startDate = startDate.AddDays(1);
+                            leftMargin += cellWidth;
+                        }
+
+                        topMargin += cellHeight;
+                        leftMargin = e.MarginBounds.Left;
+                    }
+                }
+            }
+        }
+
+        // The PrintPage event is raised for each page to be printed. 
+        private void pd_PrintPage___(object sender, PrintPageEventArgs e)
+        {
             //int yPos = 0;
             
             int leftMargin = e.MarginBounds.Left;

@@ -1,5 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Collections.Generic;
 
 namespace WorkPlan
 {
@@ -14,7 +15,20 @@ namespace WorkPlan
             employeeRepository = new EmployeeRepository();
             dutyRepository = new DutyRepository();
         }
-        
+
+        public Dictionary<Employee, List<Duty>> GetDutiesBy(DateTime startDate, DateTime endDate)
+        {
+            var results = new Dictionary<Employee, List<Duty>>();
+            var employees = employeeRepository.All();
+
+            foreach (var employee in employees)
+            {
+                results.Add(employee, dutyRepository.GetBy(employee, startDate, endDate));
+            }
+
+            return results;
+        }
+
         public DutyList GetBy(DateTime startDate, DateTime endDate)
         {
             var results = new DutyList();
