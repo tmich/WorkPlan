@@ -6,10 +6,17 @@ using System.Threading.Tasks;
 
 namespace WorkPlan
 {
-    public class Duty : IWorkPeriod
+    public class NoWork : IWorkPeriod
     {
         public int Id { get; set; }
-        
+
+        private NoWorkReason mReason;
+        public NoWorkReason Reason
+        {
+            get { return mReason; }
+            set { mReason = value; }
+        }
+
         private Employee mEmployee;
         public Employee Employee
         {
@@ -30,14 +37,7 @@ namespace WorkPlan
             get { return mEndDate; }
             set { mEndDate = value; }
         }
-
-        private string mPosition;
-        public string Position
-        {
-            get { return mPosition; }
-            set { mPosition = value; }
-        }
-
+        
         private string mNotes;
         public string Notes
         {
@@ -45,17 +45,19 @@ namespace WorkPlan
             set { mNotes = value; }
         }
 
-        public bool FullDay
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool FullDay { get; set; }
 
         public override string ToString()
         {
-            return string.Format("{0} {1}-{2}", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            if (FullDay)
+            {
+                return string.Format("{0} {1}", Reason.Value, "[Giornata Intera]");
+            }
+            else
+            {
+                return string.Format("{0} {1}-{2}", Reason.Value, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            }
+            
         }
 
         public override bool Equals(object obj)

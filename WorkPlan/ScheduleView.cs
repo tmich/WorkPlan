@@ -7,13 +7,16 @@ using System.Drawing.Printing;
 
 namespace WorkPlan
 {
-    public partial class ScheduleView : PrintableUC
+    public partial class ScheduleView : UserControl
     {
         const int DaysToShow = 7;
         private EmployeeRepository repo;
         private DutyRepository dutyRepo;
-        private DutyList duties;
+        private NoWorkRepository noworkRepo;
+        //private DutyList duties;
+        private List<IWorkPeriod> duties;
         private DutyService dutyService;
+        private PeriodService periodService;
         List<Employee> employees;
         private List<Duty>[,] dutiesToDraw;
 
@@ -24,10 +27,12 @@ namespace WorkPlan
             InitializeComponent();
             repo = new EmployeeRepository();
             dutyRepo = new DutyRepository();
+            noworkRepo = new NoWorkRepository();
             //duties = dutyRepo.All
             employees = repo.All();
             dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
             dutyService = new DutyService();
+            periodService = new PeriodService();
 
             startDate = monthCalendar1.SelectionStart.AddDays(-15);
             endDate = monthCalendar1.SelectionStart.AddDays(15);
@@ -36,7 +41,7 @@ namespace WorkPlan
         }
 
         #region Printing
-        public override void Print()
+        public void Print()
         {
             PrintDocument pd = new PrintDocument();
             pd.PrintPage += new PrintPageEventHandler(this.pd_PrintPage);
@@ -57,6 +62,63 @@ namespace WorkPlan
             
         }
 
+        //private void printDutiesCassa(PrintPageEventArgs e)
+        //{
+        //    DutyService dutyService = new DutyService();
+        //    startDate = monthCalendar1.SelectionStart;
+        //    endDate = startDate.AddDays(DaysToShow);
+        //    var dutiesMap = dutyService.GetDutiesCassaBy(startDate, endDate);
+
+            
+        //}
+
+        private void printDuties(PrintPageEventArgs e, Dictionary<Employee, List<Duty>> dutiesMap, 
+            ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight, Font headerPrintFont, Font printFont)
+        {
+            foreach (var employee in dutiesMap.Keys)
+            {
+                // RIGA (DIPENDENTE)
+                var cell = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                e.Graphics.DrawRectangle(Pens.Black, cell);
+                e.Graphics.DrawString(employee.FullName, headerPrintFont, Brushes.Black, cell);
+                leftMargin += cellWidth;
+
+                var duties = dutiesMap[employee];
+
+                startDate = monthCalendar1.SelectionStart;
+
+                while (!startDate.Date.Equals(endDate.Date))
+                {
+                    // GIORNI
+
+                    var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                    e.Graphics.DrawRectangle(Pens.Black, cellDay);
+                    //e.Graphics.DrawString(dd.ToString(), this.Font, Brushes.Black, cell2);
+
+                    var dutiesOfDay = duties.FindAll(delegate (Duty duty)
+                    {
+                        return duty.StartDate.Date.Equals(startDate.Date);
+                    }
+                    );
+
+                    int _d = 0;
+                    foreach (var dd in dutiesOfDay)
+                    {
+                        var cellDuty = new Rectangle(leftMargin, cellDay.Top + (20 * _d), cellWidth, 20);
+                        e.Graphics.DrawRectangle(Pens.Black, cellDuty);
+                        e.Graphics.DrawString(dd.ToString(), printFont, Brushes.Black, cellDuty);
+                        _d++;
+                    }
+
+                    startDate = startDate.AddDays(1);
+                    leftMargin += cellWidth;
+                }
+
+                topMargin += cellHeight;
+                leftMargin = e.MarginBounds.Left;
+            }
+        }
+
         // The PrintPage event is raised for each page to be printed. 
         private void pd_PrintPage(object sender, PrintPageEventArgs e)
         {
@@ -71,8 +133,7 @@ namespace WorkPlan
             DutyService dutyService = new DutyService();
             startDate = monthCalendar1.SelectionStart;
             endDate = startDate.AddDays(DaysToShow);
-            Dictionary<Employee, List<Duty>> dutiesMap = dutyService.GetDutiesBy(startDate, endDate);
-
+            
             using (Font headerPrintFont = new Font("Arial", 9.0f, FontStyle.Bold))
             {
                 Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
@@ -97,48 +158,12 @@ namespace WorkPlan
 
                 using (Font printFont = new Font("Arial", 9.0f, FontStyle.Regular))
                 {
-                    foreach (var employee in dutiesMap.Keys)
-                    {
-                        // RIGA (DIPENDENTE)
-                        var cell = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                        e.Graphics.DrawRectangle(Pens.Black, cell);
-                        e.Graphics.DrawString(employee.FullName, headerPrintFont, Brushes.Black, cell);
-                        leftMargin += cellWidth;
+                    // prima la cassa
+                    Dictionary<Employee, List<Duty>> dutiesCassaMap = dutyService.GetDutiesCassaBy(startDate, endDate);
+                    printDuties(e, dutiesCassaMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
 
-                        var duties = dutiesMap[employee];
-
-                        startDate = monthCalendar1.SelectionStart;
-
-                        while (!startDate.Date.Equals(endDate.Date))
-                        {
-                            // GIORNI
-
-                            var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                            e.Graphics.DrawRectangle(Pens.Black, cellDay);
-                            //e.Graphics.DrawString(dd.ToString(), this.Font, Brushes.Black, cell2);
-
-                            var dutiesOfDay = duties.FindAll(delegate (Duty duty)
-                                {
-                                    return duty.StartDate.Date.Equals(startDate.Date);
-                                }
-                            );
-
-                            int _d = 0;
-                            foreach (var dd in dutiesOfDay)
-                            {
-                                var cellDuty = new Rectangle(leftMargin, cellDay.Top + (20 * _d), cellWidth, 20);
-                                e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-                                e.Graphics.DrawString(dd.ToString(), printFont, Brushes.Black, cellDuty);
-                                _d++;
-                            }
-
-                            startDate = startDate.AddDays(1);
-                            leftMargin += cellWidth;
-                        }
-
-                        topMargin += cellHeight;
-                        leftMargin = e.MarginBounds.Left;
-                    }
+                    Dictionary<Employee, List<Duty>> dutiesMap = dutyService.GetDutiesBy(startDate, endDate);
+                    printDuties(e, dutiesMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
                 }
             }
         }
@@ -240,8 +265,11 @@ namespace WorkPlan
 
         private void updateGrid(DateTime dateStart)
         {
-            // get last month
-            duties = dutyService.GetBy(startDate, endDate);
+            // presenze
+            //duties = dutyService.GetBy(startDate, endDate);
+
+            // presenze - assenze
+            duties = periodService.GetByDateRange(startDate, endDate);
 
             // create columns
             dataGridView1.Columns.Clear();
@@ -268,14 +296,14 @@ namespace WorkPlan
             }
         }
 
-        private List<Duty> GetDutiesAt(int colIndex, int rowIndex)
+        private List<IWorkPeriod> GetDutiesAt(int colIndex, int rowIndex)
         {
             var cell = dataGridView1[colIndex, rowIndex];
-            List<Duty> duties = (List<Duty>)cell.Tag;
+            List<IWorkPeriod> duties = (List<IWorkPeriod>)cell.Tag;
             return duties;
         }
 
-        private Duty AskUserWhichDuty(List<Duty> duties)
+        private IWorkPeriod AskUserWhichDuty(List<IWorkPeriod> duties)
         {
             var dlgchoose = new DlgChooseDuty(duties);
             if (dlgchoose.ShowDialog(this) == DialogResult.OK)
@@ -290,8 +318,8 @@ namespace WorkPlan
 
         private void DeleteDutyAt(int colIndex, int rowIndex)
         {
-            List<Duty> duties = GetDutiesAt(colIndex, rowIndex);
-            Duty dutyToDelete;
+            List<IWorkPeriod> duties = GetDutiesAt(colIndex, rowIndex);
+            IWorkPeriod dutyToDelete;
 
             if (duties.Count > 0)
             {
@@ -305,8 +333,8 @@ namespace WorkPlan
                     }
                 }
 
-                if (MessageBox.Show(this, string.Format("Eliminare il turno?\n{0}\n{1}", 
-                    dutyToDelete.Employee.FullName, dutyToDelete.ToString()), 
+                if (MessageBox.Show(this, string.Format("Eliminare il turno?\n{0}\n{1}\n{2}", 
+                    dutyToDelete.Employee.FullName, dutyToDelete.StartDate.ToLongDateString(), dutyToDelete.ToString()), 
                     "Conferma", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
                 {
                     dutyRepo.Delete(dutyToDelete.Id);
@@ -316,9 +344,8 @@ namespace WorkPlan
         
         private void EditDutyAt(int colIndex, int rowIndex)
         {
-            List<Duty> duties = GetDutiesAt(colIndex, rowIndex);
-            DlgDuty dlg;
-            Duty dutyToEdit = null;
+            List<IWorkPeriod> duties = GetDutiesAt(colIndex, rowIndex);
+            IWorkPeriod dutyToEdit = null;
 
             if (duties.Count > 0)
             {
@@ -332,16 +359,41 @@ namespace WorkPlan
                     }
                 }
 
-                dlg = new DlgDuty(dutyToEdit);
-                if (dlg.ShowDialog(this) == DialogResult.OK)
-                {
-                    dutyToEdit.StartDate = dlg.DutyStart;
-                    dutyToEdit.EndDate = dlg.DutyEnd;
-                    dutyToEdit.Notes = dlg.Notes;
-                    dutyToEdit.Position = dlg.Position;
+                Duty dut = dutyToEdit as Duty;
 
-                    dutyRepo.Update(ref dutyToEdit);
-                    dataGridView1.Refresh();
+                if (dut != null)
+                {
+                    // turno
+                    DlgDuty dlg = new DlgDuty(dut);
+
+                    if (dlg.ShowDialog(this) == DialogResult.OK)
+                    {
+                        dut.StartDate = dlg.DutyStart;
+                        dut.EndDate = dlg.DutyEnd;
+                        dut.Notes = dlg.Notes;
+                        dut.Position = dlg.Position;
+
+                        dutyRepo.Update(ref dut);
+                        dataGridView1.Refresh();
+                    }
+                }
+                else
+                {
+                    // assenza
+                    NoWork nw = dutyToEdit as NoWork;
+                    DlgNowork dlg = new DlgNowork(nw);
+
+                    if (dlg.ShowDialog(this) == DialogResult.OK)
+                    {
+                        nw.StartDate = dlg.NoWorkStart;
+                        nw.EndDate = dlg.NoWorkEnd;
+                        nw.Notes = dlg.Notes;
+                        nw.Reason = dlg.Reason;
+                        nw.FullDay = dlg.FullDay;
+
+                        noworkRepo.Update(ref nw);
+                        dataGridView1.Refresh();
+                    }
                 }
             }
 
@@ -366,11 +418,31 @@ namespace WorkPlan
                 dataGridView1.Refresh();
             }
         }
-        
+
+        private void AddNewNoWorkAt(int colIndex, int rowIndex)
+        {
+            var employee = (Employee)dataGridView1.Rows[rowIndex].Tag;
+            DateTime dutyDate = (DateTime)dataGridView1.Columns[colIndex].Tag;
+            var dlgNw = new DlgNowork(employee, dutyDate);
+            
+            if (dlgNw.ShowDialog(this) == DialogResult.OK)
+            {
+                NoWork nowork = new NoWork();
+                nowork.Employee = employee;
+                nowork.StartDate = dlgNw.NoWorkStart;
+                nowork.EndDate = dlgNw.NoWorkEnd;
+                nowork.Reason = dlgNw.Reason;
+                nowork.Notes = dlgNw.Notes;
+                nowork.FullDay = dlgNw.FullDay;
+
+                noworkRepo.Add(ref nowork);
+                dataGridView1.Refresh();
+            }
+        }
+
         private void nuovoTurnoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddNewDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
-                dataGridView1.SelectedCells[0].RowIndex);
+            
         }
 
         private void modificaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -381,20 +453,34 @@ namespace WorkPlan
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
-            List<Duty> dutiesOfTheDay = (List<Duty>)dataGridView1.SelectedCells[0].Tag;
-
+            List<IWorkPeriod> dutiesOfTheDay = (List<IWorkPeriod>)dataGridView1.SelectedCells[0].Tag;
+            if (dutiesOfTheDay.Count > 0)
+            {
+                nuovoToolStripMenuItem.Enabled = !dutiesOfTheDay[0].FullDay;
+            }
+            
             modificaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
             eliminaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
         }
 
-        private void drawDutiesToCell(DataGridViewCellPaintingEventArgs e, List<Duty> duties)
+        private void draw(DataGridViewCellPaintingEventArgs e, Duty duty)
+        {
+
+        }
+
+        private void draw(DataGridViewCellPaintingEventArgs e, NoWork nowork)
+        {
+
+        }
+
+        private void drawPeriods(DataGridViewCellPaintingEventArgs e, List<IWorkPeriod> duties)
         {
             List<Brush> brushes = new List<Brush>()
             {
-                Brushes.AliceBlue
-                //Brushes.Beige,
-                //Brushes.BlanchedAlmond,
-                //Brushes.DimGray
+                Brushes.AliceBlue,
+                Brushes.Beige,
+                Brushes.BlanchedAlmond,
+                Brushes.LightPink
             };
 
             using (Brush gridBrush = new SolidBrush(this.dataGridView1.GridColor),
@@ -422,31 +508,63 @@ namespace WorkPlan
                     for (int d = 0; d < duties.Count; d++)
                     {
                         // Draw the inset highlight box.
-                        Duty duty = duties[d];
+                        IWorkPeriod period = duties[d];
+                        Duty duty = period as Duty;
 
                         int padding = 5;
                         int spacing = 5;
-                        //int width = e.CellBounds.Width - (padding * 2);
-                        //int height = (e.CellBounds.Height / duties.Count) - (padding * 2);
-                        //int X = e.CellBounds.X + padding;
-                        //int Y = (e.CellBounds.Y) + (height * d) + padding;
 
                         int height = 32;
+
+                        if (period.FullDay)
+                        {
+                            height = e.CellBounds.Height - (padding * 3);
+                        }
+
                         int X = e.CellBounds.X + (2 * padding);
                         int Y = e.CellBounds.Y + (height * d) + (spacing * d) + padding;
                         int width = e.CellBounds.Width - (padding * 3);
 
                         Pen navyPen = new Pen(Color.Navy, 2);
                         Pen leftBorderPen = new Pen(Color.Navy, 8);
-                        //navyPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                        
                         Rectangle rect = new Rectangle(X, Y, width, height);
                         e.Graphics.DrawRectangle(navyPen, rect);
                         Point p2 = rect.Location;
                         p2.Offset(0, rect.Height);
                         e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
-                        e.Graphics.FillRectangle(brushes[0], rect);
-                        e.Graphics.DrawString(duty.ToString(), e.CellStyle.Font, Brushes.Crimson, rect);
-                        e.Graphics.DrawString(string.Format("\n{0}", duty.Notes.Truncate(20)), e.CellStyle.Font, Brushes.BlueViolet, rect.X, rect.Y + 1);
+
+                        Brush brush = brushes[0];
+                        Brush stringBrush = Brushes.Black;
+
+                        if (duty != null)
+                        {
+                            // pomeriggio di un altro colore
+                            // almeno la metà del turno si svolge dopo mezzogiorno
+
+                            var duration = period.EndDate.TimeOfDay.Subtract(period.StartDate.TimeOfDay);
+                            var duration_in_hours = (int)duration.TotalHours;
+                            if (period.StartDate.TimeOfDay.Add(new TimeSpan(duration_in_hours / 2, 0, 0)) >= new TimeSpan(12, 0, 0))
+                            {
+                                brush = brushes[1];
+                            }
+
+                            // cassa ha un'evidenza diversa
+                            if (duty.Position.ToLower().Equals("cassa"))
+                            {
+                                stringBrush = Brushes.ForestGreen;
+                            }
+                        }
+                        else
+                        {
+                            // assenza
+                            NoWork nowork = period as NoWork;
+                            brush = brushes[3];
+                        }
+                        
+                        e.Graphics.FillRectangle(brush, rect);
+                        e.Graphics.DrawString(period.ToString(), e.CellStyle.Font, stringBrush, rect);
+                        e.Graphics.DrawString(string.Format("\n{0}", period.Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
                     }
                 }
             }
@@ -465,16 +583,16 @@ namespace WorkPlan
                     Employee employee = (Employee)dataGridView1.Rows[e.RowIndex].Tag;
                     DateTime datetime = (DateTime)dataGridView1.Columns[e.ColumnIndex].Tag;
 
-                    var duties_ = dutyRepo.GetBy(employee, datetime);
-                    //var duties_ = duties.GetBy(employee, datetime);
-                    
-                    if (duties_.Count > 0)
+                    //var duties_ = dutyRepo.GetBy(employee, datetime);
+                    List<IWorkPeriod> periods = periodService.GetByEmployeeAndDate(employee, datetime);
+
+                    if (periods.Count > 0)
                     {
-                        drawDutiesToCell(e, duties_);
+                        drawPeriods(e, periods);
                     }
 
                     var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
-                    cell.Tag = duties_;
+                    cell.Tag = periods;
                 }
             }
             catch(IndexOutOfRangeException)
@@ -493,9 +611,9 @@ namespace WorkPlan
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
                 var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
-                List<Duty> duties = (List<Duty>)cell.Tag;
+                List<IWorkPeriod> periods = (List<IWorkPeriod>)cell.Tag;
 
-                if (duties.Count > 0)
+                if (periods.Count > 0)
                 {
                     EditDutyAt(e.ColumnIndex, e.RowIndex);
                 }
@@ -527,6 +645,18 @@ namespace WorkPlan
         private void modificaToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             EditDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
+                dataGridView1.SelectedCells[0].RowIndex);
+        }
+
+        private void turnoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
+                dataGridView1.SelectedCells[0].RowIndex);
+        }
+
+        private void assenzaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewNoWorkAt(dataGridView1.SelectedCells[0].ColumnIndex,
                 dataGridView1.SelectedCells[0].RowIndex);
         }
 

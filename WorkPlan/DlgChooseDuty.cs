@@ -12,15 +12,15 @@ namespace WorkPlan
 {
     public partial class DlgChooseDuty : Form
     {
-        protected List<Duty> mDuties;
-        protected Duty mSelected;
+        protected List<IWorkPeriod> mDuties;
+        protected IWorkPeriod mSelected;
 
         protected DlgChooseDuty()
         {
             InitializeComponent();
         }
 
-        public DlgChooseDuty(List<Duty> duties)
+        public DlgChooseDuty(List<IWorkPeriod> duties)
             :this()
         {
             mDuties = duties;
@@ -29,7 +29,7 @@ namespace WorkPlan
             lbTurni.SelectedIndex = 0;
         }
 
-        public Duty GetSelectedDuty()
+        public IWorkPeriod GetSelectedDuty()
         {
             return mSelected;
         }
@@ -38,7 +38,7 @@ namespace WorkPlan
         {
             if (lbTurni.SelectedIndex >= 0)
             {
-                mSelected = (Duty)lbTurni.SelectedItem;
+                mSelected = (IWorkPeriod)lbTurni.SelectedItem;
                 DialogResult = DialogResult.OK;
             }
         }

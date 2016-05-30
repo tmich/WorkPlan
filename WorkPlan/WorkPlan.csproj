@@ -92,6 +92,12 @@
     <Compile Include="DlgEmployee.Designer.cs">
       <DependentUpon>DlgEmployee.cs</DependentUpon>
     </Compile>
+    <Compile Include="DlgNowork.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgNowork.Designer.cs">
+      <DependentUpon>DlgNowork.cs</DependentUpon>
+    </Compile>
     <Compile Include="Duty.cs" />
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
@@ -110,6 +116,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IWorkPeriod.cs" />
+    <Compile Include="NoWork.cs" />
+    <Compile Include="NoWorkReason.cs" />
+    <Compile Include="NoWorkRepository.cs" />
+    <Compile Include="PeriodService.cs" />
     <Compile Include="PrintableUC.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -145,6 +156,9 @@
     <EmbeddedResource Include="DlgEmployee.resx">
       <DependentUpon>DlgEmployee.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DlgNowork.resx">
+      <DependentUpon>DlgNowork.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EmployeeListView.resx">
       <DependentUpon>EmployeeListView.cs</DependentUpon>
     </EmbeddedResource>
@@ -170,7 +184,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="res\abacus.png" />

@@ -4,17 +4,17 @@ using System.Collections.Generic;
 
 namespace WorkPlan
 {
-    public class DutyRepository
+    public class NoWorkRepository
     {
         protected string connstr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"].ToString();
 
-        public DutyRepository()
+        public NoWorkRepository()
         {
         }
 
-        public List<Duty> GetCassaBy(Employee employee, DateTime startDate, DateTime endDate)
+        public List<NoWorkReason> GetReasons()
         {
-            var results = new List<Duty>();
+            List<NoWorkReason> reasons = new List<NoWorkReason>();
 
             using (MySqlConnection conn = new MySqlConnection(connstr))
             {
@@ -23,7 +23,41 @@ namespace WorkPlan
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.CommandText = "GetTurniCassaByDipDateRange";
+                    cmd.CommandText = "GetMotiviAssenza";
+                    
+                    var rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        var reason = new NoWorkReason();
+                        reason.Id = rdr.GetInt32(0);
+                        reason.Value = rdr.GetString(2);
+                        reasons.Add(reason);
+                    }
+                    
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
+
+            return reasons;
+        }
+
+        public List<NoWork> GetAssenzeByDipDateRange(Employee employee, DateTime startDate, DateTime endDate)
+        {
+            var results = new List<NoWork>();
+
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandText = "GetAssenzeByDipDateRange";
                     cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = employee.Id;
                     cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;
                     cmd.Parameters.Add("pData2", MySqlDbType.DateTime).Value = endDate.Date;
@@ -32,14 +66,15 @@ namespace WorkPlan
 
                     while (rdr.Read())
                     {
-                        results.Add(new Duty()
+                        results.Add(new NoWork()
                         {
                             Id = rdr.GetInt32(0),
                             Employee = employee,
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
-                            Position = rdr.GetString(4),
-                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
+                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5) },
+                            Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
+                            FullDay = rdr.GetBoolean(8)
                         });
                     }
 
@@ -55,9 +90,9 @@ namespace WorkPlan
             return results;
         }
 
-        public List<Duty> GetBy(Employee employee, DateTime startDate, DateTime endDate)
+        public List<NoWork> GetAssenzeByEmployeeAndDate(Employee employee, DateTime datetime)
         {
-            var results = new List<Duty>();
+            var results = new List<NoWork>();
 
             using (MySqlConnection conn = new MySqlConnection(connstr))
             {
@@ -66,24 +101,23 @@ namespace WorkPlan
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    //cmd.CommandText = "GetTurniByEmployeeAndDateRange";
-                    cmd.CommandText = "GetTurniByDipDateRange";
+                    cmd.CommandText = "GetAssenzeByDipDate";
                     cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = employee.Id;
-                    cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;
-                    cmd.Parameters.Add("pData2", MySqlDbType.DateTime).Value = endDate.Date;
+                    cmd.Parameters.Add("pDataInizio", MySqlDbType.DateTime).Value = datetime.Date;
 
                     var rdr = cmd.ExecuteReader();
 
                     while (rdr.Read())
                     {
-                        results.Add(new Duty()
+                        results.Add(new NoWork()
                         {
                             Id = rdr.GetInt32(0),
                             Employee = employee,
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
-                            Position = rdr.GetString(4),
-                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
+                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5) },
+                            Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
+                            FullDay = rdr.GetBoolean(8)
                         });
                     }
 
@@ -99,54 +133,7 @@ namespace WorkPlan
             return results;
         }
 
-        public List<Duty> GetBy(Employee employee, DateTime startDate)
-        {
-            var results = new List<Duty>();
-
-            using (MySqlConnection conn = new MySqlConnection(connstr))
-            {
-                try
-                {
-                    conn.Open();
-                    MySqlCommand cmd = conn.CreateCommand();
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.CommandText = "GetTurniByDipDate";
-                    cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = employee.Id;
-                    cmd.Parameters.Add("pDataInizio", MySqlDbType.DateTime).Value = startDate.Date;
-
-                    var rdr = cmd.ExecuteReader();
-
-                    while (rdr.Read())
-                    {
-                        results.Add(new Duty()
-                        {
-                            Id = rdr.GetInt32(0),
-                            Employee = employee,
-                            StartDate = rdr.GetDateTime(2),
-                            EndDate = rdr.GetDateTime(3),
-                            Position = rdr.GetString(4),
-                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
-                        });
-                    }
-
-                    conn.Close();
-                }
-                catch (MySqlException)
-                {
-                    throw;
-                }
-            }
-
-            results.Sort((x, y) => x.StartDate.CompareTo(y.StartDate));
-            return results;
-        }
-
-        public DutyList All()
-        {
-            return new DutyList();
-        }
-
-        public void Add(ref Duty duty)
+        public void Add(ref NoWork nowork)
         {
             using (MySqlConnection conn = new MySqlConnection(connstr))
             {
@@ -155,12 +142,13 @@ namespace WorkPlan
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.CommandText = "InsertTurno";
-                    cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value=duty.Employee.Id;
-                    cmd.Parameters.Add("pDataInizio", MySqlDbType.DateTime).Value = duty.StartDate;
-                    cmd.Parameters.Add("pDataFine", MySqlDbType.DateTime).Value = duty.EndDate;
-                    cmd.Parameters.Add("pPosizione", MySqlDbType.VarChar, 50).Value = duty.Position;
-                    cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = duty.Notes;
+                    cmd.CommandText = "InsertAssenza";
+                    cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = nowork.Employee.Id;
+                    cmd.Parameters.Add("pDataInizio", MySqlDbType.DateTime).Value = nowork.StartDate;
+                    cmd.Parameters.Add("pDataFine", MySqlDbType.DateTime).Value = nowork.EndDate;
+                    cmd.Parameters.Add("pGiornataIntera", MySqlDbType.Int16).Value = nowork.FullDay;
+                    cmd.Parameters.Add("pMotivo", MySqlDbType.VarChar, 50).Value = nowork.Reason.Id;
+                    cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = nowork.Notes;
 
                     var lid = new MySqlParameter("LID", MySqlDbType.Int32);
                     lid.Direction = System.Data.ParameterDirection.InputOutput;
@@ -168,7 +156,7 @@ namespace WorkPlan
 
                     cmd.ExecuteNonQuery();
 
-                    duty.Id = (int)lid.Value;
+                    nowork.Id = (int)lid.Value;
 
                     conn.Close();
                 }
@@ -179,7 +167,7 @@ namespace WorkPlan
             }
         }
 
-        public void Update(ref Duty duty)
+        public void Update(ref NoWork nw)
         {
             using (MySqlConnection conn = new MySqlConnection(connstr))
             {
@@ -188,40 +176,15 @@ namespace WorkPlan
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.CommandText = "UpdateTurno";
-                    cmd.Parameters.Add("pId", MySqlDbType.Int32).Value = duty.Id;
-                    cmd.Parameters.Add("pDataInizio", MySqlDbType.DateTime).Value = duty.StartDate;
-                    cmd.Parameters.Add("pDataFine", MySqlDbType.DateTime).Value = duty.EndDate;
-                    cmd.Parameters.Add("pPosizione", MySqlDbType.VarChar, 50).Value = duty.Position;
-                    cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = duty.Notes;
-                    
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
-                }
-                catch (MySqlException)
-                {
-                    throw;
-                }
-            }
-        }
-
-        public void Delete(int DutyId)
-        {
-            using (MySqlConnection conn = new MySqlConnection(connstr))
-            {
-                try
-                {
-                    conn.Open();
-                    MySqlCommand cmd = conn.CreateCommand();
-                    cmd.CommandText = "DeleteTurno";
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    var pid = new MySqlParameter("pid", MySqlDbType.Int32);
-                    pid.Direction = System.Data.ParameterDirection.Input;
-                    pid.Value = DutyId;
-                    cmd.Parameters.Add(pid);
+                    cmd.CommandText = "UpdateAssenza";
+                    cmd.Parameters.Add("pId", MySqlDbType.Int32).Value = nw.Id;
+                    cmd.Parameters.Add("pDataInizio", MySqlDbType.DateTime).Value = nw.StartDate;
+                    cmd.Parameters.Add("pDataFine", MySqlDbType.DateTime).Value = nw.EndDate;
+                    cmd.Parameters.Add("pGiornataIntera", MySqlDbType.Int16).Value = nw.FullDay;
+                    cmd.Parameters.Add("pMotivo", MySqlDbType.VarChar, 50).Value = nw.Reason.Id;
+                    cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = nw.Notes;
 
                     cmd.ExecuteNonQuery();
-
                     conn.Close();
                 }
                 catch (MySqlException)

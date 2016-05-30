@@ -29,9 +29,22 @@ namespace WorkPlan
             return results;
         }
 
-        public DutyList GetBy(DateTime startDate, DateTime endDate)
+        public Dictionary<Employee, List<Duty>> GetDutiesCassaBy(DateTime startDate, DateTime endDate)
         {
-            var results = new DutyList();
+            var results = new Dictionary<Employee, List<Duty>>();
+            var employees = employeeRepository.All();
+
+            foreach (var employee in employees)
+            {
+                results.Add(employee, dutyRepository.GetCassaBy(employee, startDate, endDate));
+            }
+
+            return results;
+        }
+
+        public List<IWorkPeriod> GetBy(DateTime startDate, DateTime endDate)
+        {
+            var results = new List<IWorkPeriod>();
             var employees = employeeRepository.All();
 
             foreach (var employee in employees)
