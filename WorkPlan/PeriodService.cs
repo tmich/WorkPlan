@@ -120,8 +120,10 @@ namespace WorkPlan
 
             foreach (var nowork in noworkRepository.GetAssenzeByDateRange(startDate, endDate))
             {
-                //var val = results.GetOrAdd(nowork.Employee, new List<IWorkPeriod>());
-                //results.Add(new NoworkVM(nowork));
+                NoworkVM nowvm = new NoworkVM(nowork);
+                var val = results.GetOrAdd(nowork.Employee, new List<IWorkPeriod>());
+                val.Add(nowvm);
+                results[nowvm.Employee] = val;
             }
 
             return results;

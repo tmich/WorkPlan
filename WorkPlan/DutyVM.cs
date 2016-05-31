@@ -36,6 +36,17 @@ namespace WorkPlan
 
         public DateTime StartDate { get; set; }
 
+        public bool IsAfternoon
+        {
+            // almeno la metà del turno si svolge dopo mezzogiorno
+            get
+            {
+                var duration = EndDate.TimeOfDay.Subtract(StartDate.TimeOfDay);
+                var duration_in_hours = (int)duration.TotalHours;
+                return (StartDate.TimeOfDay.Add(new TimeSpan(duration_in_hours / 2, 0, 0)) >= new TimeSpan(12, 0, 0));
+            }
+        }
+
         public void Draw(DataGridViewCellPaintingEventArgs e, int order = 0)
         {
             int padding = 5;
@@ -55,16 +66,13 @@ namespace WorkPlan
             Brush stringBrush = Brushes.Black;
 
             // pomeriggio di un altro colore
-            // almeno la metà del turno si svolge dopo mezzogiorno
-            var duration = EndDate.TimeOfDay.Subtract(StartDate.TimeOfDay);
-            var duration_in_hours = (int)duration.TotalHours;
-            if (StartDate.TimeOfDay.Add(new TimeSpan(duration_in_hours / 2, 0, 0)) >= new TimeSpan(12, 0, 0))
+            if (IsAfternoon)
             {
                 brush = Brushes.LightGoldenrodYellow;
             }
 
             // cassa ha un'evidenza diversa
-            if (Position.ToLower().Equals("cassa"))
+            if (IsCassa)
             {
                 //stringBrush = Brushes.ForestGreen;
                 brush = Brushes.SpringGreen;
@@ -75,11 +83,44 @@ namespace WorkPlan
             e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
         }
 
-        public void Print(PrintPageEventArgs e, int x, int y, int width, Font font, int order = 0)
+        private bool IsCassa
         {
-            var cellDuty = new Rectangle(x, y + (20 * order), width, FullDay ? 60 : 20);
+            get
+            {
+                return Position.ToLower().Equals("cassa");
+            }
+        }
+
+        public void Print(PrintPageEventArgs e, Rectangle cell, int totalPerDay, int order = 0)
+        {
+            Brush bgBrush = Brushes.LightSkyBlue;
+            int height = cell.Height;
+            int topMargin = cell.Y; //+ (height * order);
+            int width = cell.Width / 2;
+            int x = cell.X;
+            var str = string.Format("{1}-{2}\n{0}", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+
+            if (IsCassa)
+            {
+                bgBrush = Brushes.SpringGreen;
+                str = string.Format("{0}-{1}", StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            }
+            else if (IsAfternoon)
+            {
+                bgBrush = Brushes.LightGoldenrodYellow;
+                x += width;
+            }
+
+            if (FullDay)
+            {
+                height = cell.Height;
+            }
+
+            Font myFont = new Font("Arial", 8.0f, FontStyle.Regular);
+            var cellDuty = new Rectangle(x, topMargin, width, height);
+            e.Graphics.FillRectangle(bgBrush, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-            e.Graphics.DrawString(ToString(), font, Brushes.Black, cellDuty);
+            e.Graphics.DrawString(str, myFont, Brushes.Black, cellDuty);
         }
 
         public override string ToString()

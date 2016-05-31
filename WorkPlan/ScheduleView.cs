@@ -13,10 +13,15 @@ namespace WorkPlan
         private EmployeeRepository repo;
         private DutyRepository dutyRepo;
         private NoWorkRepository noworkRepo;
-        private List<IWorkPeriod> shifts;
+        //private List<IWorkPeriod> shifts;
         private PeriodService periodService;
         private List<Employee> employees;
         private DateTime startDate, endDate;
+
+        private IDictionary<Employee, List<IWorkPeriod>> dutyCassa;
+        private IDictionary<Employee, List<IWorkPeriod>> dutiesMap;
+        private int rowsPrinted = 0;
+        private int currentPage = 0;
 
         public ScheduleView()
         {
@@ -29,7 +34,7 @@ namespace WorkPlan
             //dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
             //dutyService = new DutyService();
             periodService = new PeriodService();
-
+            
             startDate = monthCalendar1.SelectionStart.AddDays(-15);
             endDate = monthCalendar1.SelectionStart.AddDays(15);
 
@@ -48,35 +53,32 @@ namespace WorkPlan
             ps.RawKind = (int)PaperKind.A4;
             pd.DefaultPageSettings.PaperSize = ps;
             pd.DefaultPageSettings.Landscape = true;
+            pd.DefaultPageSettings.Margins.Top = 20;
+            pd.DefaultPageSettings.Margins.Bottom = 20;
+            pd.DefaultPageSettings.Margins.Left = 20;
+            pd.DefaultPageSettings.Margins.Right = 20;
             //Show Print Dialog
             if (printDialog.ShowDialog() == DialogResult.OK)
             {
                 //Print the page
+                currentPage = 1;
                 pd.Print();
             }
 
             
         }
-
-        //private void printDutiesCassa(PrintPageEventArgs e)
-        //{
-        //    DutyService dutyService = new DutyService();
-        //    startDate = monthCalendar1.SelectionStart;
-        //    endDate = startDate.AddDays(DaysToShow);
-        //    var dutiesMap = dutyService.GetDutiesCassaBy(startDate, endDate);
-
-            
-        //}
-
+        
         private void printDuties(PrintPageEventArgs e, IDictionary<Employee, List<IWorkPeriod>> dutiesMap, 
             ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight, Font headerPrintFont, Font printFont)
         {
+            Graphics g = e.Graphics;
             foreach (var employee in dutiesMap.Keys)
             {
                 // RIGA (DIPENDENTE)
-                var cell = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                e.Graphics.DrawRectangle(Pens.Black, cell);
-                e.Graphics.DrawString(employee.FullName, headerPrintFont, Brushes.Black, cell);
+                var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                g.FillRectangle(Brushes.LightGray, cellRowHead);
+                g.DrawRectangle(Pens.Black, cellRowHead);
+                g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead);
                 leftMargin += cellWidth;
 
                 var duties = dutiesMap[employee];
@@ -88,8 +90,12 @@ namespace WorkPlan
                     // GIORNI
 
                     var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                    e.Graphics.DrawRectangle(Pens.Black, cellDay);
+                    g.DrawRectangle(Pens.Black, cellDay);
 
+                    // linea divisoria mattina/pomeriggio
+                    g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
+
+                    // turni del giorno
                     var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
                     {
                         return duty.StartDate.Date.Equals(innerStartDate.Date);
@@ -99,7 +105,7 @@ namespace WorkPlan
                     int _d = 0;
                     foreach (var dd in dutiesOfDay)
                     {
-                        dd.Print(e, leftMargin, cellDay.Top, cellWidth, printFont,  _d);
+                        dd.Print(e, cellDay, dutiesOfDay.Count, _d);
                         _d++;
                     }
 
@@ -107,42 +113,100 @@ namespace WorkPlan
                     leftMargin += cellWidth;
                 }
 
-                topMargin += cellHeight;
                 leftMargin = e.MarginBounds.Left;
+                topMargin += cellHeight;
+
+                //if (topMargin > e.MarginBounds.Bottom)
+                //{
+                //    e.HasMorePages = true;
+                //    topMargin = e.MarginBounds.Top;
+                //}
             }
+        }
+
+        private void PrintRow(PrintPageEventArgs e, Employee employee, List<IWorkPeriod> duties, ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight)
+        {
+            Graphics g = e.Graphics;
+
+            // RIGA (DIPENDENTE)
+            var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            g.FillRectangle(Brushes.LightGray, cellRowHead);
+            g.DrawRectangle(Pens.Black, cellRowHead);
+            g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead);
+            leftMargin += cellWidth;
+
+            //var duties = dutiesMap[employee];
+
+            var innerStartDate = monthCalendar1.SelectionStart;
+
+            while (!innerStartDate.Date.Equals(endDate.Date))
+            {
+                // GIORNI
+
+                var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                g.DrawRectangle(Pens.Black, cellDay);
+
+                // linea divisoria mattina/pomeriggio
+                g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
+
+                // turni del giorno
+                var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
+                {
+                    return duty.StartDate.Date.Equals(innerStartDate.Date);
+                }
+                );
+
+                int _d = 0;
+                foreach (var dd in dutiesOfDay)
+                {
+                    dd.Print(e, cellDay, dutiesOfDay.Count, _d);
+                    _d++;
+                }
+
+                innerStartDate = innerStartDate.AddDays(1);
+                leftMargin += cellWidth;
+            }
+
+            leftMargin = e.MarginBounds.Left;
+            topMargin += cellHeight;
         }
 
         // The PrintPage event is raised for each page to be printed. 
         private void pd_PrintPage(object sender, PrintPageEventArgs e)
         {
+            Graphics g = e.Graphics;
             int leftMargin = e.MarginBounds.Left;
             int topMargin = e.MarginBounds.Top;
-
-            int cellWidth = 120;
-            int cellHeight = 60;
-
+            int cellWidth = 140;
+            int cellHeight = 44;
             int cellHeadHeight = 20;
 
-            //DutyService dutyService = new DutyService();
+            Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
+
             startDate = monthCalendar1.SelectionStart;
             endDate = startDate.AddDays(DaysToShow);
-            
-            using (Font headerPrintFont = new Font("Arial", 9.0f, FontStyle.Bold))
+
+            if (currentPage == 1)
             {
-                Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
-                var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
-                e.Graphics.DrawString(string.Format("Turni dal {0} al {1}", startDate.ToShortDateString(), endDate.ToShortDateString()), titleFont, Brushes.Black, title);
+
+                // INTESTAZIONE
+                Font headerPrintFont = new Font("Arial", 8.0f, FontStyle.Bold);
                 
-                // TESTATA (DATE)
-                topMargin += cellHeight;
+                var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
+                g.FillRectangle(Brushes.LightSlateGray, title);
+                g.DrawString(string.Format("Turni dal {0} al {1}", startDate.ToShortDateString(), endDate.ToShortDateString()), titleFont, Brushes.AntiqueWhite, title);
+
+                // COLONNE (DATE)
+                topMargin += cellHeight * 2;
                 leftMargin += cellWidth;
                 var idx_date = startDate;
+
                 do
                 {
                     var cellHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeadHeight);
-                    e.Graphics.FillRectangle(Brushes.LightGray, cellHead);
-                    e.Graphics.DrawRectangle(Pens.Black, cellHead);
-                    e.Graphics.DrawString(idx_date.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
+                    g.FillRectangle(Brushes.LightGray, cellHead);
+                    g.DrawRectangle(Pens.Black, cellHead);
+                    g.DrawString(idx_date.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
                     leftMargin += cellWidth;
                     idx_date = idx_date.AddDays(1);
                 } while (!idx_date.Date.Equals(endDate.Date));
@@ -150,20 +214,59 @@ namespace WorkPlan
                 leftMargin = e.MarginBounds.Left;
                 topMargin += cellHeadHeight;
 
-                using (Font printFont = new Font("Arial", 9.0f, FontStyle.Regular))
+                // matt/ pom
+                idx_date = startDate;
+                leftMargin += cellWidth;
+
+                while (!idx_date.Date.Equals(endDate.Date))
                 {
-                    // prima la cassa
-                    var dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
-                    printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                    var cellMat = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
+                    g.FillRectangle(Brushes.LightGray, cellMat);
+                    g.DrawRectangle(Pens.Black, cellMat);
+                    g.DrawString("MAT", headerPrintFont, Brushes.Black, cellMat);
+                    leftMargin += cellMat.Width;
 
-                    //e.Graphics.DrawRectangle(Pens.White, new Rectangle(topMargin, 40, 1, 1));
-                    topMargin += 50;
+                    var cellPom = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
+                    g.FillRectangle(Brushes.LightGray, cellPom);
+                    g.DrawRectangle(Pens.Black, cellPom);
+                    g.DrawString("POM", headerPrintFont, Brushes.Black, cellPom);
+                    leftMargin += cellPom.Width;
 
-                    // poi gli altri turni
-                    var otherDuties = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
-                    printDuties(e, otherDuties, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                    idx_date = idx_date.AddDays(1);
+                }
+
+                leftMargin = e.MarginBounds.Left;
+                topMargin += cellHeadHeight;
+
+                // prima la cassa
+                Font printFont = new Font("Arial", 8.0f, FontStyle.Regular);
+                g.DrawString(string.Format("Cassa"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
+
+                //var dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
+                printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                rowsPrinted += dutyCassa.Count;
+
+                topMargin += 50;
+            }
+            else
+            {
+                // poi gli altri turni
+                g.DrawString(string.Format("Turni"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
+                //var dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
+                //printDuties(e, otherDuties, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                foreach (var employee in dutiesMap.Keys)
+                {
+                    PrintRow(e, employee, dutiesMap[employee], ref leftMargin, ref topMargin, cellWidth, cellHeight);
+                    rowsPrinted++;
+
+                    if (rowsPrinted >= 10)
+                    {
+                        e.HasMorePages = true;
+                        currentPage++;
+                    }
                 }
             }
+            
         }
         
         #endregion
@@ -187,7 +290,9 @@ namespace WorkPlan
             //duties = dutyService.GetBy(startDate, endDate);
 
             // presenze - assenze
-            shifts = periodService.GetByDateRange(startDate, endDate);
+            //shifts = periodService.GetByDateRange(startDate, endDate);
+            dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
+            dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
 
             // create columns
             dataGridView1.Columns.Clear();

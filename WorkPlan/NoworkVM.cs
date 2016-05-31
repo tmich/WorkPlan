@@ -36,6 +36,17 @@ namespace WorkPlan
 
         public NoWorkReason Reason { get; set; }
 
+        public bool IsAfternoon
+        {
+            // almeno la metà del turno si svolge dopo mezzogiorno
+            get
+            {
+                var duration = EndDate.TimeOfDay.Subtract(StartDate.TimeOfDay);
+                var duration_in_hours = (int)duration.TotalHours;
+                return (StartDate.TimeOfDay.Add(new TimeSpan(duration_in_hours / 2, 0, 0)) >= new TimeSpan(12, 0, 0));
+            }
+        }
+
         public void Draw(DataGridViewCellPaintingEventArgs e, int order = 0)
         {
             int padding = 5;
@@ -59,11 +70,30 @@ namespace WorkPlan
             e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
         }
 
-        public void Print(PrintPageEventArgs e, int x, int y, int width, Font font, int order = 0)
+        public void Print(PrintPageEventArgs e, Rectangle cell, int totalPerDay, int order = 0)
         {
-            var cellDuty = new Rectangle(x, y + (20 * order), width, FullDay ? 60 : 20);
+            int height = cell.Height;// / totalPerDay;
+            int topMargin = cell.Y; // + (height) * order;
+            int width = cell.Width / 2;
+            int x = cell.X;
+            var str = string.Format("{1}-{2}\n{0}", Reason.Value, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+
+            if (FullDay)
+            {
+                height = cell.Height;
+                str = Reason.Value;
+                width = cell.Width;
+            }
+            else if (IsAfternoon)
+            {
+                x += width;
+            }
+
+            Font myFont = new Font("Arial", 8.0f, FontStyle.Bold);
+            var cellDuty = new Rectangle(x, topMargin, width, height);
+            e.Graphics.FillRectangle(Brushes.LightCoral, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-            e.Graphics.DrawString(FullDay ? Reason.Value : ToString(), font, Brushes.Black, cellDuty);
+            e.Graphics.DrawString(str, myFont, Brushes.FloralWhite, cellDuty);
         }
 
         public override string ToString()
@@ -74,7 +104,7 @@ namespace WorkPlan
             }
             else
             {
-                return string.Format("{0} {1}-{2}", Reason.Value, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+                return string.Format("{0} [{1}-{2}]", Reason.Value, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
             }
 
         }

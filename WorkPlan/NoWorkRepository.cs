@@ -133,9 +133,63 @@ namespace WorkPlan
             return results;
         }
 
-        internal IEnumerable<object> GetAssenzeByDateRange(DateTime startDate, DateTime endDate)
+        public IEnumerable<NoWork> GetAssenzeByDateRange(DateTime startDate, DateTime endDate)
         {
-            throw new NotImplementedException();
+            //GetAssenzeByDateRange
+            var results = new List<NoWork>();
+
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandText = "GetAssenzeByDateRange";
+                    cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;
+                    cmd.Parameters.Add("pData2", MySqlDbType.DateTime).Value = endDate.Date;
+
+                    var rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        results.Add(new NoWork()
+                        {
+                            Id = rdr.GetInt32(0),
+                            StartDate = rdr.GetDateTime(2),
+                            EndDate = rdr.GetDateTime(3),
+                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5) },
+                            Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
+                            FullDay = rdr.GetBoolean(8),
+                            Employee = new Employee()
+                            {
+                                Id=rdr.GetInt32(9),
+                                Name = rdr.GetString(10),
+                                LastName = rdr.GetString(11),
+                                CodFisc = rdr.GetString(12),
+                                Address = rdr.IsDBNull(13) ? "" : rdr.GetString(13),
+                                City = rdr.IsDBNull(14) ? "" : rdr.GetString(14),
+                                Telephone = rdr.IsDBNull(15) ? "" : rdr.GetString(15),
+                                MobileNo = rdr.IsDBNull(16) ? "" : rdr.GetString(16),
+                                Matr = rdr.IsDBNull(17) ? "" : rdr.GetString(17),
+                                Qual = rdr.IsDBNull(18) ? "" : rdr.GetString(18),
+                                HireDate = rdr.IsDBNull(19) ? new DateTime(1900, 1, 1) : rdr.GetDateTime(19),
+                                Email = rdr.IsDBNull(20) ? "" : rdr.GetString(20),
+                                BirthDate = rdr.GetDateTime(21)
+                            }
+                        });
+                    }
+
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
+
+            results.Sort((x, y) => x.StartDate.CompareTo(y.StartDate));
+            return results;
         }
 
         public void Add(ref NoWork nowork)
