@@ -178,7 +178,7 @@ namespace WorkPlan
             int leftMargin = e.MarginBounds.Left;
             int topMargin = e.MarginBounds.Top;
             int cellWidth = 140;
-            int cellHeight = 44;
+            int cellHeight = 35;
             int cellHeadHeight = 20;
 
             Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
@@ -186,87 +186,83 @@ namespace WorkPlan
             startDate = monthCalendar1.SelectionStart;
             endDate = startDate.AddDays(DaysToShow);
 
-            if (currentPage == 1)
+
+            // INTESTAZIONE
+            Font headerPrintFont = new Font("Arial", 8.0f, FontStyle.Bold);
+
+            var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
+            g.FillRectangle(Brushes.LightSlateGray, title);
+            g.DrawString(string.Format("Turni dal {0} al {1}", startDate.ToShortDateString(), endDate.ToShortDateString()), titleFont, Brushes.AntiqueWhite, title);
+
+            // COLONNE (DATE)
+            topMargin += cellHeight * 2;
+            leftMargin += cellWidth;
+            var idx_date = startDate;
+
+            do
             {
-
-                // INTESTAZIONE
-                Font headerPrintFont = new Font("Arial", 8.0f, FontStyle.Bold);
-                
-                var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
-                g.FillRectangle(Brushes.LightSlateGray, title);
-                g.DrawString(string.Format("Turni dal {0} al {1}", startDate.ToShortDateString(), endDate.ToShortDateString()), titleFont, Brushes.AntiqueWhite, title);
-
-                // COLONNE (DATE)
-                topMargin += cellHeight * 2;
+                var cellHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeadHeight);
+                g.FillRectangle(Brushes.LightGray, cellHead);
+                g.DrawRectangle(Pens.Black, cellHead);
+                g.DrawString(idx_date.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
                 leftMargin += cellWidth;
-                var idx_date = startDate;
+                idx_date = idx_date.AddDays(1);
+            } while (!idx_date.Date.Equals(endDate.Date));
 
-                do
-                {
-                    var cellHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeadHeight);
-                    g.FillRectangle(Brushes.LightGray, cellHead);
-                    g.DrawRectangle(Pens.Black, cellHead);
-                    g.DrawString(idx_date.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
-                    leftMargin += cellWidth;
-                    idx_date = idx_date.AddDays(1);
-                } while (!idx_date.Date.Equals(endDate.Date));
+            leftMargin = e.MarginBounds.Left;
+            topMargin += cellHeadHeight;
 
-                leftMargin = e.MarginBounds.Left;
-                topMargin += cellHeadHeight;
+            // matt/ pom
+            idx_date = startDate;
+            leftMargin += cellWidth;
 
-                // matt/ pom
-                idx_date = startDate;
-                leftMargin += cellWidth;
+            while (!idx_date.Date.Equals(endDate.Date))
+            {
+                var cellMat = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
+                g.FillRectangle(Brushes.LightGray, cellMat);
+                g.DrawRectangle(Pens.Black, cellMat);
+                g.DrawString("MAT", headerPrintFont, Brushes.Black, cellMat);
+                leftMargin += cellMat.Width;
 
-                while (!idx_date.Date.Equals(endDate.Date))
-                {
-                    var cellMat = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
-                    g.FillRectangle(Brushes.LightGray, cellMat);
-                    g.DrawRectangle(Pens.Black, cellMat);
-                    g.DrawString("MAT", headerPrintFont, Brushes.Black, cellMat);
-                    leftMargin += cellMat.Width;
+                var cellPom = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
+                g.FillRectangle(Brushes.LightGray, cellPom);
+                g.DrawRectangle(Pens.Black, cellPom);
+                g.DrawString("POM", headerPrintFont, Brushes.Black, cellPom);
+                leftMargin += cellPom.Width;
 
-                    var cellPom = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
-                    g.FillRectangle(Brushes.LightGray, cellPom);
-                    g.DrawRectangle(Pens.Black, cellPom);
-                    g.DrawString("POM", headerPrintFont, Brushes.Black, cellPom);
-                    leftMargin += cellPom.Width;
-
-                    idx_date = idx_date.AddDays(1);
-                }
-
-                leftMargin = e.MarginBounds.Left;
-                topMargin += cellHeadHeight;
-
-                // prima la cassa
-                Font printFont = new Font("Arial", 8.0f, FontStyle.Regular);
-                g.DrawString(string.Format("Cassa"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
-
-                //var dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
-                printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
-                rowsPrinted += dutyCassa.Count;
-
-                topMargin += 50;
+                idx_date = idx_date.AddDays(1);
             }
-            else
-            {
-                // poi gli altri turni
-                g.DrawString(string.Format("Turni"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
-                //var dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
-                //printDuties(e, otherDuties, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
-                foreach (var employee in dutiesMap.Keys)
-                {
-                    PrintRow(e, employee, dutiesMap[employee], ref leftMargin, ref topMargin, cellWidth, cellHeight);
-                    rowsPrinted++;
 
-                    if (rowsPrinted >= 10)
-                    {
-                        e.HasMorePages = true;
-                        currentPage++;
-                    }
+            leftMargin = e.MarginBounds.Left;
+            topMargin += cellHeadHeight;
+
+            // prima la cassa
+            Font printFont = new Font("Arial", 8.0f, FontStyle.Regular);
+            g.DrawString(string.Format("Cassa"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
+
+            dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
+            printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+            rowsPrinted += dutyCassa.Count;
+
+            topMargin += 50;
+
+
+            // poi gli altri turni
+            g.DrawString(string.Format("Turni"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
+            dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
+            //printDuties(e, otherDuties, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+            foreach (var employee in dutiesMap.Keys)
+            {
+                PrintRow(e, employee, dutiesMap[employee], ref leftMargin, ref topMargin, cellWidth, cellHeight);
+                rowsPrinted++;
+
+                if (rowsPrinted >= 12)
+                {
+                    //    e.HasMorePages = true;
+                    //    currentPage++;
+                    //return;
                 }
             }
-            
         }
         
         #endregion
