@@ -102,6 +102,7 @@
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
     <Compile Include="DutyService.cs" />
+    <Compile Include="DutyVM.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="EmployeeListView.cs">
       <SubType>UserControl</SubType>
@@ -120,6 +121,7 @@
     <Compile Include="NoWork.cs" />
     <Compile Include="NoWorkReason.cs" />
     <Compile Include="NoWorkRepository.cs" />
+    <Compile Include="NoworkVM.cs" />
     <Compile Include="PeriodService.cs" />
     <Compile Include="PrintableUC.cs">
       <SubType>UserControl</SubType>

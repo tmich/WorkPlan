@@ -42,9 +42,9 @@ namespace WorkPlan
             return results;
         }
 
-        public List<IWorkPeriod> GetBy(DateTime startDate, DateTime endDate)
+        public List<Duty> GetBy(DateTime startDate, DateTime endDate)
         {
-            var results = new List<IWorkPeriod>();
+            var results = new List<Duty>();
             var employees = employeeRepository.All();
 
             foreach (var employee in employees)

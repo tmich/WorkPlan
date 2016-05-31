@@ -32,7 +32,7 @@ namespace WorkPlan
             Text = string.Format("Nuova assenza per {0}", mEmployee.FullName);
         }
 
-        public DlgNowork(NoWork nowork)
+        public DlgNowork(NoworkVM nowork)
             :this()
         {
             mEmployee = nowork.Employee;

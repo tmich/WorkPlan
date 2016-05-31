@@ -72,7 +72,7 @@ namespace WorkPlan
             
         //}
 
-        private void printDuties(PrintPageEventArgs e, Dictionary<Employee, List<Duty>> dutiesMap, 
+        private void printDuties(PrintPageEventArgs e, Dictionary<Employee, List<IWorkPeriod>> dutiesMap, 
             ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight, Font headerPrintFont, Font printFont)
         {
             foreach (var employee in dutiesMap.Keys)
@@ -95,7 +95,7 @@ namespace WorkPlan
                     e.Graphics.DrawRectangle(Pens.Black, cellDay);
                     //e.Graphics.DrawString(dd.ToString(), this.Font, Brushes.Black, cell2);
 
-                    var dutiesOfDay = duties.FindAll(delegate (Duty duty)
+                    var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
                     {
                         return duty.StartDate.Date.Equals(startDate.Date);
                     }
@@ -130,7 +130,7 @@ namespace WorkPlan
 
             int cellHeadHeight = 20;
 
-            DutyService dutyService = new DutyService();
+            //DutyService dutyService = new DutyService();
             startDate = monthCalendar1.SelectionStart;
             endDate = startDate.AddDays(DaysToShow);
             
@@ -143,15 +143,16 @@ namespace WorkPlan
                 // TESTATA (DATE)
                 topMargin += cellHeight;
                 leftMargin += cellWidth;
+                var idx_date = startDate;
                 do
                 {
                     var cellHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeadHeight);
                     e.Graphics.FillRectangle(Brushes.LightGray, cellHead);
                     e.Graphics.DrawRectangle(Pens.Black, cellHead);
-                    e.Graphics.DrawString(startDate.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
+                    e.Graphics.DrawString(idx_date.ToString("dddd dd/MM/yy"), headerPrintFont, Brushes.Black, cellHead);
                     leftMargin += cellWidth;
-                    startDate = startDate.AddDays(1);
-                } while (!startDate.Date.Equals(endDate.Date));
+                    idx_date = idx_date.AddDays(1);
+                } while (!idx_date.Date.Equals(endDate.Date));
 
                 leftMargin = e.MarginBounds.Left;
                 topMargin += cellHeadHeight;
@@ -159,10 +160,11 @@ namespace WorkPlan
                 using (Font printFont = new Font("Arial", 9.0f, FontStyle.Regular))
                 {
                     // prima la cassa
-                    Dictionary<Employee, List<Duty>> dutiesCassaMap = dutyService.GetDutiesCassaBy(startDate, endDate);
-                    printDuties(e, dutiesCassaMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                    //Dictionary<Employee, List<IWorkPeriod>> dutiesCassaMap = dutyService.GetDutiesCassaBy(startDate, endDate);
+                    //printDuties(e, dutiesCassaMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
 
-                    Dictionary<Employee, List<Duty>> dutiesMap = dutyService.GetDutiesBy(startDate, endDate);
+                    //Dictionary<Employee, List<Duty>> dutiesMap = dutyService.GetDutiesBy(startDate, endDate);
+                    var dutiesMap = periodService.GetByDateRangeDict(startDate, endDate);
                     printDuties(e, dutiesMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
                 }
             }
@@ -359,32 +361,36 @@ namespace WorkPlan
                     }
                 }
 
-                Duty dut = dutyToEdit as Duty;
+                DutyVM dutyVM = dutyToEdit as DutyVM;
 
-                if (dut != null)
+                if (dutyVM != null)
                 {
                     // turno
-                    DlgDuty dlg = new DlgDuty(dut);
+                    DlgDuty dlg = new DlgDuty(dutyVM);
 
                     if (dlg.ShowDialog(this) == DialogResult.OK)
                     {
-                        dut.StartDate = dlg.DutyStart;
-                        dut.EndDate = dlg.DutyEnd;
-                        dut.Notes = dlg.Notes;
-                        dut.Position = dlg.Position;
+                        Duty duty = new Duty();
+                        duty.Id = dutyVM.Id;
+                        duty.StartDate = dlg.DutyStart;
+                        duty.EndDate = dlg.DutyEnd;
+                        duty.Notes = dlg.Notes;
+                        duty.Position = dlg.Position;
 
-                        dutyRepo.Update(ref dut);
+                        dutyRepo.Update(ref duty);
                         dataGridView1.Refresh();
                     }
                 }
                 else
                 {
                     // assenza
-                    NoWork nw = dutyToEdit as NoWork;
-                    DlgNowork dlg = new DlgNowork(nw);
+                    NoworkVM nwvm = dutyToEdit as NoworkVM;
+                    DlgNowork dlg = new DlgNowork(nwvm);
 
                     if (dlg.ShowDialog(this) == DialogResult.OK)
                     {
+                        NoWork nw = new NoWork();
+                        nw.Id = nwvm.Id;
                         nw.StartDate = dlg.NoWorkStart;
                         nw.EndDate = dlg.NoWorkEnd;
                         nw.Notes = dlg.Notes;
@@ -475,13 +481,13 @@ namespace WorkPlan
 
         private void drawPeriods(DataGridViewCellPaintingEventArgs e, List<IWorkPeriod> duties)
         {
-            List<Brush> brushes = new List<Brush>()
-            {
-                Brushes.AliceBlue,
-                Brushes.Beige,
-                Brushes.BlanchedAlmond,
-                Brushes.LightPink
-            };
+            //List<Brush> brushes = new List<Brush>()
+            //{
+            //    Brushes.AliceBlue,
+            //    Brushes.Beige,
+            //    Brushes.BlanchedAlmond,
+            //    Brushes.LightPink
+            //};
 
             using (Brush gridBrush = new SolidBrush(this.dataGridView1.GridColor),
                             backColorBrush = new SolidBrush(e.CellStyle.BackColor))
@@ -509,62 +515,7 @@ namespace WorkPlan
                     {
                         // Draw the inset highlight box.
                         IWorkPeriod period = duties[d];
-                        Duty duty = period as Duty;
-
-                        int padding = 5;
-                        int spacing = 5;
-
-                        int height = 32;
-
-                        if (period.FullDay)
-                        {
-                            height = e.CellBounds.Height - (padding * 3);
-                        }
-
-                        int X = e.CellBounds.X + (2 * padding);
-                        int Y = e.CellBounds.Y + (height * d) + (spacing * d) + padding;
-                        int width = e.CellBounds.Width - (padding * 3);
-
-                        Pen navyPen = new Pen(Color.Navy, 2);
-                        Pen leftBorderPen = new Pen(Color.Navy, 8);
-                        
-                        Rectangle rect = new Rectangle(X, Y, width, height);
-                        e.Graphics.DrawRectangle(navyPen, rect);
-                        Point p2 = rect.Location;
-                        p2.Offset(0, rect.Height);
-                        e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
-
-                        Brush brush = brushes[0];
-                        Brush stringBrush = Brushes.Black;
-
-                        if (duty != null)
-                        {
-                            // pomeriggio di un altro colore
-                            // almeno la metà del turno si svolge dopo mezzogiorno
-
-                            var duration = period.EndDate.TimeOfDay.Subtract(period.StartDate.TimeOfDay);
-                            var duration_in_hours = (int)duration.TotalHours;
-                            if (period.StartDate.TimeOfDay.Add(new TimeSpan(duration_in_hours / 2, 0, 0)) >= new TimeSpan(12, 0, 0))
-                            {
-                                brush = brushes[1];
-                            }
-
-                            // cassa ha un'evidenza diversa
-                            if (duty.Position.ToLower().Equals("cassa"))
-                            {
-                                stringBrush = Brushes.ForestGreen;
-                            }
-                        }
-                        else
-                        {
-                            // assenza
-                            NoWork nowork = period as NoWork;
-                            brush = brushes[3];
-                        }
-                        
-                        e.Graphics.FillRectangle(brush, rect);
-                        e.Graphics.DrawString(period.ToString(), e.CellStyle.Font, stringBrush, rect);
-                        e.Graphics.DrawString(string.Format("\n{0}", period.Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
+                        period.Draw(e, d);
                     }
                 }
             }

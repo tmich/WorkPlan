@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WorkPlan
 {
-    public class Duty : IWorkPeriod
+    public class Duty
     {
         public int Id { get; set; }
         

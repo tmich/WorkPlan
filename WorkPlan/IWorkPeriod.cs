@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing.Printing;
+using System.Windows.Forms;
 
 namespace WorkPlan
 {
@@ -13,7 +11,8 @@ namespace WorkPlan
         DateTime StartDate { get; }
         DateTime EndDate { get; }
         bool FullDay { get; }
-        
         string Notes { get; set; }
+        void Draw(DataGridViewCellPaintingEventArgs e, int order = 0);
+        void Print(PrintPageEventArgs e, int order = 0);
     }
 }

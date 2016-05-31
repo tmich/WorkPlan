@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WorkPlan
 {
-    public class NoWork : IWorkPeriod
+    public class NoWork
     {
         public int Id { get; set; }
 

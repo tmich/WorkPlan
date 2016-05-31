@@ -17,6 +17,34 @@ namespace WorkPlan
             noworkRepository = new NoWorkRepository();
         }
 
+        public Dictionary<Employee, List<IWorkPeriod>> GetByDateRangeDict(DateTime startDate, DateTime endDate)
+        {
+            var results = new Dictionary<Employee, List<IWorkPeriod>>();
+            var employees = employeeRepository.All();
+
+            foreach (var employee in employees)
+            {
+                if (!results.ContainsKey(employee))
+                {
+                    results.Add(employee, new List<IWorkPeriod>());
+                }
+
+                foreach (var duty in dutyRepository.GetBy(employee, startDate, endDate))
+                {
+                    DutyVM dutyVM = new DutyVM(duty);
+                    results[employee].Add(dutyVM);
+                }
+
+                foreach (var nowork in noworkRepository.GetAssenzeByDipDateRange(employee, startDate, endDate))
+                {
+                    NoworkVM noworkVM = new NoworkVM(nowork);
+                    results[employee].Add(noworkVM);
+                }
+            }
+
+            return results;
+        }
+
         public List<IWorkPeriod> GetByDateRange(DateTime startDate, DateTime endDate)
         {
             var results = new List<IWorkPeriod>();
@@ -26,12 +54,12 @@ namespace WorkPlan
             {
                 foreach (var duty in dutyRepository.GetBy(employee, startDate, endDate))
                 {
-                    results.Add(duty);
+                    results.Add(new DutyVM(duty));
                 }
 
                 foreach (var nowork in noworkRepository.GetAssenzeByDipDateRange(employee, startDate, endDate))
                 {
-                    results.Add(nowork);
+                    results.Add(new NoworkVM(nowork));
                 }
             }
 
@@ -44,12 +72,12 @@ namespace WorkPlan
             
             foreach (var duty in dutyRepository.GetBy(employee, datetime))
             {
-                results.Add(duty);
+                results.Add(new DutyVM(duty));
             }
 
             foreach (var nowork in noworkRepository.GetAssenzeByEmployeeAndDate(employee, datetime))
             {
-                results.Add(nowork);
+                results.Add(new NoworkVM(nowork));
             }
             
 

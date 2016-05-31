@@ -80,7 +80,7 @@ namespace WorkPlan
             Text = string.Format("Nuovo turno per {0}", mEmployee.FullName);
         }
 
-        public DlgDuty(Duty duty)
+        public DlgDuty(DutyVM duty)
             :this()
         {
             mEmployee = duty.Employee;
