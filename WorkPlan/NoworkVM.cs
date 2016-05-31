@@ -44,10 +44,10 @@ namespace WorkPlan
             int X = e.CellBounds.X + (2 * padding);
             int Y = e.CellBounds.Y + (height * order) + (spacing * order) + padding;
             int width = e.CellBounds.Width - (padding * 3);
-            Pen navyPen = new Pen(Color.Navy, 2);
-            Pen leftBorderPen = new Pen(Color.Navy, 8);
+            Pen bordPen = new Pen(Color.Crimson, 2);
+            Pen leftBorderPen = new Pen(Color.Crimson, 8);
             Rectangle rect = new Rectangle(X, Y, width, height);
-            e.Graphics.DrawRectangle(navyPen, rect);
+            e.Graphics.DrawRectangle(bordPen, rect);
             Point p2 = rect.Location;
             p2.Offset(0, rect.Height);
             e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
@@ -59,9 +59,11 @@ namespace WorkPlan
             e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
         }
 
-        public void Print(PrintPageEventArgs e, int order = 0)
+        public void Print(PrintPageEventArgs e, int x, int y, int width, Font font, int order = 0)
         {
-            throw new NotImplementedException();
+            var cellDuty = new Rectangle(x, y + (20 * order), width, FullDay ? 60 : 20);
+            e.Graphics.DrawRectangle(Pens.Black, cellDuty);
+            e.Graphics.DrawString(FullDay ? Reason.Value : ToString(), font, Brushes.Black, cellDuty);
         }
 
         public override string ToString()

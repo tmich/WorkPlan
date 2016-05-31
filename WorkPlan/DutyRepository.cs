@@ -99,6 +99,62 @@ namespace WorkPlan
             return results;
         }
 
+        public List<Duty> GetBy(DateTime startDate, DateTime endDate)
+        {
+            var results = new List<Duty>();
+
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.CommandText = "GetTurniByDateRange";
+                    cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;
+                    cmd.Parameters.Add("pData2", MySqlDbType.DateTime).Value = endDate.Date;
+
+                    var rdr = cmd.ExecuteReader();
+
+                    while (rdr.Read())
+                    {
+                        results.Add(new Duty()
+                        {
+                            Id = rdr.GetInt32(0),
+                            StartDate = rdr.GetDateTime(1),
+                            EndDate = rdr.GetDateTime(2),
+                            Position = rdr.GetString(3),
+                            Notes = rdr.IsDBNull(4) ? String.Empty : rdr.GetString(4),
+                            Employee = new Employee() {
+                                Id = rdr.GetInt32(5),
+                                Name = rdr.GetString(6),
+                                LastName = rdr.GetString(7),
+                                CodFisc = rdr.GetString(8),
+                                Address = rdr.IsDBNull(9) ? "" : rdr.GetString(9),
+                                City = rdr.IsDBNull(10) ? "" : rdr.GetString(10),
+                                Telephone = rdr.IsDBNull(11) ? "" : rdr.GetString(11),
+                                MobileNo = rdr.IsDBNull(12) ? "" : rdr.GetString(12),
+                                Matr = rdr.IsDBNull(13) ? "" : rdr.GetString(13),
+                                Qual = rdr.IsDBNull(14) ? "" : rdr.GetString(14),
+                                HireDate = rdr.IsDBNull(15) ? new DateTime(1900, 1, 1) : rdr.GetDateTime(15),
+                                Email = rdr.IsDBNull(16) ? "" : rdr.GetString(16),
+                                BirthDate = rdr.GetDateTime(17)
+                            }
+                        });
+                    }
+
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
+
+            results.Sort((x, y) => x.StartDate.CompareTo(y.StartDate));
+            return results;
+        }
+
         public List<Duty> GetBy(Employee employee, DateTime startDate)
         {
             var results = new List<Duty>();

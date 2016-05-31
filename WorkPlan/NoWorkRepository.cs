@@ -133,6 +133,11 @@ namespace WorkPlan
             return results;
         }
 
+        internal IEnumerable<object> GetAssenzeByDateRange(DateTime startDate, DateTime endDate)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Add(ref NoWork nowork)
         {
             using (MySqlConnection conn = new MySqlConnection(connstr))

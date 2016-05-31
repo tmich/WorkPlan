@@ -37,5 +37,30 @@ namespace WorkPlan
         public string FullName {
             get { return string.Format("{0} {1}", Name, LastName); } 
         }
+
+        public override bool Equals(System.Object obj)
+        {
+            // If parameter is null return false.
+            if (obj == null)
+            {
+                return false;
+            }
+
+            // If parameter cannot be cast to Point return false.
+            Employee p = obj as Employee;
+            if ((System.Object)p == null)
+            {
+                return false;
+            }
+
+            // Return true if the fields match:
+            bool match = (Id == p.Id);
+            return match;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
     }
 }

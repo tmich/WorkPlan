@@ -13,15 +13,11 @@ namespace WorkPlan
         private EmployeeRepository repo;
         private DutyRepository dutyRepo;
         private NoWorkRepository noworkRepo;
-        //private DutyList duties;
-        private List<IWorkPeriod> duties;
-        private DutyService dutyService;
+        private List<IWorkPeriod> shifts;
         private PeriodService periodService;
-        List<Employee> employees;
-        private List<Duty>[,] dutiesToDraw;
-
+        private List<Employee> employees;
         private DateTime startDate, endDate;
-             
+
         public ScheduleView()
         {
             InitializeComponent();
@@ -30,8 +26,8 @@ namespace WorkPlan
             noworkRepo = new NoWorkRepository();
             //duties = dutyRepo.All
             employees = repo.All();
-            dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
-            dutyService = new DutyService();
+            //dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
+            //dutyService = new DutyService();
             periodService = new PeriodService();
 
             startDate = monthCalendar1.SelectionStart.AddDays(-15);
@@ -72,7 +68,7 @@ namespace WorkPlan
             
         //}
 
-        private void printDuties(PrintPageEventArgs e, Dictionary<Employee, List<IWorkPeriod>> dutiesMap, 
+        private void printDuties(PrintPageEventArgs e, IDictionary<Employee, List<IWorkPeriod>> dutiesMap, 
             ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight, Font headerPrintFont, Font printFont)
         {
             foreach (var employee in dutiesMap.Keys)
@@ -85,32 +81,29 @@ namespace WorkPlan
 
                 var duties = dutiesMap[employee];
 
-                startDate = monthCalendar1.SelectionStart;
+                var innerStartDate = monthCalendar1.SelectionStart;
 
-                while (!startDate.Date.Equals(endDate.Date))
+                while (!innerStartDate.Date.Equals(endDate.Date))
                 {
                     // GIORNI
 
                     var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
                     e.Graphics.DrawRectangle(Pens.Black, cellDay);
-                    //e.Graphics.DrawString(dd.ToString(), this.Font, Brushes.Black, cell2);
 
                     var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
                     {
-                        return duty.StartDate.Date.Equals(startDate.Date);
+                        return duty.StartDate.Date.Equals(innerStartDate.Date);
                     }
                     );
 
                     int _d = 0;
                     foreach (var dd in dutiesOfDay)
                     {
-                        var cellDuty = new Rectangle(leftMargin, cellDay.Top + (20 * _d), cellWidth, 20);
-                        e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-                        e.Graphics.DrawString(dd.ToString(), printFont, Brushes.Black, cellDuty);
+                        dd.Print(e, leftMargin, cellDay.Top, cellWidth, printFont,  _d);
                         _d++;
                     }
 
-                    startDate = startDate.AddDays(1);
+                    innerStartDate = innerStartDate.AddDays(1);
                     leftMargin += cellWidth;
                 }
 
@@ -160,96 +153,19 @@ namespace WorkPlan
                 using (Font printFont = new Font("Arial", 9.0f, FontStyle.Regular))
                 {
                     // prima la cassa
-                    //Dictionary<Employee, List<IWorkPeriod>> dutiesCassaMap = dutyService.GetDutiesCassaBy(startDate, endDate);
-                    //printDuties(e, dutiesCassaMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                    var dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
+                    printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
 
-                    //Dictionary<Employee, List<Duty>> dutiesMap = dutyService.GetDutiesBy(startDate, endDate);
-                    var dutiesMap = periodService.GetByDateRangeDict(startDate, endDate);
-                    printDuties(e, dutiesMap, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+                    //e.Graphics.DrawRectangle(Pens.White, new Rectangle(topMargin, 40, 1, 1));
+                    topMargin += 50;
+
+                    // poi gli altri turni
+                    var otherDuties = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
+                    printDuties(e, otherDuties, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
                 }
             }
         }
-
-        // The PrintPage event is raised for each page to be printed. 
-        private void pd_PrintPage___(object sender, PrintPageEventArgs e)
-        {
-            //int yPos = 0;
-            
-            int leftMargin = e.MarginBounds.Left;
-            int topMargin = e.MarginBounds.Top;
-            //Image img = Image.FromFile("logo.bmp");
-            //Rectangle logo = new Rectangle(40, 40, 200, 100);
-            using (Font printFont = new Font("Arial", 10.0f))
-            {
-                //e.Graphics.DrawImage(img, logo);
-                //e.Graphics.DrawString("Testing!", printFont, Brushes.Black, leftMargin, yPos, new StringFormat());
-
-                //testata
-                for (int c = -1; c < dataGridView1.Columns.Count; c++)
-                {
-                    var cell = new Rectangle(leftMargin, topMargin, 100, 30);
-                    e.Graphics.DrawRectangle(Pens.Black, cell);
-                    //e.Graphics.FillRectangle(Brushes.Azure, cell);
-                    if (c >= 0)
-                    {
-                        e.Graphics.DrawString(dataGridView1.Columns[c].HeaderText, this.Font, Brushes.Black, cell);
-                    }
-                    else
-                    {
-                        e.Graphics.DrawString("Dipendente", this.Font, Brushes.Black, cell);
-                    }
-                    
-                    leftMargin += cell.Width + 2;
-                }
-                leftMargin = e.MarginBounds.Left;
-
-                int i = 0;
-                foreach (var employee in repo.All())
-                {
-                    topMargin += 60;
-                    leftMargin += 100;
-                    foreach (DataGridViewColumn column in dataGridView1.Columns)
-                    {
-                        var cell = new Rectangle(leftMargin, topMargin, 100, 60);
-                        e.Graphics.DrawRectangle(Pens.Black, cell);
-                        if (i == 0)
-                        {
-                            e.Graphics.DrawString(employee.FullName, this.Font, Brushes.Black, cell);
-                        }
-                        else
-                        {
-                            DateTime datetime = (DateTime)column.Tag;
-                            var duties = dutyRepo.GetBy(employee, datetime);
-                            int d = duties.Count;
-                            foreach (Duty duty in duties)
-                            {
-                                e.Graphics.DrawRectangle(Pens.Black, cell);
-
-                                int spacing = 0;
-                                int padding = 0;
-                                int height = 30;
-                                int X = leftMargin;
-                                int Y = topMargin + (height * d) + (spacing * d) + padding;
-                                int width = 100 - (spacing * 2);
-
-
-                                Rectangle rect = new Rectangle(X, Y, width, height);
-                                e.Graphics.DrawRectangle(Pens.White, rect);
-                                //e.Graphics.FillRectangle(brushes[d], rect);
-                                e.Graphics.DrawString(duty.ToString(), this.Font, Brushes.Crimson, rect);
-                                e.Graphics.DrawString(string.Format("\n{0}", duty.Notes.Truncate(20)), this.Font, Brushes.BlueViolet, rect.X, rect.Y + 1);
-
-                            }
-                        }
-                        i++;
-                    }
-//                    leftMargin += 50;
-                    //topMargin += 60;
-                }
-
-            }
-        }
-
+        
         #endregion
         
         private void monthCalendar1_DateChanged(object sender, DateRangeEventArgs e)
@@ -271,7 +187,7 @@ namespace WorkPlan
             //duties = dutyService.GetBy(startDate, endDate);
 
             // presenze - assenze
-            duties = periodService.GetByDateRange(startDate, endDate);
+            shifts = periodService.GetByDateRange(startDate, endDate);
 
             // create columns
             dataGridView1.Columns.Clear();

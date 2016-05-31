@@ -66,7 +66,8 @@ namespace WorkPlan
             // cassa ha un'evidenza diversa
             if (Position.ToLower().Equals("cassa"))
             {
-                stringBrush = Brushes.ForestGreen;
+                //stringBrush = Brushes.ForestGreen;
+                brush = Brushes.SpringGreen;
             }
 
             e.Graphics.FillRectangle(brush, rect);
@@ -74,9 +75,11 @@ namespace WorkPlan
             e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
         }
 
-        public void Print(PrintPageEventArgs e, int order = 0)
+        public void Print(PrintPageEventArgs e, int x, int y, int width, Font font, int order = 0)
         {
-            throw new NotImplementedException();
+            var cellDuty = new Rectangle(x, y + (20 * order), width, FullDay ? 60 : 20);
+            e.Graphics.DrawRectangle(Pens.Black, cellDuty);
+            e.Graphics.DrawString(ToString(), font, Brushes.Black, cellDuty);
         }
 
         public override string ToString()

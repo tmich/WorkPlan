@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace WorkPlan
@@ -83,5 +84,48 @@ namespace WorkPlan
 
             return results;
         }
+
+        public IDictionary<Employee, List<IWorkPeriod>> GetCassaByDateRangeDict(DateTime startDate, DateTime endDate)
+        {
+            var results = new ConcurrentDictionary <Employee, List<IWorkPeriod>>();
+
+            foreach (var duty in dutyRepository.GetBy(startDate, endDate))
+            {
+                if (duty.Position.ToLower().Equals("cassa"))
+                {
+                    DutyVM dutyVM = new DutyVM(duty);
+                    var val = results.GetOrAdd(dutyVM.Employee, new List<IWorkPeriod>());
+                    val.Add(dutyVM);
+                    results[dutyVM.Employee] = val;
+                }
+            }
+
+            return results;
+        }
+
+        public IDictionary<Employee, List<IWorkPeriod>> GetNotCassaByDateRangeDict(DateTime startDate, DateTime endDate)
+        {
+            var results = new ConcurrentDictionary<Employee, List<IWorkPeriod>>();
+
+            foreach (var duty in dutyRepository.GetBy(startDate, endDate))
+            {
+                if (!duty.Position.ToLower().Equals("cassa"))
+                {
+                    DutyVM dutyVM = new DutyVM(duty);
+                    var val = results.GetOrAdd(dutyVM.Employee, new List<IWorkPeriod>());
+                    val.Add(dutyVM);
+                    results[dutyVM.Employee] = val;
+                }
+            }
+
+            foreach (var nowork in noworkRepository.GetAssenzeByDateRange(startDate, endDate))
+            {
+                //var val = results.GetOrAdd(nowork.Employee, new List<IWorkPeriod>());
+                //results.Add(new NoworkVM(nowork));
+            }
+
+            return results;
+        }
+
     }
 }
