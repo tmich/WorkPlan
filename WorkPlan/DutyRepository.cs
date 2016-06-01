@@ -152,6 +152,7 @@ namespace WorkPlan
             }
 
             results.Sort((x, y) => x.StartDate.CompareTo(y.StartDate));
+            //results.Sort((x, y) => x.Employee.FullName.CompareTo(y.Employee.FullName));
             return results;
         }
 

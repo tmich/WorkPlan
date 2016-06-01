@@ -67,8 +67,11 @@ namespace WorkPlan
         protected DlgDuty()
         {
             InitializeComponent();
-
             cbPositions.Items.AddRange(mPositions.ToArray());
+
+            var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+            dtPickerStart.Value = tmPickerStart.Value = now;
+            dtPickerEnd.Value = tmPickerEnd.Value = now.AddHours(1);
         }
 
         public DlgDuty(Employee employee, DateTime dutyDate)
@@ -123,6 +126,11 @@ namespace WorkPlan
 
                 e.Cancel = false;
             }
+        }
+
+        private void dtPickerStart_ValueChanged(object sender, EventArgs e)
+        {
+            dtPickerEnd.Value = dtPickerStart.Value;
         }
     }
 }

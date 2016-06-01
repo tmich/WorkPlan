@@ -13,22 +13,30 @@ namespace WorkPlan
     public partial class DlgNowork : Form
     {
         protected Employee mEmployee;
-        protected DateTime mDutyDate;
+        protected DateTime mStartDate;
+        protected DateTime mEndDate;
         protected NoWorkRepository nwRepo;
+        //protected DateTime now;// = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
 
         public DlgNowork()
         {
             InitializeComponent();
             nwRepo = new NoWorkRepository();
             SetReasons(nwRepo.GetReasons());
+            //var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
+            //dtPickerStart.Value = tmPickerStart.Value = now;
+            //dtPickerEnd.Value = tmPickerEnd.Value = now.AddHours(1);
         }
 
         public DlgNowork(Employee employee, DateTime dutyDate)
             : this()
         {
             mEmployee = employee;
-            mDutyDate = dutyDate;
-            dtPickerStart.Value = dtPickerEnd.Value = mDutyDate;
+            mStartDate = new DateTime(dutyDate.Year, dutyDate.Month, dutyDate.Day, DateTime.Now.Hour, 0, 0);
+            mEndDate = mStartDate.AddHours(1);
+            //dtPickerStart.Value = dtPickerEnd.Value = mDutyDate;
+            dtPickerStart.Value = tmPickerStart.Value = mStartDate;
+            dtPickerEnd.Value = tmPickerEnd.Value = mStartDate.AddHours(1);
             Text = string.Format("Nuova assenza per {0}", mEmployee.FullName);
         }
 
@@ -36,11 +44,13 @@ namespace WorkPlan
             :this()
         {
             mEmployee = nowork.Employee;
+            mStartDate = new DateTime(nowork.StartDate.Year, nowork.StartDate.Month, nowork.StartDate.Day, DateTime.Now.Hour, 0, 0);
+            mEndDate = new DateTime(nowork.EndDate.Year, nowork.EndDate.Month, nowork.EndDate.Day, DateTime.Now.Hour + 1, 0, 0);
             dtPickerStart.Value = tmPickerStart.Value = nowork.StartDate;
             dtPickerEnd.Value = tmPickerEnd.Value = nowork.EndDate;
             cbReasons.SelectedIndex = cbReasons.FindStringExact(nowork.Reason.Value);
             txNotes.Text = nowork.Notes;
-            chkFullDay.Checked = nowork.FullDay;
+            chkFullDay.Checked = nowork.IsFullDay;
             Text = string.Format("Modifica assenza per {0}", mEmployee.FullName);
         }
 
@@ -112,7 +122,12 @@ namespace WorkPlan
             if (chkFullDay.Checked)
             {
                 dtStart = new DateTime(dtPickerStart.Value.Year, dtPickerStart.Value.Month, dtPickerStart.Value.Day, 0, 0, 0);
-                dtEnd = new DateTime(dtPickerStart.Value.Year, dtPickerStart.Value.Month, dtPickerStart.Value.Day, 23, 59, 59);
+                dtEnd = new DateTime(dtPickerEnd.Value.Year, dtPickerEnd.Value.Month, dtPickerEnd.Value.Day, 23, 59, 59);
+            }
+            else
+            {
+                dtStart = mStartDate;
+                dtEnd = mEndDate;
             }
 
             dtPickerStart.Value = tmPickerStart.Value = dtStart;

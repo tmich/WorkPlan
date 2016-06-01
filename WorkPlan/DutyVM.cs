@@ -9,14 +9,14 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public class DutyVM : IWorkPeriod
+    public class DutyVM : IShiftVM
     {
         public DutyVM(Duty duty)
         {
             Employee = duty.Employee;
             StartDate = duty.StartDate;
             EndDate = duty.EndDate;
-            FullDay = duty.FullDay;
+            IsFullDay = duty.FullDay;
             Id = duty.Id;
             Notes = duty.Notes;
             Position = duty.Position;
@@ -28,7 +28,7 @@ namespace WorkPlan
 
         public DateTime EndDate { get; set; }
 
-        public bool FullDay { get; set; }
+        public bool IsFullDay { get; set; }
 
         public int Id { get; set; }
 
@@ -51,7 +51,7 @@ namespace WorkPlan
         {
             int padding = 5;
             int spacing = 5;
-            int height = FullDay ? e.CellBounds.Height - (padding * 3) : 32;
+            int height = IsFullDay ? e.CellBounds.Height - (padding * 3) : 32;
             int X = e.CellBounds.X + (2 * padding);
             int Y = e.CellBounds.Y + (height * order) + (spacing * order) + padding;
             int width = e.CellBounds.Width - (padding * 3);
@@ -91,6 +91,14 @@ namespace WorkPlan
             }
         }
 
+        public bool IsMultipleDays
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public void Print(PrintPageEventArgs e, Rectangle cell, int totalPerDay, int order = 0)
         {
             Brush bgBrush = Brushes.LightSkyBlue;
@@ -111,16 +119,23 @@ namespace WorkPlan
                 x += width;
             }
 
-            if (FullDay)
+            if (IsFullDay)
             {
                 height = cell.Height;
             }
+
+            // allineamento centrato
+            StringFormat stringFormat = new StringFormat()
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
 
             Font myFont = new Font("Arial", 8.0f, FontStyle.Regular);
             var cellDuty = new Rectangle(x, topMargin, width, height);
             e.Graphics.FillRectangle(bgBrush, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-            e.Graphics.DrawString(str, myFont, Brushes.Black, cellDuty);
+            e.Graphics.DrawString(str, myFont, Brushes.Black, cellDuty, stringFormat);
         }
 
         public override string ToString()

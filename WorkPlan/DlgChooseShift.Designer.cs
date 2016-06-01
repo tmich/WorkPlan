@@ -1,6 +1,6 @@
 ﻿namespace WorkPlan
 {
-    partial class DlgChooseDuty
+    partial class DlgChooseShift
     {
         /// <summary>
         /// Required designer variable.

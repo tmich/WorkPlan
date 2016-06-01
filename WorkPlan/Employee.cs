@@ -35,7 +35,7 @@ namespace WorkPlan
         public string Email { get; set; }
 
         public string FullName {
-            get { return string.Format("{0} {1}", Name, LastName); } 
+            get { return string.Format("{0} {1}", LastName, Name); } 
         }
 
         public override bool Equals(System.Object obj)

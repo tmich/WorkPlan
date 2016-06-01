@@ -100,6 +100,7 @@ namespace WorkPlan
                         });
                     }
 
+                    employees.Sort((x, y) => x.LastName.CompareTo(y.LastName));
                     return employees;
                 }
                 catch (SqlException)

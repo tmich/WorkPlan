@@ -9,24 +9,27 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public class NoworkVM : IWorkPeriod
+    public class NoworkVM : IShiftVM
     {
         public NoworkVM(NoWork nowork)
         {
             Employee = nowork.Employee;
             StartDate = nowork.StartDate;
             EndDate = nowork.EndDate;
-            FullDay = nowork.FullDay;
+            IsFullDay = nowork.FullDay;
             Id = nowork.Id;
             Notes = nowork.Notes;
             Reason = nowork.Reason;
+            rect = new Rectangle();
         }
+        
+        protected Rectangle rect;
 
         public Employee Employee { get; set; }
 
         public DateTime EndDate { get; set; }
 
-        public bool FullDay { get; set; }
+        public bool IsFullDay { get; set; }
 
         public int Id { get; set; }
 
@@ -47,17 +50,35 @@ namespace WorkPlan
             }
         }
 
+        public bool IsMultipleDays
+        {
+            get
+            {
+                return EndDate.Date > StartDate.Date;
+            }
+        }
+        
         public void Draw(DataGridViewCellPaintingEventArgs e, int order = 0)
         {
             int padding = 5;
             int spacing = 5;
-            int height = FullDay ? e.CellBounds.Height - (padding * 3) : 32;
+            int height = IsFullDay ? e.CellBounds.Height - (padding * 3) : 32;
             int X = e.CellBounds.X + (2 * padding);
             int Y = e.CellBounds.Y + (height * order) + (spacing * order) + padding;
             int width = e.CellBounds.Width - (padding * 3);
+
+            int durationInDays = EndDate.Date.Subtract(StartDate.Date).Days + 1;
+            //if (durationInDays > 1)
+            //{
+            //    width = e.CellBounds.Width;
+            //    X = e.CellBounds.X;
+            //}
+            
+
             Pen bordPen = new Pen(Color.Crimson, 2);
             Pen leftBorderPen = new Pen(Color.Crimson, 8);
-            Rectangle rect = new Rectangle(X, Y, width, height);
+
+            rect = new Rectangle(X, Y, width, height);
             e.Graphics.DrawRectangle(bordPen, rect);
             Point p2 = rect.Location;
             p2.Offset(0, rect.Height);
@@ -78,7 +99,7 @@ namespace WorkPlan
             int x = cell.X;
             var str = string.Format("{1}-{2}\n{0}", Reason.Value, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
 
-            if (FullDay)
+            if (IsFullDay)
             {
                 height = cell.Height;
                 str = Reason.Value;
@@ -89,16 +110,23 @@ namespace WorkPlan
                 x += width;
             }
 
+            // allineamento centrato
+            StringFormat stringFormat = new StringFormat()
+            {
+                Alignment = StringAlignment.Center,
+                LineAlignment = StringAlignment.Center
+            };
+
             Font myFont = new Font("Arial", 8.0f, FontStyle.Bold);
             var cellDuty = new Rectangle(x, topMargin, width, height);
             e.Graphics.FillRectangle(Brushes.LightCoral, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-            e.Graphics.DrawString(str, myFont, Brushes.FloralWhite, cellDuty);
+            e.Graphics.DrawString(str, myFont, Brushes.FloralWhite, cellDuty, stringFormat);
         }
 
         public override string ToString()
         {
-            if (FullDay)
+            if (IsFullDay)
             {
                 return string.Format("{0} {1}", Reason.Value, "[Giornata Intera]");
             }

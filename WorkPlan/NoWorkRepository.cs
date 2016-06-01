@@ -133,6 +133,32 @@ namespace WorkPlan
             return results;
         }
 
+        public void Delete(int id)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandText = "DeleteAssenza";
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    var pid = new MySqlParameter("pid", MySqlDbType.Int32);
+                    pid.Direction = System.Data.ParameterDirection.Input;
+                    pid.Value = id;
+                    cmd.Parameters.Add(pid);
+
+                    cmd.ExecuteNonQuery();
+
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
+        }
+
         public IEnumerable<NoWork> GetAssenzeByDateRange(DateTime startDate, DateTime endDate)
         {
             //GetAssenzeByDateRange

@@ -10,26 +10,26 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public partial class DlgChooseDuty : Form
+    public partial class DlgChooseShift : Form
     {
-        protected List<IWorkPeriod> mDuties;
-        protected IWorkPeriod mSelected;
+        protected List<IShiftVM> mShifts;
+        protected IShiftVM mSelected;
 
-        protected DlgChooseDuty()
+        protected DlgChooseShift()
         {
             InitializeComponent();
         }
 
-        public DlgChooseDuty(List<IWorkPeriod> duties)
+        public DlgChooseShift(List<IShiftVM> duties)
             :this()
         {
-            mDuties = duties;
+            mShifts = duties;
 
             lbTurni.Items.AddRange(duties.ToArray());
             lbTurni.SelectedIndex = 0;
         }
 
-        public IWorkPeriod GetSelectedDuty()
+        public IShiftVM GetSelectedShift()
         {
             return mSelected;
         }
@@ -38,7 +38,7 @@ namespace WorkPlan
         {
             if (lbTurni.SelectedIndex >= 0)
             {
-                mSelected = (IWorkPeriod)lbTurni.SelectedItem;
+                mSelected = (IShiftVM)lbTurni.SelectedItem;
                 DialogResult = DialogResult.OK;
             }
         }

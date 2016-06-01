@@ -18,10 +18,11 @@ namespace WorkPlan
         private List<Employee> employees;
         private DateTime startDate, endDate;
 
-        private IDictionary<Employee, List<IWorkPeriod>> dutyCassa;
-        private IDictionary<Employee, List<IWorkPeriod>> dutiesMap;
-        private int rowsPrinted = 0;
-        private int currentPage = 0;
+        private IDictionary<Employee, List<IShiftVM>> dutyCassa;
+        private IDictionary<Employee, List<IShiftVM>> dutiesMap;
+        private IDictionary<Employee, List<IShiftVM>> allDuties;
+        //private int rowsPrinted = 0;
+        //private int currentPage = 0;
 
         public ScheduleView()
         {
@@ -38,7 +39,9 @@ namespace WorkPlan
             startDate = monthCalendar1.SelectionStart.AddDays(-15);
             endDate = monthCalendar1.SelectionStart.AddDays(15);
 
-            updateGrid(monthCalendar1.SelectionStart);
+            UpdateData();
+
+            //updateGrid(monthCalendar1.SelectionStart);
         }
 
         #region Printing
@@ -61,78 +64,84 @@ namespace WorkPlan
             if (printDialog.ShowDialog() == DialogResult.OK)
             {
                 //Print the page
-                currentPage = 1;
+                //currentPage = 1;
                 pd.Print();
             }
 
             
         }
         
-        private void printDuties(PrintPageEventArgs e, IDictionary<Employee, List<IWorkPeriod>> dutiesMap, 
-            ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight, Font headerPrintFont, Font printFont)
-        {
-            Graphics g = e.Graphics;
-            foreach (var employee in dutiesMap.Keys)
-            {
-                // RIGA (DIPENDENTE)
-                var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                g.FillRectangle(Brushes.LightGray, cellRowHead);
-                g.DrawRectangle(Pens.Black, cellRowHead);
-                g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead);
-                leftMargin += cellWidth;
+        //private void printDuties(PrintPageEventArgs e, IDictionary<Employee, List<IWorkPeriod>> dutiesMap, 
+        //    ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight, Font headerPrintFont, Font printFont)
+        //{
+        //    Graphics g = e.Graphics;
+        //    foreach (var employee in dutiesMap.Keys)
+        //    {
+        //        // RIGA (DIPENDENTE)
+        //        var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+        //        g.FillRectangle(Brushes.LightGray, cellRowHead);
+        //        g.DrawRectangle(Pens.Black, cellRowHead);
+        //        g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead);
+        //        leftMargin += cellWidth;
 
-                var duties = dutiesMap[employee];
+        //        var duties = dutiesMap[employee];
 
-                var innerStartDate = monthCalendar1.SelectionStart;
+        //        var innerStartDate = monthCalendar1.SelectionStart;
 
-                while (!innerStartDate.Date.Equals(endDate.Date))
-                {
-                    // GIORNI
+        //        while (!innerStartDate.Date.Equals(endDate.Date))
+        //        {
+        //            // GIORNI
 
-                    var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                    g.DrawRectangle(Pens.Black, cellDay);
+        //            var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+        //            g.DrawRectangle(Pens.Black, cellDay);
 
-                    // linea divisoria mattina/pomeriggio
-                    g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
+        //            // linea divisoria mattina/pomeriggio
+        //            g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
 
-                    // turni del giorno
-                    var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
-                    {
-                        return duty.StartDate.Date.Equals(innerStartDate.Date);
-                    }
-                    );
+        //            // turni del giorno
+        //            var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
+        //            {
+        //                return duty.StartDate.Date.Equals(innerStartDate.Date);
+        //            }
+        //            );
 
-                    int _d = 0;
-                    foreach (var dd in dutiesOfDay)
-                    {
-                        dd.Print(e, cellDay, dutiesOfDay.Count, _d);
-                        _d++;
-                    }
+        //            int _d = 0;
+        //            foreach (var dd in dutiesOfDay)
+        //            {
+        //                dd.Print(e, cellDay, dutiesOfDay.Count, _d);
+        //                _d++;
+        //            }
 
-                    innerStartDate = innerStartDate.AddDays(1);
-                    leftMargin += cellWidth;
-                }
+        //            innerStartDate = innerStartDate.AddDays(1);
+        //            leftMargin += cellWidth;
+        //        }
 
-                leftMargin = e.MarginBounds.Left;
-                topMargin += cellHeight;
+        //        leftMargin = e.MarginBounds.Left;
+        //        topMargin += cellHeight;
 
-                //if (topMargin > e.MarginBounds.Bottom)
-                //{
-                //    e.HasMorePages = true;
-                //    topMargin = e.MarginBounds.Top;
-                //}
-            }
-        }
+        //        //if (topMargin > e.MarginBounds.Bottom)
+        //        //{
+        //        //    e.HasMorePages = true;
+        //        //    topMargin = e.MarginBounds.Top;
+        //        //}
+        //    }
+        //}
 
-        private void PrintRow(PrintPageEventArgs e, Employee employee, List<IWorkPeriod> duties, ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight)
+        private void PrintRow(PrintPageEventArgs e, Employee employee, List<IShiftVM> duties, ref int leftMargin, ref int topMargin, int cellWidth, int cellHeight)
         {
             Graphics g = e.Graphics;
 
             // RIGA (DIPENDENTE)
+            // allineamento centrato
+            StringFormat stringFormat = new StringFormat()
+            {
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center
+            };
             var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
             g.FillRectangle(Brushes.LightGray, cellRowHead);
             g.DrawRectangle(Pens.Black, cellRowHead);
-            g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead);
+            g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead, stringFormat);
             leftMargin += cellWidth;
 
             //var duties = dutiesMap[employee];
@@ -150,9 +159,10 @@ namespace WorkPlan
                 g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
 
                 // turni del giorno
-                var dutiesOfDay = duties.FindAll(delegate (IWorkPeriod duty)
+                var dutiesOfDay = duties.FindAll(delegate (IShiftVM shift)
                 {
-                    return duty.StartDate.Date.Equals(innerStartDate.Date);
+                    //return shift.StartDate.Date.Equals(innerStartDate.Date);
+                    return shift.StartDate.Date.Equals(innerStartDate.Date) || (shift.StartDate.Date < innerStartDate.Date && shift.EndDate.Date >= innerStartDate.Date);
                 }
                 );
 
@@ -178,7 +188,7 @@ namespace WorkPlan
             int leftMargin = e.MarginBounds.Left;
             int topMargin = e.MarginBounds.Top;
             int cellWidth = 140;
-            int cellHeight = 35;
+            int cellHeight = 32;
             int cellHeadHeight = 20;
 
             Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
@@ -241,8 +251,12 @@ namespace WorkPlan
             g.DrawString(string.Format("Cassa"), titleFont, Brushes.Black, new Point(leftMargin, topMargin - 30));
 
             dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
-            printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
-            rowsPrinted += dutyCassa.Count;
+            foreach (var employee in dutyCassa.Keys)
+            {
+                PrintRow(e, employee, dutyCassa[employee], ref leftMargin, ref topMargin, cellWidth, cellHeight);
+            }
+            //printDuties(e, dutyCassa, ref leftMargin, ref topMargin, cellWidth, cellHeight, headerPrintFont, printFont);
+            //rowsPrinted += dutyCassa.Count;
 
             topMargin += 50;
 
@@ -254,14 +268,14 @@ namespace WorkPlan
             foreach (var employee in dutiesMap.Keys)
             {
                 PrintRow(e, employee, dutiesMap[employee], ref leftMargin, ref topMargin, cellWidth, cellHeight);
-                rowsPrinted++;
+                //rowsPrinted++;
 
-                if (rowsPrinted >= 12)
-                {
-                    //    e.HasMorePages = true;
-                    //    currentPage++;
-                    //return;
-                }
+                //if (rowsPrinted >= 12)
+                //{
+                //    //    e.HasMorePages = true;
+                //    //    currentPage++;
+                //    //return;
+                //}
             }
         }
         
@@ -277,6 +291,11 @@ namespace WorkPlan
         public void UpdateData()
         {
             employees = repo.All();
+
+            allDuties = periodService.GetByDateRangeDict(startDate, endDate);
+            dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
+            dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
+
             updateGrid(monthCalendar1.SelectionStart);
         }
 
@@ -287,8 +306,6 @@ namespace WorkPlan
 
             // presenze - assenze
             //shifts = periodService.GetByDateRange(startDate, endDate);
-            dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
-            dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
 
             // create columns
             dataGridView1.Columns.Clear();
@@ -313,21 +330,23 @@ namespace WorkPlan
                 dataGridView1.Rows[e].HeaderCell.Value = emp.FullName;
                 dataGridView1.Rows[e++].Tag = emp;
             }
+
+            //dataGridView1.Refresh();
         }
 
-        private List<IWorkPeriod> GetDutiesAt(int colIndex, int rowIndex)
+        private List<IShiftVM> GetShiftsAt(int colIndex, int rowIndex)
         {
             var cell = dataGridView1[colIndex, rowIndex];
-            List<IWorkPeriod> duties = (List<IWorkPeriod>)cell.Tag;
+            List<IShiftVM> duties = (List<IShiftVM>)cell.Tag;
             return duties;
         }
 
-        private IWorkPeriod AskUserWhichDuty(List<IWorkPeriod> duties)
+        private IShiftVM AskUserWhichShift(List<IShiftVM> shifts)
         {
-            var dlgchoose = new DlgChooseDuty(duties);
+            var dlgchoose = new DlgChooseShift(shifts);
             if (dlgchoose.ShowDialog(this) == DialogResult.OK)
             {
-                return dlgchoose.GetSelectedDuty();
+                return dlgchoose.GetSelectedShift();
             }
             else
             {
@@ -335,36 +354,46 @@ namespace WorkPlan
             }
         }
 
-        private void DeleteDutyAt(int colIndex, int rowIndex)
+        private void DeleteShiftAt(int colIndex, int rowIndex)
         {
-            List<IWorkPeriod> duties = GetDutiesAt(colIndex, rowIndex);
-            IWorkPeriod dutyToDelete;
+            List<IShiftVM> shifts = GetShiftsAt(colIndex, rowIndex);
+            IShiftVM shiftToDelete;
 
-            if (duties.Count > 0)
+            if (shifts.Count > 0)
             {
-                dutyToDelete = duties[0];
+                shiftToDelete = shifts[0];
 
-                if (duties.Count > 1)
+                if (shifts.Count > 1)
                 {
-                    if ((dutyToDelete = AskUserWhichDuty(duties)) == null)
+                    if ((shiftToDelete = AskUserWhichShift(shifts)) == null)
                     {
                         return;
                     }
                 }
 
-                if (MessageBox.Show(this, string.Format("Eliminare il turno?\n{0}\n{1}\n{2}", 
-                    dutyToDelete.Employee.FullName, dutyToDelete.StartDate.ToLongDateString(), dutyToDelete.ToString()), 
-                    "Conferma", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+                if (AskUserToDelete(shiftToDelete))
                 {
-                    dutyRepo.Delete(dutyToDelete.Id);
+                    periodService.DeleteShift(shiftToDelete);
+                    UpdateData();
                 }
             }
         }
-        
-        private void EditDutyAt(int colIndex, int rowIndex)
+
+        private bool AskUserToDelete(IShiftVM shiftToDelete)
         {
-            List<IWorkPeriod> duties = GetDutiesAt(colIndex, rowIndex);
-            IWorkPeriod dutyToEdit = null;
+            return (MessageBox.Show(this, string.Format("Eliminare?\n\n{0}\n{1}{2}\n{3}",
+                    shiftToDelete.Employee.FullName,
+                    shiftToDelete.StartDate.ToLongDateString(),
+                    (shiftToDelete.IsMultipleDays ? string.Format("-{0}", shiftToDelete.EndDate.ToLongDateString()) : ""),
+                    shiftToDelete.ToString()),
+                    "Conferma", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes);
+        }
+        
+        private void EditShiftAt(int colIndex, int rowIndex)
+        {
+            var cell = dataGridView1[colIndex, rowIndex];
+            List<IShiftVM> duties = GetShiftsAt(colIndex, rowIndex);
+            IShiftVM dutyToEdit = null;
 
             if (duties.Count > 0)
             {
@@ -372,7 +401,7 @@ namespace WorkPlan
 
                 if (duties.Count > 1)
                 {
-                    if ((dutyToEdit = AskUserWhichDuty(duties)) == null)
+                    if ((dutyToEdit = AskUserWhichShift(duties)) == null)
                     {
                         return;
                     }
@@ -419,7 +448,8 @@ namespace WorkPlan
                     }
                 }
             }
-
+            
+            UpdateData();
         }
 
         private void AddNewDutyAt(int colIndex, int rowIndex)
@@ -438,7 +468,7 @@ namespace WorkPlan
                 duty.Notes = dlgDuty.Notes;
                 
                 dutyRepo.Add(ref duty);
-                dataGridView1.Refresh();
+                UpdateData();
             }
         }
 
@@ -459,108 +489,81 @@ namespace WorkPlan
                 nowork.FullDay = dlgNw.FullDay;
 
                 noworkRepo.Add(ref nowork);
-                dataGridView1.Refresh();
+                UpdateData();
             }
         }
-
-        private void nuovoTurnoToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
+        
         private void modificaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            EditDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
+            EditShiftAt(dataGridView1.SelectedCells[0].ColumnIndex,
                 dataGridView1.SelectedCells[0].RowIndex);
         }
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
-            List<IWorkPeriod> dutiesOfTheDay = (List<IWorkPeriod>)dataGridView1.SelectedCells[0].Tag;
+            List<IShiftVM> dutiesOfTheDay = (List<IShiftVM>)dataGridView1.SelectedCells[0].Tag;
+            nuovoToolStripMenuItem.Enabled = true;
             if (dutiesOfTheDay.Count > 0)
             {
-                nuovoToolStripMenuItem.Enabled = !dutiesOfTheDay[0].FullDay;
+                nuovoToolStripMenuItem.Enabled = !dutiesOfTheDay[0].IsFullDay;
             }
             
             modificaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
             eliminaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
         }
-
-        private void draw(DataGridViewCellPaintingEventArgs e, Duty duty)
-        {
-
-        }
-
-        private void draw(DataGridViewCellPaintingEventArgs e, NoWork nowork)
-        {
-
-        }
-
-        private void drawPeriods(DataGridViewCellPaintingEventArgs e, List<IWorkPeriod> duties)
-        {
-            //List<Brush> brushes = new List<Brush>()
-            //{
-            //    Brushes.AliceBlue,
-            //    Brushes.Beige,
-            //    Brushes.BlanchedAlmond,
-            //    Brushes.LightPink
-            //};
-
-            using (Brush gridBrush = new SolidBrush(this.dataGridView1.GridColor),
-                            backColorBrush = new SolidBrush(e.CellStyle.BackColor))
-            {
-                using (Pen gridLinePen = new Pen(gridBrush))
-                {
-                    // Erase the cell.
-                    e.Graphics.FillRectangle(backColorBrush, e.CellBounds);
-
-                    if (dataGridView1[e.ColumnIndex, e.RowIndex].Selected)
-                    {
-                        e.PaintBackground(e.CellBounds, true);
-                    }
-
-                    // Draw the grid lines (only the right and bottom lines;
-                    // DataGridView takes care of the others).
-                    e.Graphics.DrawLine(gridLinePen, e.CellBounds.Left,
-                        e.CellBounds.Bottom - 1, e.CellBounds.Right - 1,
-                        e.CellBounds.Bottom - 1);
-                    e.Graphics.DrawLine(gridLinePen, e.CellBounds.Right - 1,
-                        e.CellBounds.Top, e.CellBounds.Right - 1,
-                        e.CellBounds.Bottom);
-
-                    for (int d = 0; d < duties.Count; d++)
-                    {
-                        // Draw the inset highlight box.
-                        IWorkPeriod period = duties[d];
-                        period.Draw(e, d);
-                    }
-                }
-            }
-
-            e.Handled = true;
-        }
-
         
-
         private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             try
             {
                 if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                 {
+                    var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
+                    
                     Employee employee = (Employee)dataGridView1.Rows[e.RowIndex].Tag;
                     DateTime datetime = (DateTime)dataGridView1.Columns[e.ColumnIndex].Tag;
 
-                    //var duties_ = dutyRepo.GetBy(employee, datetime);
-                    List<IWorkPeriod> periods = periodService.GetByEmployeeAndDate(employee, datetime);
-
-                    if (periods.Count > 0)
+                    List<IShiftVM> shifts = allDuties[employee].FindAll(delegate (IShiftVM shift)
                     {
-                        drawPeriods(e, periods);
+                        return shift.StartDate.Date.Equals(datetime.Date) || (shift.StartDate.Date < datetime.Date && shift.EndDate.Date >= datetime.Date);
+                    });
+                    
+                    if (shifts.Count > 0)
+                    {
+                        using (Brush gridBrush = new SolidBrush(this.dataGridView1.GridColor),
+                            backColorBrush = new SolidBrush(e.CellStyle.BackColor))
+                        {
+                            using (Pen gridLinePen = new Pen(gridBrush))
+                            {
+                                // Erase the cell.
+                                e.Graphics.FillRectangle(backColorBrush, e.CellBounds);
+
+                                if (dataGridView1[e.ColumnIndex, e.RowIndex].Selected)
+                                {
+                                    e.PaintBackground(e.CellBounds, true);
+                                }
+
+                                // Draw the grid lines (only the right and bottom lines;
+                                // DataGridView takes care of the others).
+                                e.Graphics.DrawLine(gridLinePen, e.CellBounds.Left,
+                                    e.CellBounds.Bottom - 1, e.CellBounds.Right - 1,
+                                    e.CellBounds.Bottom - 1);
+                                e.Graphics.DrawLine(gridLinePen, e.CellBounds.Right - 1,
+                                    e.CellBounds.Top, e.CellBounds.Right - 1,
+                                    e.CellBounds.Bottom);
+
+                                for (int d = 0; d < shifts.Count; d++)
+                                {
+                                    // Draw the inset highlight box.
+                                    IShiftVM shift = shifts[d];
+                                    shift.Draw(e, d);
+                                }
+                            }
+                        }
+                        e.Handled = true;
                     }
 
-                    var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
-                    cell.Tag = periods;
+                    cell.Tag = shifts;
                 }
             }
             catch(IndexOutOfRangeException)
@@ -579,21 +582,59 @@ namespace WorkPlan
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
                 var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
-                List<IWorkPeriod> periods = (List<IWorkPeriod>)cell.Tag;
+                List<IShiftVM> periods = (List<IShiftVM>)cell.Tag;
 
                 if (periods.Count > 0)
                 {
-                    EditDutyAt(e.ColumnIndex, e.RowIndex);
+                    EditShiftAt(e.ColumnIndex, e.RowIndex);
                 }
                 else
                 {
                     AddNewDutyAt(e.ColumnIndex, e.RowIndex);
+                }                
+            }
+        }
+
+        private void SelectRangeOfColumns(int RowIndex, DateTime start, DateTime end)
+        {
+            for (int c = 0; c < DaysToShow; c++)
+            {
+                var cell = dataGridView1[c, RowIndex];
+
+                if (cell.Tag != null)
+                {
+                    DateTime dtTag = (DateTime)cell.Tag;
+
+                    if ((dtTag.Date >= start || dtTag.Date <= end))
+                    {
+                        cell.Selected = true;
+                    }
+                }
+            }
+        }
+
+        private void SelectShift(int RowIndex, IShiftVM shift)
+        {
+            for (int c = 0; c < DaysToShow; c++)
+            {
+                var cell = dataGridView1[c, RowIndex];
+
+                if (cell.Tag != null)
+                {
+                    List<IShiftVM> shiftsInCell = (List<IShiftVM>)cell.Tag;
+
+                    if (shiftsInCell.Count == 1 && (shiftsInCell[0] == shift))
+                    {
+                        cell.Selected = true;
+                    }
                 }
             }
         }
 
         private void dataGridView1_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e)
         {
+            dataGridView1.MultiSelect = false;
+
             if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
             {
                 if (e.Button == MouseButtons.Right ||
@@ -601,18 +642,29 @@ namespace WorkPlan
                 {
                     dataGridView1[e.ColumnIndex, e.RowIndex].Selected = true;
                 }
+
+                var shifts = GetShiftsAt(e.ColumnIndex, e.RowIndex);
+                if (shifts.Count == 1)
+                {
+                    if (shifts[0].IsMultipleDays)
+                    {
+                        dataGridView1.MultiSelect = true;
+                        //SelectRangeOfColumns(e.RowIndex, shifts[0].StartDate, shifts[0].EndDate);
+                        SelectShift(e.RowIndex, shifts[0]);
+                    }
+                }
             }
         }
 
         private void eliminaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            DeleteDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
+            DeleteShiftAt(dataGridView1.SelectedCells[0].ColumnIndex,
                 dataGridView1.SelectedCells[0].RowIndex);
         }
 
         private void modificaToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            EditDutyAt(dataGridView1.SelectedCells[0].ColumnIndex,
+            EditShiftAt(dataGridView1.SelectedCells[0].ColumnIndex,
                 dataGridView1.SelectedCells[0].RowIndex);
         }
 
@@ -627,6 +679,7 @@ namespace WorkPlan
             AddNewNoWorkAt(dataGridView1.SelectedCells[0].ColumnIndex,
                 dataGridView1.SelectedCells[0].RowIndex);
         }
+        
 
         private void tbPrint_Click(object sender, EventArgs e)
         {
