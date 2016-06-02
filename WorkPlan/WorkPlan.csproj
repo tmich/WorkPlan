@@ -136,6 +136,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SchedulePrint.cs" />
     <Compile Include="ScheduleView.cs">
       <SubType>UserControl</SubType>
     </Compile>

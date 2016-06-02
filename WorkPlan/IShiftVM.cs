@@ -11,6 +11,7 @@ namespace WorkPlan
         Employee Employee { get; }
         DateTime StartDate { get; }
         DateTime EndDate { get; }
+        bool IsCassa { get; }
         bool IsFullDay { get; }
         bool IsMultipleDays { get; }
         string Notes { get; set; }

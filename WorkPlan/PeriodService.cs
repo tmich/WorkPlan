@@ -87,8 +87,8 @@ namespace WorkPlan
 
         public IDictionary<Employee, List<IShiftVM>> GetCassaByDateRangeDict(DateTime startDate, DateTime endDate)
         {
-            var results = new ConcurrentDictionary <Employee, List<IShiftVM>>();
-
+            //var results = new SortedDictionary<Employee, List<IShiftVM>>(new EmployeeFullNameComparer());
+            var results = new ConcurrentDictionary<Employee, List<IShiftVM>>();
             foreach (var duty in dutyRepository.GetBy(startDate, endDate))
             {
                 if (duty.Position.ToLower().Equals("cassa"))
@@ -97,6 +97,12 @@ namespace WorkPlan
                     var val = results.GetOrAdd(dutyVM.Employee, new List<IShiftVM>());
                     val.Add(dutyVM);
                     results[dutyVM.Employee] = val;
+
+                    //if (!results.ContainsKey(dutyVM.Employee))
+                    //{
+                    //    results.Add(dutyVM.Employee, new List<IShiftVM>());
+                    //}
+                    //results[dutyVM.Employee].Add(dutyVM);
                 }
             }
             
@@ -105,6 +111,8 @@ namespace WorkPlan
 
         public IDictionary<Employee, List<IShiftVM>> GetNotCassaByDateRangeDict(DateTime startDate, DateTime endDate)
         {
+            //var comparer = new EmployeeFullNameComparer();
+            //var results = new SortedDictionary<Employee, List<IShiftVM>>(comparer);
             var results = new ConcurrentDictionary<Employee, List<IShiftVM>>();
 
             foreach (var duty in dutyRepository.GetBy(startDate, endDate))
@@ -115,6 +123,11 @@ namespace WorkPlan
                     var val = results.GetOrAdd(dutyVM.Employee, new List<IShiftVM>());
                     val.Add(dutyVM);
                     results[dutyVM.Employee] = val;
+                    //if (!results.ContainsKey(dutyVM.Employee))
+                    //{
+                    //    results.Add(dutyVM.Employee, new List<IShiftVM>());
+                    //}
+                    //results[dutyVM.Employee].Add(dutyVM);
                 }
             }
 
@@ -124,6 +137,11 @@ namespace WorkPlan
                 var val = results.GetOrAdd(nowork.Employee, new List<IShiftVM>());
                 val.Add(nowvm);
                 results[nowvm.Employee] = val;
+                //if (!results.ContainsKey(nowvm.Employee))
+                //{
+                //    results.Add(nowvm.Employee, new List<IShiftVM>());
+                //}
+                //results[nowvm.Employee].Add(nowvm);
             }
 
             return results;
@@ -142,5 +160,13 @@ namespace WorkPlan
             }
         }
 
+    }
+
+    public class EmployeeFullNameComparer : IComparer<Employee>
+    {
+        public int Compare(Employee x, Employee y)
+        {
+            return x.FullName.CompareTo(y.FullName);
+        }
     }
 }

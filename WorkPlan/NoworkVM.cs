@@ -50,6 +50,14 @@ namespace WorkPlan
             }
         }
 
+        public bool IsCassa
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public bool IsMultipleDays
         {
             get

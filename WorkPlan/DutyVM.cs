@@ -83,7 +83,7 @@ namespace WorkPlan
             e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
         }
 
-        private bool IsCassa
+        public bool IsCassa
         {
             get
             {
