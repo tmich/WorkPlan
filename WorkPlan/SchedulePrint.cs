@@ -25,7 +25,19 @@ namespace WorkPlan
         int cellHeight = 50;
         int cellHeadHeight = 20;
 
-        
+        // allineamento centrato
+        StringFormat centerAlignedFormat = new StringFormat()
+        {
+            Alignment = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center
+        };
+
+        // allineamento a sinistra
+        StringFormat leftAlignedFormat = new StringFormat()
+        {
+            Alignment = StringAlignment.Near,
+            LineAlignment = StringAlignment.Center
+        };
 
         public SchedulePrint(DateTime startDate, DateTime endDate)
         {
@@ -105,7 +117,8 @@ namespace WorkPlan
                 var cellHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeadHeight);
                 g.FillRectangle(Brushes.LightGray, cellHead);
                 g.DrawRectangle(Pens.Black, cellHead);
-                g.DrawString(idx_date.ToString("dddd dd/MM/yy"), new Font("Arial", 8.0f, FontStyle.Bold), Brushes.Black, cellHead);
+                g.DrawString(idx_date.ToString("dddd dd/MM/yy"), new Font("Arial", 8.0f, FontStyle.Bold), 
+                    Brushes.Black, cellHead, centerAlignedFormat);
                 leftMargin += cellWidth;
                 idx_date = idx_date.AddDays(1);
             } while (!idx_date.Date.Equals(EndDate.Date));
@@ -122,13 +135,13 @@ namespace WorkPlan
                 var cellMat = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
                 g.FillRectangle(Brushes.LightGray, cellMat);
                 g.DrawRectangle(Pens.Black, cellMat);
-                g.DrawString("MAT", new Font("Arial", 8.0f, FontStyle.Bold), Brushes.Black, cellMat);
+                g.DrawString("MAT", new Font("Arial", 8.0f, FontStyle.Bold), Brushes.Black, cellMat, centerAlignedFormat);
                 leftMargin += cellMat.Width;
 
                 var cellPom = new Rectangle(leftMargin, topMargin, cellWidth / 2, cellHeadHeight);
                 g.FillRectangle(Brushes.LightGray, cellPom);
                 g.DrawRectangle(Pens.Black, cellPom);
-                g.DrawString("POM", new Font("Arial", 8.0f, FontStyle.Bold), Brushes.Black, cellPom);
+                g.DrawString("POM", new Font("Arial", 8.0f, FontStyle.Bold), Brushes.Black, cellPom, centerAlignedFormat);
                 leftMargin += cellPom.Width;
 
                 idx_date = idx_date.AddDays(1);
@@ -141,16 +154,15 @@ namespace WorkPlan
         private void PrintTestata(ref PrintPageEventArgs e)
         {
             Graphics g = e.Graphics;
-
-            Font titleFont = new Font("Arial", 14.0f, FontStyle.Bold);
-
+            
             // INTESTAZIONE
-            Font headerPrintFont = new Font("Arial", 8.0f, FontStyle.Bold);
+            Font titleFont = new Font("Arial", 18.0f, FontStyle.Bold | FontStyle.Underline);
+            //Font headerPrintFont = new Font("Arial", 8.0f, FontStyle.Bold);
 
             var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
-            g.FillRectangle(Brushes.LightSlateGray, title);
-            g.DrawString(string.Format("Turni dal {0} al {1}", 
-                StartDate.ToShortDateString(), EndDate.ToShortDateString()), titleFont, Brushes.AntiqueWhite, title);
+            //g.FillRectangle(Brushes.LightSlateGray, title);
+            g.DrawString(string.Format("Situazione turni dal {0} al {1}", 
+                StartDate.ToShortDateString(), EndDate.ToShortDateString()), titleFont, Brushes.Black, title);
         }
 
         private void PrintCassa(ref PrintPageEventArgs e)
@@ -187,47 +199,37 @@ namespace WorkPlan
         {
             Graphics g = e.Graphics;
 
-            // RIGA (DIPENDENTE)
-            // allineamento centrato
-            StringFormat stringFormat = new StringFormat()
-            {
-                Alignment = StringAlignment.Near,
-                LineAlignment = StringAlignment.Center
-            };
-
+            // RIGA (DIPENDENTE
             var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
             g.FillRectangle(Brushes.LightGray, cellRowHead);
             g.DrawRectangle(Pens.Black, cellRowHead);
-            g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead, stringFormat);
+            g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead, leftAlignedFormat);
             leftMargin += cellWidth;
-
-            //var duties = dutiesMap[employee];
-
             var innerStartDate = StartDate;
 
             while (!innerStartDate.Date.Equals(EndDate.Date))
             {
                 // GIORNI
-
                 var cellDay = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
                 g.DrawRectangle(Pens.Black, cellDay);
 
                 // linea divisoria mattina/pomeriggio
-                g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
+                g.DrawLine(Pens.DarkGray, new Point(leftMargin + (cellDay.Width / 2), topMargin), 
+                    new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
 
                 // turni del giorno
                 var dutiesOfDay = duties.FindAll(delegate (IShiftVM shift)
                 {
-                    //return shift.StartDate.Date.Equals(innerStartDate.Date);
-                    return shift.StartDate.Date.Equals(innerStartDate.Date) || (shift.StartDate.Date < innerStartDate.Date && shift.EndDate.Date >= innerStartDate.Date);
+                    return shift.StartDate.Date.Equals(innerStartDate.Date) || 
+                        (shift.StartDate.Date < innerStartDate.Date && shift.EndDate.Date >= innerStartDate.Date);
                 }
                 );
 
-                int _d = 0;
+                int d = 0;
                 foreach (var dd in dutiesOfDay)
                 {
-                    dd.Print(e, cellDay, dutiesOfDay.Count, _d);
-                    _d++;
+                    dd.Print(e, cellDay, dutiesOfDay.Count, d);
+                    d++;
                 }
 
                 innerStartDate = innerStartDate.AddDays(1);

@@ -127,9 +127,10 @@ namespace WorkPlan
 
             Font myFont = new Font("Arial", 8.0f, FontStyle.Bold);
             var cellDuty = new Rectangle(x, topMargin, width, height);
-            e.Graphics.FillRectangle(Brushes.LightCoral, cellDuty);
+            //e.Graphics.FillRectangle(Brushes.LightCoral, cellDuty);
+            e.Graphics.FillRectangle(Brushes.White, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
-            e.Graphics.DrawString(str, myFont, Brushes.FloralWhite, cellDuty, stringFormat);
+            e.Graphics.DrawString(str, myFont, Brushes.DarkRed, cellDuty, stringFormat);
         }
 
         public override string ToString()

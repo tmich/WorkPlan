@@ -192,6 +192,13 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Cassa.ico" />
+    <None Include="Resources\dollar.ico" />
+    <None Include="Resources\1464893485_Euro.ico" />
+    <None Include="Resources\1464893589_Banking_00020_A.ico" />
+    <None Include="Resources\1464893762_Coin.ico" />
+    <None Include="Resources\1464893822_resolutions-16.ico" />
+    <None Include="Resources\1464894170_sun.ico" />
     <Content Include="res\abacus.png" />
     <Content Include="res\basket.png" />
     <Content Include="res\book.png" />

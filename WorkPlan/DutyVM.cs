@@ -47,6 +47,20 @@ namespace WorkPlan
             }
         }
 
+        // allineato a sinistra
+        StringFormat leftAlignedFormat = new StringFormat()
+        {
+            Alignment = StringAlignment.Near,
+            LineAlignment = StringAlignment.Near
+        };
+
+        // allineato a destra
+        StringFormat rightAlignedFormat = new StringFormat()
+        {
+            Alignment = StringAlignment.Far,
+            LineAlignment = StringAlignment.Near
+        };
+
         public void Draw(DataGridViewCellPaintingEventArgs e, int order = 0)
         {
             int padding = 5;
@@ -55,32 +69,49 @@ namespace WorkPlan
             int X = e.CellBounds.X + (2 * padding);
             int Y = e.CellBounds.Y + (height * order) + (spacing * order) + padding;
             int width = e.CellBounds.Width - (padding * 3);
-            Pen navyPen = new Pen(Color.Navy, 2);
-            Pen leftBorderPen = new Pen(Color.Navy, 8);
+            Pen borderPen = new Pen(Color.DimGray, 2);
+            Pen leftBorderPen = new Pen(Color.DimGray, 8);
             Rectangle rect = new Rectangle(X, Y, width, height);
-            e.Graphics.DrawRectangle(navyPen, rect);
+            e.Graphics.DrawRectangle(borderPen, rect);
             Point p2 = rect.Location;
             p2.Offset(0, rect.Height);
-            e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
-            Brush brush = Brushes.AliceBlue;
+            //e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
+            Brush bgBrush = Brushes.PaleTurquoise;
             Brush stringBrush = Brushes.Black;
+            StringFormat align = leftAlignedFormat;
 
             // pomeriggio di un altro colore
             if (IsAfternoon)
             {
-                brush = Brushes.LightGoldenrodYellow;
+                bgBrush = Brushes.Gold;
+                //leftBorderPen.Color = Color.DarkGoldenrod;
             }
+
+            e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
 
             // cassa ha un'evidenza diversa
             if (IsCassa)
             {
                 //stringBrush = Brushes.ForestGreen;
-                brush = Brushes.SpringGreen;
+                //bgBrush = Brushes.YellowGreen
+                e.Graphics.FillRectangle(Brushes.White, rect);
+                //Rectangle innerIconRect = new Rectangle(new Point(rect.X + rect.Width - 32, rect.Y), new Size(32, 32));
+                Rectangle innerIconRect = new Rectangle(new Point(rect.X, rect.Y), new Size(32, 32));
+                e.Graphics.DrawIcon(Resources.resolutions, innerIconRect);
+                align = rightAlignedFormat;
+            }
+            else
+            {
+                e.Graphics.FillRectangle(bgBrush, rect);
             }
 
-            e.Graphics.FillRectangle(brush, rect);
-            e.Graphics.DrawString(ToString(), e.CellStyle.Font, stringBrush, rect);
-            e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.Chocolate, rect.X, rect.Y + 1);
+            e.Graphics.DrawString(ToString(), e.CellStyle.Font, stringBrush, rect, align);
+            //e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.DarkGray, rect.X, rect.Y + 1);
+            e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.DimGray, rect, new StringFormat()
+            {
+                Alignment = StringAlignment.Far,
+                LineAlignment = StringAlignment.Far
+            });
         }
 
         public bool IsCassa
@@ -115,7 +146,7 @@ namespace WorkPlan
             }
             else if (IsAfternoon)
             {
-                bgBrush = Brushes.LightGoldenrodYellow;
+                bgBrush = Brushes.Goldenrod;
                 x += width;
             }
 
@@ -133,14 +164,14 @@ namespace WorkPlan
 
             Font myFont = new Font("Arial", 8.0f, FontStyle.Regular);
             var cellDuty = new Rectangle(x, topMargin, width, height);
-            e.Graphics.FillRectangle(bgBrush, cellDuty);
+            //e.Graphics.FillRectangle(bgBrush, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
             e.Graphics.DrawString(str, myFont, Brushes.Black, cellDuty, stringFormat);
         }
 
         public override string ToString()
         {
-            return string.Format("{0} {1}-{2}", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            return string.Format("{0} [{1}-{2}]", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
         }
     }
 }
