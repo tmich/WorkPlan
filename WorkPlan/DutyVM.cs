@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
@@ -76,34 +77,36 @@ namespace WorkPlan
             Point p2 = rect.Location;
             p2.Offset(0, rect.Height);
             //e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
+
+            // Mattina
             Brush bgBrush = Brushes.PaleTurquoise;
             Brush stringBrush = Brushes.Black;
             StringFormat align = leftAlignedFormat;
 
-            // pomeriggio di un altro colore
+            // Pomeriggio
             if (IsAfternoon)
             {
                 bgBrush = Brushes.Gold;
-                //leftBorderPen.Color = Color.DarkGoldenrod;
             }
 
             e.Graphics.DrawLine(leftBorderPen, rect.Location, p2);
+            e.Graphics.FillRectangle(bgBrush, rect);
 
             // cassa ha un'evidenza diversa
             if (IsCassa)
             {
                 //stringBrush = Brushes.ForestGreen;
                 //bgBrush = Brushes.YellowGreen
-                e.Graphics.FillRectangle(Brushes.White, rect);
+                //e.Graphics.FillRectangle(Brushes.White, rect);
                 //Rectangle innerIconRect = new Rectangle(new Point(rect.X + rect.Width - 32, rect.Y), new Size(32, 32));
                 Rectangle innerIconRect = new Rectangle(new Point(rect.X, rect.Y), new Size(32, 32));
                 e.Graphics.DrawIcon(Resources.resolutions, innerIconRect);
                 align = rightAlignedFormat;
             }
-            else
-            {
-                e.Graphics.FillRectangle(bgBrush, rect);
-            }
+            //else
+            //{
+                //e.Graphics.FillRectangle(bgBrush, rect);
+            //}
 
             e.Graphics.DrawString(ToString(), e.CellStyle.Font, stringBrush, rect, align);
             //e.Graphics.DrawString(string.Format("\n{0}", Notes.Truncate(20)), e.CellStyle.Font, Brushes.DarkGray, rect.X, rect.Y + 1);

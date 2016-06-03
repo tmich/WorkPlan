@@ -30,6 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.cmdPrint = new System.Windows.Forms.Button();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -39,9 +40,8 @@
             this.modificaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.eliminaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.label1 = new System.Windows.Forms.Label();
             this.tbPrint = new System.Windows.Forms.ToolStripButton();
-            this.cmdPrint = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -72,6 +72,19 @@
             this.splitContainer1.Size = new System.Drawing.Size(830, 406);
             this.splitContainer1.SplitterDistance = 280;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // cmdPrint
+            // 
+            this.cmdPrint.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.cmdPrint.Image = global::WorkPlan.Resources.printer;
+            this.cmdPrint.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cmdPrint.Location = new System.Drawing.Point(15, 210);
+            this.cmdPrint.Name = "cmdPrint";
+            this.cmdPrint.Size = new System.Drawing.Size(227, 35);
+            this.cmdPrint.TabIndex = 2;
+            this.cmdPrint.Text = "Stampa";
+            this.cmdPrint.UseVisualStyleBackColor = true;
+            this.cmdPrint.Click += new System.EventHandler(this.cmdPrint_Click);
             // 
             // monthCalendar1
             // 
@@ -160,6 +173,16 @@
             this.toolStrip1.TabIndex = 4;
             this.toolStrip1.Text = "toolStrip1";
             // 
+            // tbPrint
+            // 
+            this.tbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tbPrint.Image = global::WorkPlan.Resources.printer;
+            this.tbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tbPrint.Name = "tbPrint";
+            this.tbPrint.Size = new System.Drawing.Size(24, 24);
+            this.tbPrint.Text = "Stampa";
+            this.tbPrint.Click += new System.EventHandler(this.tbPrint_Click);
+            // 
             // label1
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -173,29 +196,6 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Gestione Turni e Assenze";
             // 
-            // tbPrint
-            // 
-            this.tbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tbPrint.Image = global::WorkPlan.Resources.printer;
-            this.tbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tbPrint.Name = "tbPrint";
-            this.tbPrint.Size = new System.Drawing.Size(24, 24);
-            this.tbPrint.Text = "Stampa";
-            this.tbPrint.Click += new System.EventHandler(this.tbPrint_Click);
-            // 
-            // cmdPrint
-            // 
-            this.cmdPrint.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cmdPrint.Image = global::WorkPlan.Resources.printer;
-            this.cmdPrint.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.cmdPrint.Location = new System.Drawing.Point(15, 210);
-            this.cmdPrint.Name = "cmdPrint";
-            this.cmdPrint.Size = new System.Drawing.Size(227, 35);
-            this.cmdPrint.TabIndex = 2;
-            this.cmdPrint.Text = "Stampa";
-            this.cmdPrint.UseVisualStyleBackColor = true;
-            this.cmdPrint.Click += new System.EventHandler(this.cmdPrint_Click);
-            // 
             // ScheduleView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,7 +204,7 @@
             this.Controls.Add(this.toolStrip1);
             this.Controls.Add(this.splitContainer1);
             this.DoubleBuffered = true;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ScheduleView";
             this.Size = new System.Drawing.Size(830, 464);
             this.splitContainer1.Panel1.ResumeLayout(false);

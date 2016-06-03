@@ -452,7 +452,7 @@ namespace WorkPlan
             {
                 if (e.Button == MouseButtons.Right ||
                     e.Button == MouseButtons.Left)
-                {
+                { 
                     dataGridView1[e.ColumnIndex, e.RowIndex].Selected = true;
 
                     // store selected cell information and offset
@@ -504,7 +504,7 @@ namespace WorkPlan
         {
             Print();
         }
-
+        
         private void tbPrint_Click(object sender, EventArgs e)
         {
             Print();
