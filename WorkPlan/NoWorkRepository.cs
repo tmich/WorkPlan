@@ -12,6 +12,36 @@ namespace WorkPlan
         {
         }
 
+        public void AddReason(ref NoWorkReason nwr)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = string.Format("insert into motivo_assenza (codice, descrizione) values ('{0}', '{1}')",
+                        nwr.Code, nwr.Value);
+
+                    int rows = cmd.ExecuteNonQuery();
+                    
+                    if (rows == 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    nwr.Id = (int)cmd.LastInsertedId;
+
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
+        }
+
         public List<NoWorkReason> GetReasons()
         {
             List<NoWorkReason> reasons = new List<NoWorkReason>();
@@ -31,6 +61,7 @@ namespace WorkPlan
                     {
                         var reason = new NoWorkReason();
                         reason.Id = rdr.GetInt32(0);
+                        reason.Code = rdr.GetString(1);
                         reason.Value = rdr.GetString(2);
                         reasons.Add(reason);
                     }
@@ -44,6 +75,34 @@ namespace WorkPlan
             }
 
             return reasons;
+        }
+
+        public void UpdateReason(ref NoWorkReason nwr)
+        {
+            using (MySqlConnection conn = new MySqlConnection(connstr))
+            {
+                try
+                {
+                    conn.Open();
+                    MySqlCommand cmd = conn.CreateCommand();
+                    cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = string.Format("update motivo_assenza set codice = '{0}', descrizione = '{1}' where id = {2}",
+                        nwr.Code, nwr.Value, nwr.Id);
+
+                    int rows = cmd.ExecuteNonQuery();
+
+                    if (rows == 0)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
+                    conn.Close();
+                }
+                catch (MySqlException)
+                {
+                    throw;
+                }
+            }
         }
 
         public List<NoWork> GetAssenzeByDipDateRange(Employee employee, DateTime startDate, DateTime endDate)

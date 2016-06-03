@@ -39,6 +39,8 @@
             this.tabContainer = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.configurazioneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.causaliAssenzaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabContainer.SuspendLayout();
             this.SuspendLayout();
@@ -58,6 +60,7 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.configurazioneToolStripMenuItem,
             this.stampaToolStripMenuItem,
             this.toolStripSeparator1,
             this.esciToolStripMenuItem});
@@ -68,19 +71,19 @@
             // stampaToolStripMenuItem
             // 
             this.stampaToolStripMenuItem.Name = "stampaToolStripMenuItem";
-            this.stampaToolStripMenuItem.Size = new System.Drawing.Size(135, 26);
+            this.stampaToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
             this.stampaToolStripMenuItem.Text = "&Stampa";
             this.stampaToolStripMenuItem.Click += new System.EventHandler(this.stampaToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(132, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(182, 6);
             // 
             // esciToolStripMenuItem
             // 
             this.esciToolStripMenuItem.Name = "esciToolStripMenuItem";
-            this.esciToolStripMenuItem.Size = new System.Drawing.Size(135, 26);
+            this.esciToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
             this.esciToolStripMenuItem.Text = "&Esci";
             this.esciToolStripMenuItem.Click += new System.EventHandler(this.esciToolStripMenuItem_Click);
             // 
@@ -134,6 +137,21 @@
             this.tabPage2.Text = "Dipendenti";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // configurazioneToolStripMenuItem
+            // 
+            this.configurazioneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.causaliAssenzaToolStripMenuItem});
+            this.configurazioneToolStripMenuItem.Name = "configurazioneToolStripMenuItem";
+            this.configurazioneToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
+            this.configurazioneToolStripMenuItem.Text = "Configurazione";
+            // 
+            // causaliAssenzaToolStripMenuItem
+            // 
+            this.causaliAssenzaToolStripMenuItem.Name = "causaliAssenzaToolStripMenuItem";
+            this.causaliAssenzaToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
+            this.causaliAssenzaToolStripMenuItem.Text = "Causali Assenza";
+            this.causaliAssenzaToolStripMenuItem.Click += new System.EventHandler(this.causaliAssenzaToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -167,6 +185,8 @@
         private System.Windows.Forms.TabControl tabContainer;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.ToolStripMenuItem configurazioneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem causaliAssenzaToolStripMenuItem;
     }
 }
 

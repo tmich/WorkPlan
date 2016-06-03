@@ -63,5 +63,11 @@ namespace WorkPlan
                 scheduleView.UpdateData();
             }
         }
+
+        private void causaliAssenzaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dlgCausAss = new DlgCausAss();
+            dlgCausAss.ShowDialog(this);
+        }
     }
 }
