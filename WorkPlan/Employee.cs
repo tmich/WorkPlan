@@ -33,10 +33,23 @@ namespace WorkPlan
         public string Qual { get; set; }
 
         public string Email { get; set; }
+        
+        public string AddressDom { get; set; }
+
+        public string CityDom { get; set; }
+
+        public string Nationality { get; set; }
+
+        public string BirthCity { get; set; }
+
+        public string MobileNo2 { get; set; }
+
 
         public string FullName {
             get { return string.Format("{0} {1}", LastName, Name); } 
         }
+
+        public Position DefaultPosition { get; set; }
 
         public override bool Equals(System.Object obj)
         {

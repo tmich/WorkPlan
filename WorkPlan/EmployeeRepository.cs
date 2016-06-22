@@ -50,7 +50,13 @@ namespace WorkPlan
                             Qual = rdr.IsDBNull(9) ? "" : rdr.GetString(9),
                             HireDate = rdr.IsDBNull(10) ? new DateTime(1900, 1, 1) : rdr.GetDateTime(10),
                             Email = rdr.IsDBNull(11) ? "" : rdr.GetString(11),
-                            BirthDate = rdr.GetDateTime(12)
+                            BirthDate = rdr.GetDateTime(12),
+                            DefaultPosition = new Position(rdr.GetInt32(13), rdr.GetString(14)),
+                            AddressDom = rdr.IsDBNull(15) ? "" : rdr.GetString(15),
+                            CityDom = rdr.IsDBNull(16) ? "" : rdr.GetString(16),
+                            Nationality = rdr.IsDBNull(17) ? "" : rdr.GetString(17),
+                            BirthCity = rdr.IsDBNull(18) ? "" : rdr.GetString(18),
+                            MobileNo2 = rdr.IsDBNull(19) ? "" : rdr.GetString(19)
                         };
                     }
 
@@ -96,7 +102,13 @@ namespace WorkPlan
                             Qual = rdr.IsDBNull(9) ? "" : rdr.GetString(9),
                             HireDate = rdr.IsDBNull(10) ? new DateTime(1900,1,1) : rdr.GetDateTime(10),
                             Email = rdr.IsDBNull(11) ? "" : rdr.GetString(11),
-                            BirthDate = rdr.GetDateTime(12)
+                            BirthDate = rdr.GetDateTime(12),
+                            DefaultPosition = new Position(rdr.GetInt32(13), rdr.GetString(14)),
+                            AddressDom = rdr.IsDBNull(15) ? "" : rdr.GetString(15),
+                            CityDom = rdr.IsDBNull(16) ? "" : rdr.GetString(16),
+                            Nationality = rdr.IsDBNull(17) ? "" : rdr.GetString(17),
+                            BirthCity = rdr.IsDBNull(18) ? "" : rdr.GetString(18),
+                            MobileNo2 = rdr.IsDBNull(19) ? "" : rdr.GetString(19)
                         });
                     }
 
@@ -158,6 +170,12 @@ namespace WorkPlan
                     cmd.Parameters.Add("pdataass", MySqlDbType.Date).Value = employee.HireDate;
                     cmd.Parameters.Add("pemail", MySqlDbType.VarChar, 50).Value = employee.Email;
                     cmd.Parameters.Add("pdatanascita", MySqlDbType.Date).Value = employee.BirthDate;
+                    cmd.Parameters.Add("preparto", MySqlDbType.Int32).Value = employee.DefaultPosition.Id;
+                    cmd.Parameters.Add("pindirizzodom", MySqlDbType.VarChar, 100).Value = employee.AddressDom;
+                    cmd.Parameters.Add("pcittadom", MySqlDbType.VarChar, 50).Value = employee.CityDom;
+                    cmd.Parameters.Add("pnazionalita", MySqlDbType.VarChar, 50).Value = employee.Nationality;
+                    cmd.Parameters.Add("pcittanasc", MySqlDbType.VarChar, 50).Value = employee.BirthCity;
+                    cmd.Parameters.Add("pcellulare2", MySqlDbType.VarChar, 15).Value = employee.MobileNo2;
 
                     var lid = new MySqlParameter("LID", MySqlDbType.Int32);
                     lid.Direction = System.Data.ParameterDirection.InputOutput;
@@ -204,7 +222,13 @@ namespace WorkPlan
                     cmd.Parameters.Add("pdataass", MySqlDbType.Date).Value = employee.HireDate;
                     cmd.Parameters.Add("pemail", MySqlDbType.VarChar, 50).Value = employee.Email;
                     cmd.Parameters.Add("pdatanascita", MySqlDbType.Date).Value = employee.BirthDate;
-                    
+                    cmd.Parameters.Add("preparto", MySqlDbType.Int32).Value = employee.DefaultPosition.Id;
+                    cmd.Parameters.Add("pindirizzodom", MySqlDbType.VarChar, 100).Value = employee.AddressDom;
+                    cmd.Parameters.Add("pcittadom", MySqlDbType.VarChar, 50).Value = employee.CityDom;
+                    cmd.Parameters.Add("pnazionalita", MySqlDbType.VarChar, 50).Value = employee.Nationality;
+                    cmd.Parameters.Add("pcittanasc", MySqlDbType.VarChar, 50).Value = employee.BirthCity;
+                    cmd.Parameters.Add("pcellulare2", MySqlDbType.VarChar, 15).Value = employee.MobileNo2;
+
                     cmd.ExecuteNonQuery();
                     conn.Close();
                 }

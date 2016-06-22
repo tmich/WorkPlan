@@ -79,6 +79,8 @@ namespace WorkPlan
             startDate = e.Start.AddDays(-15);
             endDate = e.Start.AddDays(15);
             CreateGrid(e.Start);
+
+            UpdateData();
         }
 
         public void UpdateData()

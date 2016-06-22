@@ -161,8 +161,12 @@ namespace WorkPlan
 
             var title = new Rectangle(leftMargin, topMargin, e.MarginBounds.Width, cellHeight);
             //g.FillRectangle(Brushes.LightSlateGray, title);
-            g.DrawString(string.Format("Situazione turni dal {0} al {1}", 
-                StartDate.ToShortDateString(), EndDate.ToShortDateString()), titleFont, Brushes.Black, title);
+            System.Globalization.CultureInfo cul = System.Globalization.CultureInfo.CurrentCulture;
+            int weekNum = cul.Calendar.GetWeekOfYear(StartDate, 
+                System.Globalization.CalendarWeekRule.FirstFourDayWeek,
+                DayOfWeek.Monday);
+            g.DrawString(string.Format("Settimana {2} - Turni dal {0} al {1}", 
+                StartDate.ToShortDateString(), EndDate.ToShortDateString(), weekNum), titleFont, Brushes.Black, title);
         }
 
         private void PrintCassa(ref PrintPageEventArgs e)

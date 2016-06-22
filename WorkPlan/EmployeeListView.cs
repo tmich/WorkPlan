@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public partial class EmployeeListView : PrintableUC
+    public partial class EmployeeListView : UserControl
     {
         private List<Employee> mEmployees;
 
@@ -13,7 +13,7 @@ namespace WorkPlan
             InitializeComponent();
         }
 
-        public override void Print()
+        public void Print()
         {
             throw new NotImplementedException();
         }
@@ -31,8 +31,9 @@ namespace WorkPlan
             foreach (var employee in mEmployees)
             {
                 ListViewItem lvi = new ListViewItem(employee.Matr);
-                lvi.SubItems.Add(employee.Name);
                 lvi.SubItems.Add(employee.LastName);
+                lvi.SubItems.Add(employee.Name);
+                lvi.SubItems.Add(employee.DefaultPosition.Desc);
                 //lvi.SubItems.Add(employee.HireDate.ToShortDateString());
                 lvi.Tag = employee.Id;
                 lvEmployees.Items.Add(lvi);
@@ -53,6 +54,12 @@ namespace WorkPlan
             emp.Name = dlgEmp.EmployeeName;
             emp.Qual = dlgEmp.EmployeeQual;
             emp.Telephone = dlgEmp.EmployeeTel;
+            emp.DefaultPosition = dlgEmp.EmployeeDefaultPosition;
+            emp.BirthCity = dlgEmp.EmployeeBirthCity;
+            emp.Nationality = dlgEmp.EmployeeNationality;
+            emp.CityDom = dlgEmp.EmployeeCityDom;
+            emp.AddressDom = dlgEmp.EmployeeAddressDom;
+            emp.MobileNo2 = dlgEmp.EmployeeMobileNo2;
         }
 
         private void btNewEmployee_Click(object sender, EventArgs e)
@@ -92,7 +99,13 @@ namespace WorkPlan
                 EmployeeName = emp.Name,
                 EmployeeQual = emp.Qual,
                 EmployeeTel = emp.Telephone,
-                EmployeeId = emp.Id
+                EmployeeId = emp.Id,
+                EmployeeDefaultPosition = emp.DefaultPosition,
+                EmployeeBirthCity = emp.BirthCity,
+                EmployeeNationality = emp.Nationality,
+                EmployeeCityDom = emp.CityDom,
+                EmployeeAddressDom = emp.AddressDom,
+                EmployeeMobileNo2 = emp.MobileNo2
             };
 
             if (dlgEmp.ShowDialog() == DialogResult.OK)

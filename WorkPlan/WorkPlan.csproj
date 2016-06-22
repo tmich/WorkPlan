@@ -149,6 +149,8 @@
     <Compile Include="NoWorkRepository.cs" />
     <Compile Include="NoworkVM.cs" />
     <Compile Include="PeriodService.cs" />
+    <Compile Include="Position.cs" />
+    <Compile Include="PositionDao.cs" />
     <Compile Include="PrintableUC.cs">
       <SubType>UserControl</SubType>
     </Compile>

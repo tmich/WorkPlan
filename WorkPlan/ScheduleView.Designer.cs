@@ -59,7 +59,7 @@
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 71);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -71,7 +71,7 @@
             // 
             this.splitContainer1.Panel2.Controls.Add(this.dataGridView1);
             this.splitContainer1.Size = new System.Drawing.Size(1107, 500);
-            this.splitContainer1.SplitterDistance = 280;
+            this.splitContainer1.SplitterDistance = 320;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 3;
             // 
@@ -81,7 +81,7 @@
             this.cmdPrint.Image = global::WorkPlan.Resources.printer;
             this.cmdPrint.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.cmdPrint.Location = new System.Drawing.Point(4, 269);
-            this.cmdPrint.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmdPrint.Margin = new System.Windows.Forms.Padding(4);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(265, 43);
             this.cmdPrint.TabIndex = 2;
@@ -91,10 +91,13 @@
             // 
             // monthCalendar1
             // 
+            this.monthCalendar1.FirstDayOfWeek = System.Windows.Forms.Day.Monday;
             this.monthCalendar1.Location = new System.Drawing.Point(0, 7);
             this.monthCalendar1.Margin = new System.Windows.Forms.Padding(12, 11, 12, 11);
             this.monthCalendar1.MaxSelectionCount = 1;
             this.monthCalendar1.Name = "monthCalendar1";
+            this.monthCalendar1.ScrollChange = 1;
+            this.monthCalendar1.ShowWeekNumbers = true;
             this.monthCalendar1.TabIndex = 1;
             this.monthCalendar1.DateChanged += new System.Windows.Forms.DateRangeEventHandler(this.monthCalendar1_DateChanged);
             // 
@@ -106,14 +109,14 @@
             this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToDisplayedHeaders;
             this.dataGridView1.RowTemplate.Height = 90;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(822, 500);
+            this.dataGridView1.Size = new System.Drawing.Size(782, 500);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             this.dataGridView1.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseDoubleClick);

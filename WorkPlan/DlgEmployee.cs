@@ -8,6 +8,13 @@ namespace WorkPlan
         public DlgEmployee()
         {
             InitializeComponent();
+
+            PositionDao posdao = new PositionDao();
+            foreach (var item in posdao.GetAll())
+            {
+                cbReparti.Items.Add(item);
+            }
+            cbReparti.SelectedIndex = 0;
         }
 
         public string EmployeeName
@@ -172,6 +179,88 @@ namespace WorkPlan
             }
         }
 
+        public Position EmployeeDefaultPosition
+        {
+            get
+            {
+                return (Position)cbReparti.SelectedItem;
+            }
+            set
+            {
+                if (value != null)
+                {
+                    for (int i = 0; i < cbReparti.Items.Count; i++)
+                    {
+                        if (((Position)cbReparti.Items[i]).Id == value.Id)
+                        {
+                            cbReparti.SelectedIndex = i;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        public string EmployeeAddressDom
+        {
+            get
+            {
+                return txEmpAddressDom.Text;
+            }
+            set
+            {
+                txEmpAddressDom.Text = value;
+            }
+        }
+
+        public string EmployeeCityDom
+        {
+            get
+            {
+                return txEmpCityDom.Text;
+            }
+            set
+            {
+                txEmpCityDom.Text = value;
+            }
+        }
+
+        public string EmployeeNationality
+        {
+            get
+            {
+                return txEmpNationality.Text;
+            }
+            set
+            {
+                txEmpNationality.Text = value;
+            }
+        }
+
+        public string EmployeeBirthCity
+        {
+            get
+            {
+                return txEmpLNasc.Text;
+            }
+            set
+            {
+                txEmpLNasc.Text = value;
+            }
+        }
+
+        public string EmployeeMobileNo2
+        {
+            get
+            {
+                return txEmpMobile2.Text;
+            }
+            set
+            {
+                txEmpMobile2.Text = value;
+            }
+        }
+
         private void DlgEmployee_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (DialogResult == DialogResult.OK)
@@ -227,6 +316,11 @@ namespace WorkPlan
             }
 
             return true;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

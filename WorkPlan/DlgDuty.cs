@@ -15,12 +15,12 @@ namespace WorkPlan
         protected Employee mEmployee;
         protected DateTime mDutyDate;
 
-        protected List<string> mPositions = new List<string>
-        {
-            "Cassa",
-            "Banco",
-            "Sala"
-        };
+        //protected List<string> mPositions = new List<string>
+        //{
+        //    "Cassa",
+        //    "Banco",
+        //    "Sala"
+        //};
 
         public DateTime DutyStart
         {
@@ -67,7 +67,10 @@ namespace WorkPlan
         protected DlgDuty()
         {
             InitializeComponent();
-            cbPositions.Items.AddRange(mPositions.ToArray());
+
+            PositionDao posdao = new PositionDao();
+            cbPositions.Items.AddRange(posdao.GetAll().ToArray());
+            //cbPositions.Items.AddRange(mPositions.ToArray());
 
             var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
             dtPickerStart.Value = tmPickerStart.Value = now;
@@ -81,6 +84,20 @@ namespace WorkPlan
             mDutyDate = dutyDate;
             dtPickerStart.Value = dtPickerEnd.Value = mDutyDate;
             Text = string.Format("Nuovo turno per {0}", mEmployee.FullName);
+
+            cbPositions.SelectedIndex = FindPosition(employee.DefaultPosition);
+        }
+
+        private int FindPosition(Position pos)
+        {
+            for(int i =0; i< cbPositions.Items.Count; i++)
+            {
+                var pit = cbPositions.Items[i] as Position;
+                if (pit.Id == pos.Id)
+                    return i;
+            }
+
+            return 0;
         }
 
         public DlgDuty(DutyVM duty)

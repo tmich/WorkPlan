@@ -39,6 +39,7 @@
             this.tbNuovo = new System.Windows.Forms.ToolStripButton();
             this.tbEdit = new System.Windows.Forms.ToolStripButton();
             this.tbDelete = new System.Windows.Forms.ToolStripButton();
+            this.colPosition = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -59,7 +60,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.lvEmployees);
             this.splitContainer1.Size = new System.Drawing.Size(845, 532);
-            this.splitContainer1.SplitterDistance = 382;
+            this.splitContainer1.SplitterDistance = 381;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -68,15 +69,16 @@
             this.lvEmployees.Activation = System.Windows.Forms.ItemActivation.TwoClick;
             this.lvEmployees.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colMatr,
+            this.colSurname,
             this.colName,
-            this.colSurname});
+            this.colPosition});
             this.lvEmployees.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEmployees.FullRowSelect = true;
             this.lvEmployees.Location = new System.Drawing.Point(0, 0);
             this.lvEmployees.Margin = new System.Windows.Forms.Padding(4);
             this.lvEmployees.MultiSelect = false;
             this.lvEmployees.Name = "lvEmployees";
-            this.lvEmployees.Size = new System.Drawing.Size(382, 532);
+            this.lvEmployees.Size = new System.Drawing.Size(381, 532);
             this.lvEmployees.TabIndex = 2;
             this.lvEmployees.UseCompatibleStateImageBehavior = false;
             this.lvEmployees.View = System.Windows.Forms.View.Details;
@@ -146,6 +148,10 @@
             this.tbDelete.Text = "Elimina";
             this.tbDelete.Click += new System.EventHandler(this.tbDelete_Click);
             // 
+            // colPosition
+            // 
+            this.colPosition.Text = "Reparto";
+            // 
             // EmployeeListView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -176,5 +182,6 @@
         private System.Windows.Forms.ColumnHeader colSurname;
         private System.Windows.Forms.ToolStripButton tbEdit;
         private System.Windows.Forms.ToolStripButton tbDelete;
+        private System.Windows.Forms.ColumnHeader colPosition;
     }
 }
