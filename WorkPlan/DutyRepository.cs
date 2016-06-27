@@ -138,7 +138,8 @@ namespace WorkPlan
                                 Qual = rdr.IsDBNull(14) ? "" : rdr.GetString(14),
                                 HireDate = rdr.IsDBNull(15) ? new DateTime(1900, 1, 1) : rdr.GetDateTime(15),
                                 Email = rdr.IsDBNull(16) ? "" : rdr.GetString(16),
-                                BirthDate = rdr.GetDateTime(17)
+                                BirthDate = rdr.GetDateTime(17),
+                                DefaultPosition = new Position(rdr.IsDBNull(18) ? 0 : rdr.GetInt32(18), rdr.IsDBNull(19) ? "" : rdr.GetString(19))
                             }
                         });
                     }

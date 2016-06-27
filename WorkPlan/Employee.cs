@@ -44,6 +44,10 @@ namespace WorkPlan
 
         public string MobileNo2 { get; set; }
 
+        public Employee()
+        {
+            DefaultPosition = new Position(0, "");
+        }
 
         public string FullName {
             get { return string.Format("{0} {1}", LastName, Name); } 

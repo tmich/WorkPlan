@@ -98,7 +98,7 @@ namespace WorkPlan
             if (shifts.Count > 0)
             {
                 //PrintColonne(ref e);
-                g.DrawString(string.Format("Turni"), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
+                //g.DrawString(string.Format("Turni"), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
                 PrintTurni(ref e);
             }
         }
@@ -188,15 +188,40 @@ namespace WorkPlan
         {
             var employees = shifts.Keys.ToList();
             employees.Sort(new EmployeeFullNameComparer());
+            //employees.Sort(new EmployeeDefaultPositionComparer());
 
-            foreach (var employee in employees)
+            var positions = new PositionDao().GetAll().ToList();
+            
+            foreach (var pos in positions)
             {
-                if(e.HasMorePages)
-                    return;
+                if (!pos.Desc.Equals("Cassa"))
+                {
+                    PrintPosition(ref e, pos);
+                    
+                    foreach (var employee in employees)
+                    {
+                        if (e.HasMorePages)
+                            return;
 
-                PrintRow(ref e, employee, shifts[employee]);
-                shifts.Remove(employee);
+                        if (employee.DefaultPosition.Id != pos.Id)
+                            continue;
+
+                        PrintRow(ref e, employee, shifts[employee]);
+                        shifts.Remove(employee);
+                    }
+                }
             }
+            
+        }
+
+        private void PrintPosition(ref PrintPageEventArgs e, Position position)
+        {
+            Graphics g = e.Graphics;
+            //int topMargin = e.MarginBounds.Top;
+
+            topMargin += 30;
+            g.DrawString(string.Format(position.Desc), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
+            //topMargin += 20;
         }
 
         private void PrintRow(ref PrintPageEventArgs e, Employee employee, List<IShiftVM> duties)
@@ -207,7 +232,7 @@ namespace WorkPlan
             var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
             g.FillRectangle(Brushes.LightGray, cellRowHead);
             g.DrawRectangle(Pens.Black, cellRowHead);
-            g.DrawString(employee.FullName, new Font("Arial", 10), Brushes.Black, cellRowHead, leftAlignedFormat);
+            g.DrawString(employee.FullName, new Font("Arial", 9), Brushes.Black, cellRowHead, leftAlignedFormat);
             leftMargin += cellWidth;
             var innerStartDate = StartDate;
 

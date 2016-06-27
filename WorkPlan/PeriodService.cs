@@ -169,4 +169,15 @@ namespace WorkPlan
             return x.FullName.CompareTo(y.FullName);
         }
     }
+
+    public class EmployeeDefaultPositionComparer : IComparer<Employee>
+    {
+        public int Compare(Employee x, Employee y)
+        {
+            if (x.DefaultPosition != null)
+                return x.DefaultPosition.Id.CompareTo(y.DefaultPosition.Id);
+            else
+                return 0;
+        }
+    }
 }
