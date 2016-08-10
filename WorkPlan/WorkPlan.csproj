@@ -129,6 +129,7 @@
     <Compile Include="DutyRepository.cs" />
     <Compile Include="DutyService.cs" />
     <Compile Include="DutyVM.cs" />
+    <Compile Include="EconomicsRepository.cs" />
     <Compile Include="Employee.cs" />
     <Compile Include="EmployeeListView.cs">
       <SubType>UserControl</SubType>

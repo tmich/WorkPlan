@@ -108,11 +108,19 @@ namespace WorkPlan
                 EmployeeMobileNo2 = emp.MobileNo2
             };
 
+            // leggo il salario pattuito
+            EconomicsRepository econRepo = new EconomicsRepository();
+            decimal salary = econRepo.GetAgreedSalary(emp.Id);
+            dlgEmp.EmployeeSalary = salary;
+
             if (dlgEmp.ShowDialog() == DialogResult.OK)
             {
                 FromDialog(ref dlgEmp, ref emp);
                 EmployeeRepository empRepo = new EmployeeRepository();
                 empRepo.Update(emp);
+
+                // scrivo il salario pattuito
+                econRepo.SetAgreedSalary(emp.Id, dlgEmp.EmployeeSalary);
 
                 // update list
                 SetEmployees(empRepo.All());

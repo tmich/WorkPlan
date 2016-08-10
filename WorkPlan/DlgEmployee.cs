@@ -17,6 +17,19 @@ namespace WorkPlan
             cbReparti.SelectedIndex = 0;
         }
 
+        public decimal EmployeeSalary
+        {
+            get
+            {
+                return decimal.Parse(txtEmpSalary.Text.Remove(txtEmpSalary.Text.Length - 1));
+            }
+
+            set
+            {
+                txtEmpSalary.Text = value.ToString();
+            }
+        }
+
         public string EmployeeName
         {
             get
@@ -274,7 +287,32 @@ namespace WorkPlan
                 e.Cancel = !ValidateNonEmpty(txEmpCity, "Inserire la città"); if (e.Cancel) return;
                 e.Cancel = !ValidateNonEmpty(txEmpQual, "Inserire la qualifica"); if (e.Cancel) return;
                 e.Cancel = !ValidateDate(txEmpHireDate, "Data di assunzione non valida"); if (e.Cancel) return;
+                e.Cancel = !ValidateDecimal(txtEmpSalary, "Valore non corretto"); if (e.Cancel) return;
             }
+        }
+
+        private bool ValidateDecimal(TextBoxBase tx, string message = null)
+        {
+            if (ValidateNonEmpty(tx, message))
+            {
+                try
+                {
+                    decimal.Parse(txtEmpSalary.Text.Remove(txtEmpSalary.Text.Length - 1));
+                }
+                catch (FormatException)
+                {
+                    tx.Focus();
+
+                    if (message != null)
+                    {
+                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private bool ValidateDate(TextBoxBase tx, string message = null)
