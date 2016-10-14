@@ -213,7 +213,7 @@ namespace WorkPlan
             var cell = dataGridView1[colIndex, rowIndex];
             List<IShiftVM> duties = GetShiftsAt(colIndex, rowIndex);
             IShiftVM dutyToEdit = null;
-
+            
             if (duties.Count > 0)
             {
                 dutyToEdit = duties[0];
@@ -269,7 +269,10 @@ namespace WorkPlan
             }
             
             UpdateData();
-            dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+            //dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+            //var days = dutyToEdit.EndDate.Subtract(dutyToEdit.StartDate).Days;
+            for (int d = 0; d < DaysToShow; d++)
+                dataGridView1.InvalidateCell(d, dataGridView1.CurrentCell.RowIndex);
         }
 
         private void AddNewDutyAt(int colIndex, int rowIndex)
