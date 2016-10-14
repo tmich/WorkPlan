@@ -17,14 +17,16 @@ namespace WorkPlan
         protected DateTime StartDate, EndDate;
         protected int PageNumber = 0;
         protected int PrintedRows = 0;
-        protected int RowsPerPage = 12;
+        protected int RowsPerPage = 16;
 
         int leftMargin = 0;
         int topMargin = 0;
         int cellWidth = 140;
-        int cellHeight = 50;
+        int cellHeight = 40;
         int cellHeadHeight = 20;
 
+        List<int> printed_positions;
+        
         // allineamento centrato
         StringFormat centerAlignedFormat = new StringFormat()
         {
@@ -51,10 +53,12 @@ namespace WorkPlan
 
             pd.DefaultPageSettings.PaperSize = ps;
             pd.DefaultPageSettings.Landscape = true;
-            pd.DefaultPageSettings.Margins.Top = 20;
-            pd.DefaultPageSettings.Margins.Bottom = 20;
+            pd.DefaultPageSettings.Margins.Top = 10;
+            pd.DefaultPageSettings.Margins.Bottom = 10;
             pd.DefaultPageSettings.Margins.Left = 20;
             pd.DefaultPageSettings.Margins.Right = 20;
+
+            printed_positions = new List<int>();
         }
 
         public void Print()
@@ -83,7 +87,7 @@ namespace WorkPlan
             if (PageNumber == 1)
             {
                 PrintTestata(ref e);
-                topMargin += cellHeight * 2;
+                topMargin += cellHeight; // * 2;
             }
 
             PrintColonne(ref e);
@@ -92,7 +96,7 @@ namespace WorkPlan
             {
                 g.DrawString(string.Format("Cassa"), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
                 PrintCassa(ref e);
-                topMargin += 50;
+                //topMargin += 50;
             }
 
             if (shifts.Count > 0)
@@ -189,15 +193,19 @@ namespace WorkPlan
             var employees = shifts.Keys.ToList();
             employees.Sort(new EmployeeFullNameComparer());
             //employees.Sort(new EmployeeDefaultPositionComparer());
-
+            
             var positions = new PositionDao().GetAll().ToList();
             
             foreach (var pos in positions)
             {
                 if (!pos.Desc.Equals("Cassa"))
                 {
-                    PrintPosition(ref e, pos);
-                    
+                    if (!printed_positions.Contains(pos.Id))
+                    {
+                        PrintPosition(ref e, pos);
+                        printed_positions.Add(pos.Id);
+                    }
+
                     foreach (var employee in employees)
                     {
                         if (e.HasMorePages)
@@ -219,20 +227,20 @@ namespace WorkPlan
             Graphics g = e.Graphics;
             //int topMargin = e.MarginBounds.Top;
 
-            topMargin += 30;
+            topMargin += 35;
             g.DrawString(string.Format(position.Desc), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
-            //topMargin += 20;
+            ////topMargin += 20;
         }
 
         private void PrintRow(ref PrintPageEventArgs e, Employee employee, List<IShiftVM> duties)
         {
             Graphics g = e.Graphics;
 
-            // RIGA (DIPENDENTE
+            // RIGA (DIPENDENTE)
             var cellRowHead = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
             g.FillRectangle(Brushes.LightGray, cellRowHead);
             g.DrawRectangle(Pens.Black, cellRowHead);
-            g.DrawString(employee.FullName, new Font("Arial", 9), Brushes.Black, cellRowHead, leftAlignedFormat);
+            g.DrawString(employee.FullName, new Font("Arial", 8), Brushes.Black, cellRowHead, leftAlignedFormat);
             leftMargin += cellWidth;
             var innerStartDate = StartDate;
 

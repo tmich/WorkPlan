@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Drawing.Printing;
 using System.Diagnostics;
 using System.Reflection;
+using System.Data.SqlClient;
 
 namespace WorkPlan
 {
@@ -31,7 +32,7 @@ namespace WorkPlan
         SelectedCellInfo selectedCellInfo = new SelectedCellInfo();
         int firstDisplayedScrollingRowIndex = 0;
         const int DaysToShow = 7;
-        const int ColumnWidth = 160;
+        const int ColumnWidth = 170;
         private EmployeeRepository repo;
         private DutyRepository dutyRepo;
         private NoWorkRepository noworkRepo;
@@ -85,11 +86,26 @@ namespace WorkPlan
 
         public void UpdateData()
         {
-            employees = repo.All();
+            try
+            {
+                employees = repo.All();
 
-            allDuties = periodService.GetByDateRangeDict(startDate, endDate);
-            dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
-            dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
+                allDuties = periodService.GetByDateRangeDict(startDate, endDate);
+                dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
+                dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
+            }
+            catch (SqlException exc)
+            {
+                MessageBox.Show(exc.Message, "Errore", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Dispose();
+                Application.Exit();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            
 
             //CreateGrid(monthCalendar1.SelectionStart);
         }
@@ -297,7 +313,9 @@ namespace WorkPlan
                 noworkRepo.Add(ref nowork);
                 UpdateData();
 
-                dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+                var days = nowork.EndDate.Subtract(nowork.StartDate).Days;
+                for(int d = dataGridView1.CurrentCell.ColumnIndex; d <= dataGridView1.CurrentCell.ColumnIndex + days; d++)
+                    dataGridView1.InvalidateCell(d, dataGridView1.CurrentCell.RowIndex);
             }
         }
         

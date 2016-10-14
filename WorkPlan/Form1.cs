@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MySql.Data.MySqlClient;
+using System;
 using System.Windows.Forms;
 
 namespace WorkPlan
@@ -10,6 +11,7 @@ namespace WorkPlan
 
         public Form1()
         {
+            
             InitializeComponent();
 
             EmployeeRepository employeeRepo = new EmployeeRepository();
@@ -17,7 +19,7 @@ namespace WorkPlan
             employeesView.SetEmployees(employeeRepo.All());
 
             scheduleView = new ScheduleView();
-            
+
             employeesView.Dock = DockStyle.Fill;
             employeesView.Name = "uc";
             tabContainer.TabPages[1].Controls.Add(employeesView);
@@ -25,7 +27,7 @@ namespace WorkPlan
             scheduleView.Dock = DockStyle.Fill;
             scheduleView.Name = "uc";
             tabContainer.TabPages[0].Controls.Add(scheduleView);
-
+            
             //stampaToolStripMenuItem.Enabled = false;
         }
         

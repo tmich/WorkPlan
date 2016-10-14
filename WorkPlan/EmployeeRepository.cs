@@ -74,8 +74,8 @@ namespace WorkPlan
 
             using (MySqlConnection conn = new MySqlConnection(connstr))
             {
-                try
-                {
+                //try
+                //{
                     List<Employee> employees = new List<Employee>();
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
@@ -114,11 +114,11 @@ namespace WorkPlan
 
                     employees.Sort((x, y) => x.LastName.CompareTo(y.LastName));
                     return employees;
-                }
-                catch (SqlException)
-                {
-                    throw;
-                }
+                //}
+                //catch (Exception)
+                //{
+                //    throw;
+                //}
             }
         }
 
