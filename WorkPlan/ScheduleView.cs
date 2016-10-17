@@ -193,7 +193,9 @@ namespace WorkPlan
                 {
                     periodService.DeleteShift(shiftToDelete);
                     UpdateData();
-                    dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+                    //dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+                    for (int d = 0; d < DaysToShow; d++)
+                        dataGridView1.InvalidateCell(d, dataGridView1.CurrentCell.RowIndex);
                 }
             }
         }

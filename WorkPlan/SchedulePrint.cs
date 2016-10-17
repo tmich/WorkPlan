@@ -190,7 +190,9 @@ namespace WorkPlan
 
         private void PrintTurni(ref PrintPageEventArgs e)
         {
-            var employees = shifts.Keys.ToList();
+            var erep = new EmployeeRepository();
+            //var employees = shifts.Keys.ToList();
+            var employees = erep.All();
             employees.Sort(new EmployeeFullNameComparer());
             //employees.Sort(new EmployeeDefaultPositionComparer());
             
@@ -214,8 +216,21 @@ namespace WorkPlan
                         if (employee.DefaultPosition.Id != pos.Id)
                             continue;
 
-                        PrintRow(ref e, employee, shifts[employee]);
-                        shifts.Remove(employee);
+                        if (shifts.ContainsKey(employee))
+                        {
+                            PrintRow(ref e, employee, shifts[employee]);
+                            shifts.Remove(employee);
+                        }
+                        //else
+                        //{
+                        //    PrintRow(ref e, employee, new List<IShiftVM>());
+                        //}
+
+                        //shifts.Remove(employee);
+                        //if(shifts.Count == 0)
+                        //{
+                        //    return;
+                        //}
                     }
                 }
             }
@@ -255,9 +270,10 @@ namespace WorkPlan
                     new Point(leftMargin + (cellDay.Width / 2), topMargin + cellHeight));
 
                 // turni del giorno
+
                 var dutiesOfDay = duties.FindAll(delegate (IShiftVM shift)
                 {
-                    return shift.StartDate.Date.Equals(innerStartDate.Date) || 
+                    return shift.StartDate.Date.Equals(innerStartDate.Date) ||
                         (shift.StartDate.Date < innerStartDate.Date && shift.EndDate.Date >= innerStartDate.Date);
                 }
                 );
@@ -268,6 +284,7 @@ namespace WorkPlan
                     dd.Print(e, cellDay, dutiesOfDay.Count, d);
                     d++;
                 }
+                
 
                 innerStartDate = innerStartDate.AddDays(1);
                 leftMargin += cellWidth;
