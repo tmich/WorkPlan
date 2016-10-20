@@ -114,9 +114,9 @@ namespace WorkPlan
 
             bool enabled = !chkFullDay.Checked;
 
-            dtPickerStart.Enabled = enabled;
+            //dtPickerStart.Enabled = enabled;
             tmPickerStart.Enabled = enabled;
-            dtPickerEnd.Enabled = enabled;
+            //dtPickerEnd.Enabled = enabled;
             tmPickerEnd.Enabled = enabled;
 
             if (chkFullDay.Checked)
