@@ -42,6 +42,7 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tbPrint = new System.Windows.Forms.ToolStripButton();
             this.label1 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -64,6 +65,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.button1);
             this.splitContainer1.Panel1.Controls.Add(this.cmdPrint);
             this.splitContainer1.Panel1.Controls.Add(this.monthCalendar1);
             // 
@@ -80,19 +82,19 @@
             this.cmdPrint.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmdPrint.Image = global::WorkPlan.Resources.printer;
             this.cmdPrint.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.cmdPrint.Location = new System.Drawing.Point(4, 269);
+            this.cmdPrint.Location = new System.Drawing.Point(10, 233);
             this.cmdPrint.Margin = new System.Windows.Forms.Padding(4);
             this.cmdPrint.Name = "cmdPrint";
-            this.cmdPrint.Size = new System.Drawing.Size(265, 43);
+            this.cmdPrint.Size = new System.Drawing.Size(295, 43);
             this.cmdPrint.TabIndex = 2;
-            this.cmdPrint.Text = "Stampa";
+            this.cmdPrint.Text = "Stampa turni";
             this.cmdPrint.UseVisualStyleBackColor = true;
             this.cmdPrint.Click += new System.EventHandler(this.cmdPrint_Click);
             // 
             // monthCalendar1
             // 
             this.monthCalendar1.FirstDayOfWeek = System.Windows.Forms.Day.Monday;
-            this.monthCalendar1.Location = new System.Drawing.Point(0, 7);
+            this.monthCalendar1.Location = new System.Drawing.Point(10, 11);
             this.monthCalendar1.Margin = new System.Windows.Forms.Padding(12, 11, 12, 11);
             this.monthCalendar1.MaxSelectionCount = 1;
             this.monthCalendar1.Name = "monthCalendar1";
@@ -205,6 +207,17 @@
             this.label1.TabIndex = 5;
             this.label1.Text = "Gestione Turni e Assenze";
             // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Location = new System.Drawing.Point(10, 283);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(295, 43);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Resoconto mensile";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // ScheduleView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -244,5 +257,6 @@
         private System.Windows.Forms.ToolStripMenuItem assenzaToolStripMenuItem;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button cmdPrint;
+        private System.Windows.Forms.Button button1;
     }
 }

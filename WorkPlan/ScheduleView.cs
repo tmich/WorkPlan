@@ -529,7 +529,20 @@ namespace WorkPlan
         {
             Print();
         }
-        
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            DlgChooseMonth d = new DlgChooseMonth();
+            d.ChosenMonth = monthCalendar1.SelectionStart.Month - 2;
+            var r = d.ShowDialog();
+            if(r == DialogResult.OK)
+            {
+                int month = d.ChosenMonth;
+                MonthlyReport report = new MonthlyReport(month);
+                report.Print();
+            }
+        }
+
         private void tbPrint_Click(object sender, EventArgs e)
         {
             Print();

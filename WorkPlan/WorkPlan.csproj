@@ -61,6 +61,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -93,6 +94,12 @@
   <ItemGroup>
     <Compile Include="ChildForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgChooseMonth.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgChooseMonth.Designer.cs">
+      <DependentUpon>DlgChooseMonth.cs</DependentUpon>
     </Compile>
     <Compile Include="DlgChooseShift.cs">
       <SubType>Form</SubType>
@@ -145,6 +152,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="IShiftVM.cs" />
+    <Compile Include="MonthlyReport.cs" />
     <Compile Include="NoWork.cs" />
     <Compile Include="NoWorkReason.cs" />
     <Compile Include="NoWorkRepository.cs" />
@@ -179,6 +187,9 @@
     <Compile Include="UserControl1.Designer.cs">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DlgChooseMonth.resx">
+      <DependentUpon>DlgChooseMonth.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DlgChooseShift.resx">
       <DependentUpon>DlgChooseShift.cs</DependentUpon>
     </EmbeddedResource>

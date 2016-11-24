@@ -30,7 +30,8 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stampaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.configurazioneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.causaliAssenzaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.esciToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nuovoTurnoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -39,8 +40,6 @@
             this.tabContainer = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.configurazioneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.causaliAssenzaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.tabContainer.SuspendLayout();
             this.SuspendLayout();
@@ -61,19 +60,26 @@
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.configurazioneToolStripMenuItem,
-            this.stampaToolStripMenuItem,
             this.toolStripSeparator1,
             this.esciToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(44, 24);
             this.fileToolStripMenuItem.Text = "&File";
             // 
-            // stampaToolStripMenuItem
+            // configurazioneToolStripMenuItem
             // 
-            this.stampaToolStripMenuItem.Name = "stampaToolStripMenuItem";
-            this.stampaToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
-            this.stampaToolStripMenuItem.Text = "&Stampa";
-            this.stampaToolStripMenuItem.Click += new System.EventHandler(this.stampaToolStripMenuItem_Click);
+            this.configurazioneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.causaliAssenzaToolStripMenuItem});
+            this.configurazioneToolStripMenuItem.Name = "configurazioneToolStripMenuItem";
+            this.configurazioneToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
+            this.configurazioneToolStripMenuItem.Text = "Configurazione";
+            // 
+            // causaliAssenzaToolStripMenuItem
+            // 
+            this.causaliAssenzaToolStripMenuItem.Name = "causaliAssenzaToolStripMenuItem";
+            this.causaliAssenzaToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
+            this.causaliAssenzaToolStripMenuItem.Text = "Causali Assenza";
+            this.causaliAssenzaToolStripMenuItem.Click += new System.EventHandler(this.causaliAssenzaToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -137,21 +143,6 @@
             this.tabPage2.Text = "Dipendenti";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // configurazioneToolStripMenuItem
-            // 
-            this.configurazioneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.causaliAssenzaToolStripMenuItem});
-            this.configurazioneToolStripMenuItem.Name = "configurazioneToolStripMenuItem";
-            this.configurazioneToolStripMenuItem.Size = new System.Drawing.Size(185, 26);
-            this.configurazioneToolStripMenuItem.Text = "Configurazione";
-            // 
-            // causaliAssenzaToolStripMenuItem
-            // 
-            this.causaliAssenzaToolStripMenuItem.Name = "causaliAssenzaToolStripMenuItem";
-            this.causaliAssenzaToolStripMenuItem.Size = new System.Drawing.Size(188, 26);
-            this.causaliAssenzaToolStripMenuItem.Text = "Causali Assenza";
-            this.causaliAssenzaToolStripMenuItem.Click += new System.EventHandler(this.causaliAssenzaToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -180,7 +171,6 @@
         private System.Windows.Forms.ToolStripMenuItem nuovoTurnoToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem modificaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem eliminaToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stampaToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.TabControl tabContainer;
         private System.Windows.Forms.TabPage tabPage1;

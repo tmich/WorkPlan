@@ -44,8 +44,8 @@ namespace WorkPlan
 
         private void stampaToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var uc = (PrintableUC)tabContainer.SelectedTab.Controls["uc"];
-            uc.Print();
+            //var uc = (PrintableUC)tabContainer.SelectedTab.Controls["uc"];
+            //uc.Print();
         }
 
         private void dipendentiToolStripMenuItem_Click(object sender, EventArgs e)
