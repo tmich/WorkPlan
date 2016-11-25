@@ -539,7 +539,15 @@ namespace WorkPlan
             {
                 int month = d.ChosenMonth;
                 int year = d.ChosenYear;
-                MonthlySummaryReport report = new MonthlySummaryReport(month, year);
+                IMonthlyReport report;
+                if (d.Detail)
+                {
+                    report = new MonthlyDetailReport(month, year);
+                }
+                else
+                {
+                    report = new MonthlySummaryReport(month, year);
+                }
                 report.Print();
             }
         }

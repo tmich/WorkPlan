@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    class MonthlySummaryReport
+    class MonthlySummaryReport : IMonthlyReport
     {
         protected PrintDocument pd;
         protected int PageNumber = 0;
@@ -49,7 +49,7 @@ namespace WorkPlan
             m_mese = mese;
             m_anno = anno;
 
-            MonthlyReport mrep = new MonthlyReport(m_mese, m_anno);
+            MonthlyReportCmd mrep = new MonthlyReportCmd(m_mese, m_anno);
             
             DataView dv = mrep.Sintesi.DefaultView;
             dv.Sort = "cognome";

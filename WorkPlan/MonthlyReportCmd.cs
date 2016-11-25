@@ -12,13 +12,13 @@ using System.Drawing;
 
 namespace WorkPlan
 {
-    class MonthlyReport
+    class MonthlyReportCmd
     {
         protected string connstr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"].ToString();
         protected int m_month, m_year;
         protected DataTable m_sintesi = null, m_dettaglio = null;
 
-        public MonthlyReport(int month, int year)
+        public MonthlyReportCmd(int month, int year)
         {
             m_month = month;
             m_year = year;

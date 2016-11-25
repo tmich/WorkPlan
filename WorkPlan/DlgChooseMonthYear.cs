@@ -43,5 +43,13 @@ namespace WorkPlan
                 cbMonths.SelectedIndex = value;
             }
         }
+
+        public bool Detail
+        {
+            get
+            {
+                return chkDettaglio.Checked;
+            }
+        }
     }
 }

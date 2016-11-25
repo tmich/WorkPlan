@@ -151,9 +151,10 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="IMonthlyReport.cs" />
     <Compile Include="IShiftVM.cs" />
     <Compile Include="MonthlyDetailReport.cs" />
-    <Compile Include="MonthlyReport.cs" />
+    <Compile Include="MonthlyReportCmd.cs" />
     <Compile Include="MonthlySummaryReport.cs" />
     <Compile Include="NoWork.cs" />
     <Compile Include="NoWorkReason.cs" />

@@ -33,6 +33,7 @@
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cbYears = new System.Windows.Forms.ComboBox();
+            this.chkDettaglio = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // cbMonths
@@ -95,11 +96,22 @@
             this.cbYears.Size = new System.Drawing.Size(96, 24);
             this.cbYears.TabIndex = 5;
             // 
+            // chkDettaglio
+            // 
+            this.chkDettaglio.AutoSize = true;
+            this.chkDettaglio.Location = new System.Drawing.Point(145, 89);
+            this.chkDettaglio.Name = "chkDettaglio";
+            this.chkDettaglio.Size = new System.Drawing.Size(146, 21);
+            this.chkDettaglio.TabIndex = 6;
+            this.chkDettaglio.Text = "Stampa il dettaglio";
+            this.chkDettaglio.UseVisualStyleBackColor = true;
+            // 
             // DlgChooseMonthYear
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(308, 212);
+            this.Controls.Add(this.chkDettaglio);
             this.Controls.Add(this.cbYears);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
@@ -120,5 +132,6 @@
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.ComboBox cbYears;
+        private System.Windows.Forms.CheckBox chkDettaglio;
     }
 }
