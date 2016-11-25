@@ -532,13 +532,14 @@ namespace WorkPlan
 
         private void button1_Click(object sender, EventArgs e)
         {
-            DlgChooseMonth d = new DlgChooseMonth();
-            d.ChosenMonth = monthCalendar1.SelectionStart.Month - 2;
+            DlgChooseMonthYear d = new DlgChooseMonthYear();
+            d.ChosenMonth = monthCalendar1.SelectionStart.Month - 1;
             var r = d.ShowDialog();
             if(r == DialogResult.OK)
             {
                 int month = d.ChosenMonth;
-                MonthlyReport report = new MonthlyReport(month);
+                int year = d.ChosenYear;
+                MonthlySummaryReport report = new MonthlySummaryReport(month, year);
                 report.Print();
             }
         }

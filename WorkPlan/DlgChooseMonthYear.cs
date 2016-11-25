@@ -10,18 +10,33 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public partial class DlgChooseMonth : Form
+    public partial class DlgChooseMonthYear : Form
     {
-        public DlgChooseMonth()
+        public DlgChooseMonthYear()
         {
             InitializeComponent();
+
+            for(int y=2016;y<=DateTime.Now.Year;y++)
+            {
+                cbYears.Items.Add(y);
+            }
+
+            cbYears.SelectedIndex = cbYears.Items.Count - 1;
+        }
+
+        public int ChosenYear
+        {
+            get
+            {
+                return (int)cbYears.SelectedItem;
+            }
         }
 
         public int ChosenMonth
         {
             get
             {
-                return cbMonths.SelectedIndex;
+                return cbMonths.SelectedIndex + 1;
             }
             set
             {
