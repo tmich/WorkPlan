@@ -192,6 +192,64 @@ namespace WorkPlan
             }
         }
 
+        public TimeSpan EmployeeDailyHours
+        {
+            get
+            {
+                TimeSpan ts = new TimeSpan(0, 0, 0);
+                try
+                {
+                    TimeSpan.TryParse(txtEmpDailyHours.Text, out ts);
+                    if (ts.Hours == 0)
+                    {
+                        throw new FormatException();
+                    }
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+                
+                return ts;
+            }
+
+            set
+            {
+                txtEmpDailyHours.Text = string.Format("{0:hh\\:mm}", value);
+            }
+        }
+
+        public TimeSpan EmployeeMonthlyHours
+        {
+            get
+            {
+                string span = txtEmpMonthlyHours.Text;
+                TimeSpan ts = new TimeSpan(0, 0, 0);
+                try
+                {
+                    ts = new TimeSpan(int.Parse(span.Split(':')[0]),    // hours
+                           int.Parse(span.Split(':')[1]),    // minutes
+                           0);          // seconds
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }                               
+
+                return ts;
+            }
+
+            set
+            {
+                string dd = value.ToString("%d");
+                string hh = value.ToString("%h");
+                int h = (int.Parse(dd) * 24) + int.Parse(hh);
+                string mm = value.ToString("mm");
+                txtEmpMonthlyHours.Text = string.Format("{0}:{1}", h, mm);
+            }
+        }
+
         public Position EmployeeDefaultPosition
         {
             get
@@ -288,7 +346,47 @@ namespace WorkPlan
                 e.Cancel = !ValidateNonEmpty(txEmpQual, "Inserire la qualifica"); if (e.Cancel) return;
                 e.Cancel = !ValidateDate(txEmpHireDate, "Data di assunzione non valida"); if (e.Cancel) return;
                 e.Cancel = !ValidateDecimal(txtEmpSalary, "Valore non corretto"); if (e.Cancel) return;
+                e.Cancel = !ValidateTimeSpan(txtEmpDailyHours, "Valore non corretto"); if (e.Cancel) return;
+                e.Cancel = !ValidateTimeSpan(txtEmpMonthlyHours, "Valore non corretto"); if (e.Cancel) return;
             }
+        }
+
+        private bool ValidateTimeSpan(TextBoxBase tx, string message = null)
+        {
+            if (ValidateNonEmpty(tx, message))
+            {
+                try
+                {
+                    string span = tx.Text;
+                    TimeSpan ts = new TimeSpan(int.Parse(span.Split(':')[0]),    // hours
+                           int.Parse(span.Split(':')[1]),    // minutes
+                           0);
+                }
+                catch (FormatException)
+                {
+                    tx.Focus();
+
+                    if (message != null)
+                    {
+                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+
+                    return false;
+                }
+                catch (OverflowException)
+                {
+                    tx.Focus();
+
+                    if (message != null)
+                    {
+                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private bool ValidateDecimal(TextBoxBase tx, string message = null)
@@ -357,6 +455,11 @@ namespace WorkPlan
         }
 
         private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
         {
 
         }

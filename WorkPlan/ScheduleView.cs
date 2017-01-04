@@ -534,6 +534,7 @@ namespace WorkPlan
         {
             DlgChooseMonthYear d = new DlgChooseMonthYear();
             d.ChosenMonth = monthCalendar1.SelectionStart.Month - 1;
+            d.ChosenYear = monthCalendar1.SelectionStart.Year;
             var r = d.ShowDialog();
             if(r == DialogResult.OK)
             {

@@ -30,6 +30,10 @@ namespace WorkPlan
             {
                 return (int)cbYears.SelectedItem;
             }
+            set
+            {
+                cbYears.SelectedItem = value;
+            }
         }
 
         public int ChosenMonth

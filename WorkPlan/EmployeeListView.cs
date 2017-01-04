@@ -108,10 +108,16 @@ namespace WorkPlan
                 EmployeeMobileNo2 = emp.MobileNo2
             };
 
-            // leggo il salario pattuito
+            // leggo il salario e le ore lavorative pattuite
             EconomicsRepository econRepo = new EconomicsRepository();
             decimal salary = econRepo.GetAgreedSalary(emp.Id);
             dlgEmp.EmployeeSalary = salary;
+
+            TimeSpan dailyHh = econRepo.GetDailyHours(emp.Id);
+            dlgEmp.EmployeeDailyHours = dailyHh;
+
+            TimeSpan monthlyHh = econRepo.GetMonthlyHours(emp.Id);
+            dlgEmp.EmployeeMonthlyHours = monthlyHh;
 
             if (dlgEmp.ShowDialog() == DialogResult.OK)
             {
@@ -119,8 +125,10 @@ namespace WorkPlan
                 EmployeeRepository empRepo = new EmployeeRepository();
                 empRepo.Update(emp);
 
-                // scrivo il salario pattuito
+                // scrivo il salario e le ore lavorative pattuite
                 econRepo.SetAgreedSalary(emp.Id, dlgEmp.EmployeeSalary);
+                econRepo.SetDailyHours(emp.Id, dlgEmp.EmployeeDailyHours);
+                econRepo.SetMonthlyHours(emp.Id, dlgEmp.EmployeeMonthlyHours);
 
                 // update list
                 SetEmployees(empRepo.All());

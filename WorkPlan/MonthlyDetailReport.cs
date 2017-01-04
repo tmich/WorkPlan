@@ -196,12 +196,18 @@ namespace WorkPlan
             g.DrawRectangle(Pens.DarkGray, head3);
             g.FillRectangle(Brushes.LightGray, head3);
             g.DrawString("GG ASS.", baseFont, Brushes.Black, head3, centerAlignedFormat);
-            leftMargin += head2.Width;
+            leftMargin += head3.Width;
 
             var head4 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
             g.DrawRectangle(Pens.DarkGray, head4);
             g.FillRectangle(Brushes.LightGray, head4);
             g.DrawString("CAUSALE", baseFont, Brushes.Black, head4, centerAlignedFormat);
+            leftMargin += head4.Width;
+
+            var head5 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            g.DrawRectangle(Pens.DarkGray, head5);
+            g.FillRectangle(Brushes.LightGray, head5);
+            g.DrawString("DIFF", baseFont, Brushes.Black, head5, centerAlignedFormat);
 
             topMargin += cellHeight;
 
@@ -263,6 +269,24 @@ namespace WorkPlan
                 g.DrawRectangle(Pens.DarkGray, cell4);
                 g.DrawString(causale, baseFont, Brushes.Black, cell4, centerAlignedFormat);
                 leftMargin += cell4.Width;
+
+                // DIFFERENZA
+                string diff = "";
+                bool isNegative = false;
+                var cell5 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                if(!row.IsNull("diff_oraria"))
+                {
+                    TimeSpan ts = (TimeSpan)row["diff_oraria"];
+
+                    if (TimeSpan.Zero.CompareTo(ts) != 0)
+                    {
+                        isNegative = ts < TimeSpan.Zero;
+                        diff = string.Format("{0}{1}", (isNegative ? "-" : ""), string.Format("{0:hh\\:mm}", ts));
+                    }
+                    
+                }
+                g.DrawRectangle(Pens.DarkGray, cell5);
+                g.DrawString(diff, baseFont, (isNegative ? Brushes.Red : Brushes.Black), cell5, centerAlignedFormat);
 
                 topMargin += cellHeight;
             }
