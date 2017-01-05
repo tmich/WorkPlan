@@ -347,7 +347,7 @@ namespace WorkPlan
                 e.Cancel = !ValidateDate(txEmpHireDate, "Data di assunzione non valida"); if (e.Cancel) return;
                 e.Cancel = !ValidateDecimal(txtEmpSalary, "Valore non corretto"); if (e.Cancel) return;
                 e.Cancel = !ValidateTimeSpan(txtEmpDailyHours, "Valore non corretto"); if (e.Cancel) return;
-                e.Cancel = !ValidateTimeSpan(txtEmpMonthlyHours, "Valore non corretto"); if (e.Cancel) return;
+                //e.Cancel = !ValidateTimeSpan(txtEmpMonthlyHours, "Valore non corretto"); if (e.Cancel) return;
             }
         }
 

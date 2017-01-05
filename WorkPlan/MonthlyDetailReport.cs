@@ -159,13 +159,18 @@ namespace WorkPlan
             int leftMargin = e.MarginBounds.Left;
             int topMargin = e.MarginBounds.Top;
             Graphics g = e.Graphics;
-            
-            if(PageNumber == 1)
+
+            if (PageNumber == 1)
             {
                 PrintTestata(ref e);
                 topMargin += 50;
             }
 
+            // totali
+            TimeSpan tsTotaleOreLavorate = new TimeSpan();
+            TimeSpan tsTotaleOreAssenza = new TimeSpan();
+            TimeSpan tsTotaleDifferenza = new TimeSpan();
+            int iTotaleGgAssenza = 0;
             var rowNome = table.Select("dipendente_id=" + dipendenti[pn]).First();
 
             string nominativo = String.Format("{0} {1}", rowNome["cognome"], rowNome["nome"]);
@@ -226,11 +231,14 @@ namespace WorkPlan
                 // ORE LAVORATE
                 string ol = "";
                 var cell1 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                TimeSpan ore_lavorate = new TimeSpan();
                 if (!row.IsNull("tot_ore_lavorate"))
                 {
-                    TimeSpan ore_lavorate = (TimeSpan)row["tot_ore_lavorate"];
+                    ore_lavorate = (TimeSpan)row["tot_ore_lavorate"];
                     ol = string.Format("{0:00}:{1:00}", Math.Floor(ore_lavorate.TotalHours), ore_lavorate.Minutes);
                 }
+
+                tsTotaleOreLavorate = tsTotaleOreLavorate.Add(ore_lavorate);
                 g.DrawRectangle(Pens.DarkGray, cell1);
                 g.DrawString(ol, baseFont, Brushes.Black, cell1, centerAlignedFormat);
                 leftMargin += cell1.Width;
@@ -238,10 +246,12 @@ namespace WorkPlan
                 // ORE ASSENZA
                 string oa = "";
                 var cell2 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                TimeSpan tsOreAssenza = new TimeSpan();
                 if (!row.IsNull("tot_ore_assenza"))
                 {
-                    TimeSpan ore_assenza = (TimeSpan)row["tot_ore_assenza"];
-                    oa = string.Format("{0:00}:{1:00}", Math.Floor(ore_assenza.TotalHours), ore_assenza.Minutes);
+                    tsOreAssenza = (TimeSpan)row["tot_ore_assenza"];
+                    oa = string.Format("{0:00}:{1:00}", Math.Floor(tsOreAssenza.TotalHours), tsOreAssenza.Minutes);
+                    tsTotaleOreAssenza = tsTotaleOreAssenza.Add(tsOreAssenza);
                 }
                 g.DrawRectangle(Pens.DarkGray, cell2);
                 g.DrawString(oa, baseFont, Brushes.Black, cell2, centerAlignedFormat);
@@ -250,10 +260,12 @@ namespace WorkPlan
                 // GIORNO ASSENZA
                 string ga = "";
                 var cell3 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                int giorno_assenza = 0;
                 if ((int)row["giorno_assenza"] > 0)
                 {
-                    int giorno_assenza = (int)row["giorno_assenza"];
+                    giorno_assenza = (int)row["giorno_assenza"];
                     ga = giorno_assenza.ToString();
+                    iTotaleGgAssenza++;
                 }
                 g.DrawRectangle(Pens.DarkGray, cell3);
                 g.DrawString(ga, baseFont, Brushes.Black, cell3, centerAlignedFormat);
@@ -262,7 +274,7 @@ namespace WorkPlan
                 // CAUSALE ASSENZA
                 string causale = "";
                 var cell4 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                if(!row.IsNull("causale_assenza"))
+                if (!row.IsNull("causale_assenza"))
                 {
                     causale = row["causale_assenza"].ToString();
                 }
@@ -274,23 +286,70 @@ namespace WorkPlan
                 string diff = "";
                 bool isNegative = false;
                 var cell5 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                if(!row.IsNull("diff_oraria"))
+                TimeSpan tsDiff = new TimeSpan();
+                if (!row.IsNull("diff_oraria"))
                 {
-                    TimeSpan ts = (TimeSpan)row["diff_oraria"];
-
-                    if (TimeSpan.Zero.CompareTo(ts) != 0)
-                    {
-                        isNegative = ts < TimeSpan.Zero;
-                        diff = string.Format("{0}{1}", (isNegative ? "-" : ""), string.Format("{0:hh\\:mm}", ts));
-                    }
-                    
+                    tsDiff = (TimeSpan)row["diff_oraria"];
                 }
+
+                // tsDiff = tsDiff.Add(tsOreAssenza);   // aggiungo le ore di assenza
+                tsTotaleDifferenza = tsTotaleDifferenza.Add(tsDiff);
                 g.DrawRectangle(Pens.DarkGray, cell5);
-                g.DrawString(diff, baseFont, (isNegative ? Brushes.Red : Brushes.Black), cell5, centerAlignedFormat);
+                if (TimeSpan.Zero.CompareTo(tsDiff) != 0)
+                {
+                    isNegative = tsDiff < TimeSpan.Zero;
+                    diff = string.Format("{0}{1}", (isNegative ? "-" : "+"), string.Format("{0:hh\\:mm}", tsDiff));
+                    g.DrawString(diff, baseFont, (isNegative ? Brushes.Red : Brushes.Black), cell5, centerAlignedFormat);
+                }
+                
+                // Controllo che esistano tutti i dati, in caso contrario segnalo
+                if(ore_lavorate == TimeSpan.Zero &&
+                    tsOreAssenza == TimeSpan.Zero &&
+                    giorno_assenza == 0)
+                {
+                    g.DrawString("???", baseFont, Brushes.Red, cell5, centerAlignedFormat);
+                }
+
 
                 topMargin += cellHeight;
             }
+
+            // RIGA TOTALI
+            leftMargin = e.MarginBounds.Left;
+            leftMargin += firstCellWidth;
+
+            var cellTot1 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            string sTotOreLavorate = FormatTimeSpan(tsTotaleOreLavorate);
+            g.DrawRectangle(Pens.DarkGray, cellTot1);
+            g.DrawString(sTotOreLavorate, boldFont, Brushes.Black, cellTot1, centerAlignedFormat);
+            leftMargin += cellTot1.Width;
+
+            var cellTot2 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            string sTotOreAssenza = FormatTimeSpan(tsTotaleOreAssenza);
+            g.DrawRectangle(Pens.DarkGray, cellTot2);
+            g.DrawString(sTotOreAssenza, boldFont, Brushes.Black, cellTot2, centerAlignedFormat);
+            leftMargin += cellTot2.Width;
+
+            var cellTot3 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            g.DrawRectangle(Pens.DarkGray, cellTot3);
+            g.DrawString(iTotaleGgAssenza.ToString(), boldFont, Brushes.Black, cellTot3, centerAlignedFormat);
+            leftMargin += (cellTot3.Width) * 2;
+
+            var cellTot4 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            g.DrawRectangle(Pens.DarkGray, cellTot4);
+            string sTotDifferenza = FormatTimeSpan(tsTotaleDifferenza);
+            if (tsTotaleDifferenza == TimeSpan.Zero)
+            {
+                sTotDifferenza = "";
+            }
+            else
+            {
+                sTotDifferenza = string.Format("{0}{1}", (tsTotaleDifferenza < TimeSpan.Zero ? "-" : "+"), sTotDifferenza);
+            }
             
+            g.DrawString(sTotDifferenza, boldFont, (tsTotaleDifferenza < TimeSpan.Zero ? Brushes.Red : Brushes.Black), cellTot4, centerAlignedFormat);
+            leftMargin += cellTot4.Width;
+
             //g.DrawString(PageNumber.ToString(), baseFont, Brushes.Black, topMargin, leftMargin);
 
             if (PageNumber < dipendenti.Count)
@@ -302,6 +361,15 @@ namespace WorkPlan
             {
                 e.HasMorePages = false;
             }
+        }
+
+        private string FormatTimeSpan(TimeSpan ts)
+        {
+            string dd = ts.ToString("%d");
+            string hh = ts.ToString("%h");
+            int h = (int.Parse(dd) * 24) + int.Parse(hh);
+            string mm = ts.ToString("mm");
+            return string.Format("{0}:{1}", h, mm);
         }
     }
 }

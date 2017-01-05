@@ -20,7 +20,7 @@ namespace WorkPlan
 
         int m_mese, m_anno;
 
-        int firstCellWidth = 500;
+        int firstCellWidth = 400;
         int leftMargin = 50;
         int topMargin = 50;
         int cellWidth = 80;
@@ -122,6 +122,12 @@ namespace WorkPlan
             g.DrawRectangle(Pens.DarkGray, head3);
             g.FillRectangle(Brushes.LightGray, head3);
             g.DrawString("GG ASS.", baseFont, Brushes.Black, head3, centerAlignedFormat);
+            leftMargin += head3.Width;
+
+            //var head4 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            //g.DrawRectangle(Pens.DarkGray, head4);
+            //g.FillRectangle(Brushes.LightGray, head4);
+            //g.DrawString("DIFF.", baseFont, Brushes.Black, head4, centerAlignedFormat);
 
             leftMargin = 50;
             topMargin += cellHeight;
@@ -143,6 +149,8 @@ namespace WorkPlan
             {
                 PrintTestata(ref e);
             }
+
+            EconomicsRepository econ = new EconomicsRepository();
             
             foreach (DataRow row in table.Rows)
             {
@@ -154,23 +162,25 @@ namespace WorkPlan
                 leftMargin += rect.Width;
 
                 // ore lavorate
+                TimeSpan tsOreLavorate = new TimeSpan();
                 string ol = "";
                 var cell1 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
                 if (!row.IsNull("tot_ore_lavorate"))
                 {
-                    TimeSpan ore_lavorate = (TimeSpan)row["tot_ore_lavorate"];
-                    ol= string.Format("{0:00}:{1:00}", Math.Floor(ore_lavorate.TotalHours), ore_lavorate.Minutes);
+                    tsOreLavorate = (TimeSpan)row["tot_ore_lavorate"];
+                    ol= string.Format("{0:00}:{1:00}", Math.Floor(tsOreLavorate.TotalHours), tsOreLavorate.Minutes);
                 }
                 g.DrawRectangle(Pens.DarkGray, cell1);
                 g.DrawString(ol, baseFont, Brushes.Black, cell1, centerAlignedFormat);
                 leftMargin += cell1.Width;
 
                 // ore di assenza
+                TimeSpan ore_assenza = new TimeSpan();
                 string oa = "";
                 var cell2 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
                 if (!row.IsNull("ore_assenza"))
                 {
-                    TimeSpan ore_assenza = (TimeSpan)row["ore_assenza"];
+                    ore_assenza = (TimeSpan)row["ore_assenza"];
                     oa = string.Format("{0:00}:{1:00}", Math.Floor(ore_assenza.TotalHours), ore_assenza.Minutes);
                 }
                 g.DrawRectangle(Pens.DarkGray, cell2);
@@ -178,16 +188,45 @@ namespace WorkPlan
                 leftMargin += cell2.Width;
 
                 // giorni di assenza
-                int gg = int.Parse(row["giorni_assenza"].ToString());
+                int gg_assenza = int.Parse(row["giorni_assenza"].ToString());
                 string ga = "";
                 var cell3 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                if (gg != 0)
+                if (gg_assenza != 0)
                 {
-                    ga = gg.ToString();
+                    ga = gg_assenza.ToString();
                 }
                 g.DrawRectangle(Pens.DarkGray, cell3);
                 g.DrawString(ga, baseFont, Brushes.Black, cell3, centerAlignedFormat);
                 leftMargin += cell3.Width;
+
+                // calcolo la differenza
+                //int dip_id = (int)row["dipendente_id"];
+                //TimeSpan tsContratto = econ.GetMonthlyHours(dip_id);    // ore mensili da contratto
+                //TimeSpan tsOreGiornaliere = econ.GetDailyHours(dip_id); // ore giornaliere da contratto
+                //TimeSpan tsAssenza = ore_assenza;                       // ore di assenza
+                
+                //for (int i = 0; i < gg_assenza; i++)                    // aggiungo i giorni interi di assenza
+                //{
+                //    tsAssenza = tsAssenza.Add(tsOreGiornaliere);
+                //}
+                
+                //TimeSpan tsGiustificato = tsOreLavorate.Add(tsAssenza); // ore giustificate (lavorato + assenza)
+                //TimeSpan tsDiff = tsGiustificato.Subtract(tsContratto); // differenza tra giustificato e ore da contratto
+                
+                //var cell4 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+                //g.DrawRectangle(Pens.DarkGray, cell4);
+
+                //if (TimeSpan.Zero.CompareTo(tsDiff) != 0)
+                //{
+                //    bool isNegative = tsDiff < TimeSpan.Zero;
+
+                //    string dd = tsDiff.ToString("%d");
+                //    string hh = tsDiff.ToString("%h");
+                //    int h = (int.Parse(dd) * 24) + int.Parse(hh);
+                //    string mm = tsDiff.ToString("mm");
+                //    string s_diff = string.Format("{0}{1}", (isNegative ? "-" : "+"), string.Format("{0}:{1}", h, mm));
+                //    g.DrawString(s_diff, baseFont, (isNegative ? Brushes.Red : Brushes.Green), cell4, centerAlignedFormat);
+                //}
 
                 leftMargin = 50;
                 topMargin += cellHeight;

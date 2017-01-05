@@ -95,7 +95,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button1.Location = new System.Drawing.Point(488, 590);
+            this.button1.Location = new System.Drawing.Point(488, 545);
             this.button1.Margin = new System.Windows.Forms.Padding(4);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(100, 28);
@@ -107,7 +107,7 @@
             // button2
             // 
             this.button2.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button2.Location = new System.Drawing.Point(380, 590);
+            this.button2.Location = new System.Drawing.Point(380, 545);
             this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(100, 28);
@@ -122,7 +122,7 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(576, 571);
+            this.tabControl1.Size = new System.Drawing.Size(576, 526);
             this.tabControl1.TabIndex = 20;
             // 
             // tabPage1
@@ -132,7 +132,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 25);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(568, 542);
+            this.tabPage1.Size = new System.Drawing.Size(568, 497);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Info personali";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -157,7 +157,7 @@
             this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
-            this.groupBox2.Size = new System.Drawing.Size(547, 257);
+            this.groupBox2.Size = new System.Drawing.Size(547, 211);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Dati contrattuali";
@@ -169,6 +169,7 @@
             this.txtEmpMonthlyHours.Name = "txtEmpMonthlyHours";
             this.txtEmpMonthlyHours.Size = new System.Drawing.Size(100, 22);
             this.txtEmpMonthlyHours.TabIndex = 27;
+            this.txtEmpMonthlyHours.Visible = false;
             // 
             // label22
             // 
@@ -178,6 +179,7 @@
             this.label22.Size = new System.Drawing.Size(79, 17);
             this.label22.TabIndex = 26;
             this.label22.Text = "Ore Mensili";
+            this.label22.Visible = false;
             // 
             // txtEmpDailyHours
             // 
@@ -666,7 +668,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button2;
-            this.ClientSize = new System.Drawing.Size(598, 635);
+            this.ClientSize = new System.Drawing.Size(598, 585);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
