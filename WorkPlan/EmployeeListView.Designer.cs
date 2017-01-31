@@ -32,14 +32,14 @@
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lvEmployees = new System.Windows.Forms.ListView();
             this.colMatr = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colSurname = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colPosition = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tbNuovo = new System.Windows.Forms.ToolStripButton();
             this.tbEdit = new System.Windows.Forms.ToolStripButton();
             this.tbDelete = new System.Windows.Forms.ToolStripButton();
-            this.colPosition = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -60,7 +60,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.lvEmployees);
             this.splitContainer1.Size = new System.Drawing.Size(845, 532);
-            this.splitContainer1.SplitterDistance = 381;
+            this.splitContainer1.SplitterDistance = 380;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -78,7 +78,7 @@
             this.lvEmployees.Margin = new System.Windows.Forms.Padding(4);
             this.lvEmployees.MultiSelect = false;
             this.lvEmployees.Name = "lvEmployees";
-            this.lvEmployees.Size = new System.Drawing.Size(381, 532);
+            this.lvEmployees.Size = new System.Drawing.Size(380, 532);
             this.lvEmployees.TabIndex = 2;
             this.lvEmployees.UseCompatibleStateImageBehavior = false;
             this.lvEmployees.View = System.Windows.Forms.View.Details;
@@ -87,17 +87,22 @@
             // colMatr
             // 
             this.colMatr.Text = "Matricola";
-            this.colMatr.Width = 96;
-            // 
-            // colName
-            // 
-            this.colName.Text = "Nome";
-            this.colName.Width = 70;
+            this.colMatr.Width = 30;
             // 
             // colSurname
             // 
             this.colSurname.Text = "Cognome";
-            this.colSurname.Width = 82;
+            this.colSurname.Width = 150;
+            // 
+            // colName
+            // 
+            this.colName.Text = "Nome";
+            this.colName.Width = 150;
+            // 
+            // colPosition
+            // 
+            this.colPosition.Text = "Reparto";
+            this.colPosition.Width = 100;
             // 
             // imageList1
             // 
@@ -147,10 +152,6 @@
             this.tbDelete.Size = new System.Drawing.Size(24, 24);
             this.tbDelete.Text = "Elimina";
             this.tbDelete.Click += new System.EventHandler(this.tbDelete_Click);
-            // 
-            // colPosition
-            // 
-            this.colPosition.Text = "Reparto";
             // 
             // EmployeeListView
             // 

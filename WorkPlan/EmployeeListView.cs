@@ -119,6 +119,8 @@ namespace WorkPlan
             TimeSpan monthlyHh = econRepo.GetMonthlyHours(emp.Id);
             dlgEmp.EmployeeMonthlyHours = monthlyHh;
 
+            dlgEmp.EmployeeHasBusta = econRepo.HasBusta(emp.Id);
+
             if (dlgEmp.ShowDialog() == DialogResult.OK)
             {
                 FromDialog(ref dlgEmp, ref emp);
@@ -127,8 +129,12 @@ namespace WorkPlan
 
                 // scrivo il salario e le ore lavorative pattuite
                 econRepo.SetAgreedSalary(emp.Id, dlgEmp.EmployeeSalary);
-                econRepo.SetDailyHours(emp.Id, dlgEmp.EmployeeDailyHours);
-                econRepo.SetMonthlyHours(emp.Id, dlgEmp.EmployeeMonthlyHours);
+                if (dlgEmp.EmployeeDailyHours != TimeSpan.Zero)
+                {
+                    econRepo.SetDailyHours(emp.Id, dlgEmp.EmployeeDailyHours);
+                }
+
+                econRepo.SetBusta(emp.Id, dlgEmp.EmployeeHasBusta);
 
                 // update list
                 SetEmployees(empRepo.All());
@@ -169,7 +175,7 @@ namespace WorkPlan
             ListViewItem item = lvEmployees.SelectedItems[0];
             int EmployeeId = (int)item.Tag;
             
-            if (MessageBox.Show("Eliminare il dipendente?", "Attenzione", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+            if (GuiUtils.Confirm("Eliminare il dipendente?", this) == DialogResult.Yes)
             {
                 EmployeeRepository empRepo = new EmployeeRepository();
                 empRepo.Delete(EmployeeId);

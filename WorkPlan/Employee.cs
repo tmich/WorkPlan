@@ -44,6 +44,8 @@ namespace WorkPlan
 
         public string MobileNo2 { get; set; }
 
+        //public bool HasBusta { get; set; }
+
         public Employee()
         {
             DefaultPosition = new Position(0, "");

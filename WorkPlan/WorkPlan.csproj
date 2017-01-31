@@ -92,8 +92,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BustaPaga.cs" />
     <Compile Include="ChildForm.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgBusta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgBusta.Designer.cs">
+      <DependentUpon>DlgBusta.cs</DependentUpon>
     </Compile>
     <Compile Include="DlgChooseMonthYear.cs">
       <SubType>Form</SubType>
@@ -151,6 +158,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GuiUtils.cs" />
     <Compile Include="IMonthlyReport.cs" />
     <Compile Include="IShiftVM.cs" />
     <Compile Include="MonthlyDetailReport.cs" />
@@ -190,6 +198,9 @@
     <Compile Include="UserControl1.Designer.cs">
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DlgBusta.resx">
+      <DependentUpon>DlgBusta.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DlgChooseMonthYear.resx">
       <DependentUpon>DlgChooseMonthYear.cs</DependentUpon>
     </EmbeddedResource>

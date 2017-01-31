@@ -33,6 +33,7 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.chkBusta = new System.Windows.Forms.CheckBox();
             this.txtEmpMonthlyHours = new System.Windows.Forms.MaskedTextBox();
             this.label22 = new System.Windows.Forms.Label();
             this.txtEmpDailyHours = new System.Windows.Forms.MaskedTextBox();
@@ -82,6 +83,13 @@
             this.label7 = new System.Windows.Forms.Label();
             this.txEmpAddress = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.btnRimRetrib = new System.Windows.Forms.Button();
+            this.btnAggRetrib = new System.Windows.Forms.Button();
+            this.lvBuste = new System.Windows.Forms.ListView();
+            this.colPeriodo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.colImporto = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -90,6 +98,8 @@
             this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.groupBox6.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -119,11 +129,13 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(576, 526);
             this.tabControl1.TabIndex = 20;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPage1
             // 
@@ -139,6 +151,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.chkBusta);
             this.groupBox2.Controls.Add(this.txtEmpMonthlyHours);
             this.groupBox2.Controls.Add(this.label22);
             this.groupBox2.Controls.Add(this.txtEmpDailyHours);
@@ -161,6 +174,17 @@
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Dati contrattuali";
+            // 
+            // chkBusta
+            // 
+            this.chkBusta.AutoSize = true;
+            this.chkBusta.Location = new System.Drawing.Point(124, 153);
+            this.chkBusta.Name = "chkBusta";
+            this.chkBusta.Size = new System.Drawing.Size(102, 21);
+            this.chkBusta.TabIndex = 28;
+            this.chkBusta.Text = "Busta paga";
+            this.chkBusta.UseVisualStyleBackColor = true;
+            this.chkBusta.CheckedChanged += new System.EventHandler(this.chkBusta_CheckedChanged);
             // 
             // txtEmpMonthlyHours
             // 
@@ -458,7 +482,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 25);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(568, 542);
+            this.tabPage2.Size = new System.Drawing.Size(568, 497);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Contatti";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -662,6 +686,73 @@
             this.label3.TabIndex = 13;
             this.label3.Text = "&Indirizzo";
             // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.groupBox6);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(568, 497);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Buste paga";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.btnRimRetrib);
+            this.groupBox6.Controls.Add(this.btnAggRetrib);
+            this.groupBox6.Controls.Add(this.lvBuste);
+            this.groupBox6.Location = new System.Drawing.Point(7, 7);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(555, 484);
+            this.groupBox6.TabIndex = 0;
+            this.groupBox6.TabStop = false;
+            // 
+            // btnRimRetrib
+            // 
+            this.btnRimRetrib.Location = new System.Drawing.Point(463, 63);
+            this.btnRimRetrib.Name = "btnRimRetrib";
+            this.btnRimRetrib.Size = new System.Drawing.Size(75, 35);
+            this.btnRimRetrib.TabIndex = 2;
+            this.btnRimRetrib.Text = "Rimuovi";
+            this.btnRimRetrib.UseVisualStyleBackColor = true;
+            this.btnRimRetrib.Click += new System.EventHandler(this.btnRimRetrib_Click);
+            // 
+            // btnAggRetrib
+            // 
+            this.btnAggRetrib.Location = new System.Drawing.Point(463, 22);
+            this.btnAggRetrib.Name = "btnAggRetrib";
+            this.btnAggRetrib.Size = new System.Drawing.Size(75, 35);
+            this.btnAggRetrib.TabIndex = 1;
+            this.btnAggRetrib.Text = "Aggiungi";
+            this.btnAggRetrib.UseVisualStyleBackColor = true;
+            this.btnAggRetrib.Click += new System.EventHandler(this.btnAggRetrib_Click);
+            // 
+            // lvBuste
+            // 
+            this.lvBuste.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.colPeriodo,
+            this.colImporto});
+            this.lvBuste.FullRowSelect = true;
+            this.lvBuste.Location = new System.Drawing.Point(7, 22);
+            this.lvBuste.MultiSelect = false;
+            this.lvBuste.Name = "lvBuste";
+            this.lvBuste.Size = new System.Drawing.Size(450, 456);
+            this.lvBuste.TabIndex = 0;
+            this.lvBuste.UseCompatibleStateImageBehavior = false;
+            this.lvBuste.View = System.Windows.Forms.View.Details;
+            this.lvBuste.DoubleClick += new System.EventHandler(this.lvBuste_DoubleClick);
+            // 
+            // colPeriodo
+            // 
+            this.colPeriodo.Text = "Periodo";
+            this.colPeriodo.Width = 132;
+            // 
+            // colImporto
+            // 
+            this.colImporto.Text = "Importo";
+            this.colImporto.Width = 120;
+            // 
             // DlgEmployee
             // 
             this.AcceptButton = this.button1;
@@ -693,6 +784,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.tabPage3.ResumeLayout(false);
+            this.groupBox6.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -752,5 +845,13 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.MaskedTextBox txtEmpDailyHours;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.CheckBox chkBusta;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.Button btnRimRetrib;
+        private System.Windows.Forms.Button btnAggRetrib;
+        private System.Windows.Forms.ListView lvBuste;
+        private System.Windows.Forms.ColumnHeader colPeriodo;
+        private System.Windows.Forms.ColumnHeader colImporto;
     }
 }

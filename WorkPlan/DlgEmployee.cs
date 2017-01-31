@@ -26,7 +26,14 @@ namespace WorkPlan
 
             set
             {
-                txtEmpSalary.Text = value.ToString();
+                if (value == 0)
+                {
+                    txtEmpSalary.Text = "0000,00";
+                }
+                else
+                {
+                    txtEmpSalary.Text = value.ToString();
+                }
             }
         }
 
@@ -39,6 +46,7 @@ namespace WorkPlan
             set
             {
                 txEmpName.Text = value;
+                this.Text = txEmpName.Text + " " + txEmpSurname.Text;
             }
         }
 
@@ -51,6 +59,7 @@ namespace WorkPlan
             set
             {
                 txEmpSurname.Text = value;
+                this.Text = txEmpName.Text + " " + txEmpSurname.Text;
             }
         }
 
@@ -200,10 +209,6 @@ namespace WorkPlan
                 try
                 {
                     TimeSpan.TryParse(txtEmpDailyHours.Text, out ts);
-                    if (ts.Hours == 0)
-                    {
-                        throw new FormatException();
-                    }
                 }
                 catch (Exception)
                 {
@@ -332,6 +337,19 @@ namespace WorkPlan
             }
         }
 
+        public bool EmployeeHasBusta
+        {
+            get
+            {
+                return chkBusta.Checked;
+            }
+
+            set
+            {
+                chkBusta.Checked = value;
+            }
+        }
+
         private void DlgEmployee_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (DialogResult == DialogResult.OK)
@@ -345,7 +363,10 @@ namespace WorkPlan
                 e.Cancel = !ValidateNonEmpty(txEmpCity, "Inserire la città"); if (e.Cancel) return;
                 e.Cancel = !ValidateNonEmpty(txEmpQual, "Inserire la qualifica"); if (e.Cancel) return;
                 e.Cancel = !ValidateDate(txEmpHireDate, "Data di assunzione non valida"); if (e.Cancel) return;
-                e.Cancel = !ValidateDecimal(txtEmpSalary, "Valore non corretto"); if (e.Cancel) return;
+                if (txtEmpSalary.Enabled)
+                {
+                    e.Cancel = !ValidateDecimal(txtEmpSalary, "Valore non corretto"); if (e.Cancel) return;
+                }
                 e.Cancel = !ValidateTimeSpan(txtEmpDailyHours, "Valore non corretto"); if (e.Cancel) return;
                 //e.Cancel = !ValidateTimeSpan(txtEmpMonthlyHours, "Valore non corretto"); if (e.Cancel) return;
             }
@@ -368,7 +389,7 @@ namespace WorkPlan
 
                     if (message != null)
                     {
-                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        GuiUtils.Warning(message, this);
                     }
 
                     return false;
@@ -379,7 +400,7 @@ namespace WorkPlan
 
                     if (message != null)
                     {
-                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        GuiUtils.Warning(message, this);
                     }
 
                     return false;
@@ -403,7 +424,7 @@ namespace WorkPlan
 
                     if (message != null)
                     {
-                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        GuiUtils.Warning(message, this);
                     }
 
                     return false;
@@ -427,7 +448,7 @@ namespace WorkPlan
 
                     if (message != null)
                     {
-                        MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        GuiUtils.Warning(message, this);
                     }
 
                     return false;
@@ -445,7 +466,7 @@ namespace WorkPlan
 
                 if (message != null)
                 {
-                    MessageBox.Show(message, "Attenzione", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    GuiUtils.Warning(message, this);
                 }
 
                 return false;
@@ -462,6 +483,127 @@ namespace WorkPlan
         private void button1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void chkBusta_CheckedChanged(object sender, EventArgs e)
+        {
+            txtEmpSalary.Enabled = !chkBusta.Checked;
+        }
+
+        private void CaricaBustePaga()
+        {
+            lvBuste.Items.Clear();
+            EconomicsRepository ecorep = new EconomicsRepository();
+            var buste = ecorep.GetBuste(EmployeeId);
+            buste.Sort();
+
+            foreach (var b in buste)
+            {
+                AddToListView(b);
+            }
+        }
+
+        private ListViewItem CreateListViewItem(BustaPaga busta)
+        {
+            ListViewItem lv = new ListViewItem(busta.ToString());
+            lv.SubItems.Add(busta.Importo.ToString("N2"));
+            lv.Tag = busta;
+
+            return lv;
+        }
+
+        private void AddToListView(BustaPaga busta)
+        {
+            ListViewItem lv = CreateListViewItem(busta);
+            
+            lvBuste.Items.Add(lv);
+        }
+
+        private void InsertToListView(BustaPaga busta, int index)
+        {
+            ListViewItem lv = CreateListViewItem(busta);
+            
+            lvBuste.Items.RemoveAt(index);
+            lvBuste.Items.Insert(index, lv);
+        }
+
+        private void btnAggRetrib_Click(object sender, EventArgs e)
+        {
+            DlgBusta dlgb = new DlgBusta(EmployeeId);
+            if(dlgb.ShowDialog() == DialogResult.OK)
+            {
+                EconomicsRepository ecorep = new EconomicsRepository();
+                BustaPaga busta = dlgb.BustaPaga;
+                try
+                {
+                    ecorep.AddBusta(ref busta);
+                    AddToListView(busta);
+                }
+                catch (Exception exc)
+                {
+                    GuiUtils.Error(exc.Message, this);
+                }
+                
+            }
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedIndex == 2)
+            {
+                CaricaBustePaga();
+            }
+        }
+
+        private void btnRimRetrib_Click(object sender, EventArgs e)
+        {
+            if (lvBuste.SelectedIndices.Count == 1)
+            {
+                ListViewItem lvitem = lvBuste.SelectedItems[0];
+                BustaPaga busta = (BustaPaga)lvitem.Tag;
+
+                if (GuiUtils.Confirm(String.Format("Eliminare {0}?", busta.ToString()), this) == DialogResult.Yes)
+                {
+                    
+                    EconomicsRepository ecorep = new EconomicsRepository();
+                    try
+                    {
+                        ecorep.DeleteBusta(busta);
+                        lvBuste.Items.Remove(lvitem);
+                    }
+                    catch (Exception ex)
+                    {
+                        GuiUtils.Error(ex.Message, this);
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private void lvBuste_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvBuste.SelectedIndices.Count == 1)
+            {
+                ListViewItem lvitem = lvBuste.SelectedItems[0];
+                BustaPaga busta = (BustaPaga)lvitem.Tag;
+                DlgBusta dlgb = new DlgBusta(busta);
+
+                if (dlgb.ShowDialog() == DialogResult.OK)
+                {
+                    EconomicsRepository ecorep = new EconomicsRepository();
+                    try
+                    {
+                        busta = dlgb.BustaPaga;
+                        ecorep.UpdateBusta(busta);
+                        InsertToListView(busta, lvitem.Index);
+                    }
+                    catch (Exception ex)
+                    {
+                        GuiUtils.Error(ex.Message, this);
+                        throw;
+                    }
+                }
+            }
         }
     }
 }
