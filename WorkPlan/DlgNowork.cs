@@ -23,6 +23,7 @@ namespace WorkPlan
             InitializeComponent();
             nwRepo = new NoWorkRepository();
             SetReasons(nwRepo.GetReasons());
+            CanSelectFullDay = true;
             //var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
             //dtPickerStart.Value = tmPickerStart.Value = now;
             //dtPickerEnd.Value = tmPickerEnd.Value = now.AddHours(1);
@@ -52,6 +53,12 @@ namespace WorkPlan
             txNotes.Text = nowork.Notes;
             chkFullDay.Checked = nowork.IsFullDay;
             Text = string.Format("Modifica assenza per {0}", mEmployee.FullName);
+        }
+
+        public bool CanSelectFullDay
+        {
+            get;
+            set;
         }
 
         protected void SetReasons(List<NoWorkReason> reasons)
@@ -97,6 +104,13 @@ namespace WorkPlan
             {
                 return txNotes.Text;
             }
+        }
+
+        public new DialogResult ShowDialog(IWin32Window owner)
+        {
+            chkFullDay.Enabled = CanSelectFullDay;
+
+            return base.ShowDialog(owner);
         }
 
         public bool FullDay

@@ -6,8 +6,42 @@ using System.Threading.Tasks;
 
 namespace WorkPlan
 {
+    public class VocePaga
+    {
+        public VocePaga(int id, string descrizione, double importo)
+            :this(descrizione,importo)
+        {
+            Id = id;
+        }
+
+        public VocePaga(string descrizione, double importo)
+        {
+            Descrizione = descrizione;
+            Importo = importo;
+        }
+
+        public int Id
+        {
+            get;
+            private set;
+        }
+
+        public string Descrizione
+        {
+            get;
+            private set;
+        }
+
+        public double Importo
+        {
+            get;
+            private set;
+        }
+    }
+
     public class BustaPaga : IComparable<BustaPaga>
     {
+
         public BustaPaga(BustaPaga rhs, int id)
         {
             Id = id;
@@ -15,6 +49,7 @@ namespace WorkPlan
             Mese = rhs.Mese;
             Anno = rhs.Anno;
             Importo = rhs.Importo;
+            Voci = rhs.Voci;
         }
 
         public BustaPaga(int idDipendente, int mese, int anno, double importo)
@@ -23,6 +58,7 @@ namespace WorkPlan
             Mese = mese;
             Anno = anno;
             Importo = importo;
+            Voci = new List<VocePaga>();
         }
 
         public BustaPaga(int id, int idDipendente, int mese, int anno, double importo) 
@@ -39,7 +75,39 @@ namespace WorkPlan
 
         public int Anno { get; set; }
 
-        public double Importo { get; set; }
+        public double Importo
+        {
+            get
+            {
+                double imp = 0;
+                foreach (var vp in Voci)
+                {
+                    imp += vp.Importo;
+                }
+
+                return imp;
+            }
+
+            private set { }
+        }
+
+        void Aggiungi(string descrizione, double importo)
+        {
+            VocePaga vp = new VocePaga(descrizione, importo);
+            Voci.Add(vp);
+        }
+
+        void Aggiungi(VocePaga voce)
+        {
+            Voci.Add(voce);
+        }
+
+        public List<VocePaga> Voci
+        {
+            get;
+            private set;
+        }
+
 
         public override string ToString()
         {

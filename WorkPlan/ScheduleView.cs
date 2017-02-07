@@ -253,6 +253,14 @@ namespace WorkPlan
                     // assenza
                     NoworkVM nwvm = dutyToEdit as NoworkVM;
                     DlgNowork dlg = new DlgNowork(nwvm);
+                    List<IShiftVM> dutiesOfTheDay = GetDutiesAt(dataGridView1.SelectedCells[0]);
+                    dlg.CanSelectFullDay = (dutiesOfTheDay.Count == 0);
+
+                    if(dutiesOfTheDay.Count == 1 && dutiesOfTheDay[0].Id == nwvm.Id)
+                    {
+                        // sto modificando l'unica assenza del giorno
+                        dlg.CanSelectFullDay = true;
+                    }
 
                     if (dlg.ShowDialog(this) == DialogResult.OK)
                     {
@@ -304,7 +312,9 @@ namespace WorkPlan
             var employee = (Employee)dataGridView1.Rows[rowIndex].Tag;
             DateTime dutyDate = (DateTime)dataGridView1.Columns[colIndex].Tag;
             var dlgNw = new DlgNowork(employee, dutyDate);
-            
+            List<IShiftVM> dutiesOfTheDay = GetDutiesAt(dataGridView1.SelectedCells[0]);
+            dlgNw.CanSelectFullDay = (dutiesOfTheDay.Count == 0);
+
             if (dlgNw.ShowDialog(this) == DialogResult.OK)
             {
                 NoWork nowork = new NoWork();
@@ -332,7 +342,7 @@ namespace WorkPlan
 
         private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
-            List<IShiftVM> dutiesOfTheDay = (List<IShiftVM>)dataGridView1.SelectedCells[0].Tag;
+            List<IShiftVM> dutiesOfTheDay = GetDutiesAt(dataGridView1.SelectedCells[0]);
             nuovoToolStripMenuItem.Enabled = true;
             if (dutiesOfTheDay.Count > 0)
             {
@@ -342,7 +352,13 @@ namespace WorkPlan
             modificaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
             eliminaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
         }
-        
+
+        private List<IShiftVM> GetDutiesAt(DataGridViewCell cell)
+        {
+            List<IShiftVM> dutiesOfTheDay = (List<IShiftVM>)cell.Tag;
+            return dutiesOfTheDay;
+        }
+
         // qui è dove vengono effettivamente disegnati i rettangoli che rappresentano
         // i turni o le assenze
         private void dataGridView1_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)

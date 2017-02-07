@@ -184,6 +184,7 @@
             this.chkBusta.TabIndex = 28;
             this.chkBusta.Text = "Busta paga";
             this.chkBusta.UseVisualStyleBackColor = true;
+            this.chkBusta.Visible = false;
             this.chkBusta.CheckedChanged += new System.EventHandler(this.chkBusta_CheckedChanged);
             // 
             // txtEmpMonthlyHours

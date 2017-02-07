@@ -138,6 +138,12 @@
     <Compile Include="DlgNowork.Designer.cs">
       <DependentUpon>DlgNowork.cs</DependentUpon>
     </Compile>
+    <Compile Include="DlgVoceBusta.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgVoceBusta.Designer.cs">
+      <DependentUpon>DlgVoceBusta.cs</DependentUpon>
+    </Compile>
     <Compile Include="Duty.cs" />
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
@@ -218,6 +224,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="DlgNowork.resx">
       <DependentUpon>DlgNowork.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DlgVoceBusta.resx">
+      <DependentUpon>DlgVoceBusta.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="EmployeeListView.resx">
       <DependentUpon>EmployeeListView.cs</DependentUpon>

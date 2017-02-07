@@ -5,6 +5,7 @@ namespace WorkPlan
 {
     public partial class DlgEmployee : Form
     {
+        private bool busteCaricate = false;
         public DlgEmployee()
         {
             InitializeComponent();
@@ -487,7 +488,7 @@ namespace WorkPlan
 
         private void chkBusta_CheckedChanged(object sender, EventArgs e)
         {
-            txtEmpSalary.Enabled = !chkBusta.Checked;
+            //txtEmpSalary.Enabled = !chkBusta.Checked;
         }
 
         private void CaricaBustePaga()
@@ -501,6 +502,8 @@ namespace WorkPlan
             {
                 AddToListView(b);
             }
+
+            busteCaricate = true;
         }
 
         private ListViewItem CreateListViewItem(BustaPaga busta)
@@ -551,7 +554,10 @@ namespace WorkPlan
         {
             if (tabControl1.SelectedIndex == 2)
             {
-                CaricaBustePaga();
+                if(!busteCaricate)
+                {
+                    CaricaBustePaga();
+                }
             }
         }
 
@@ -586,7 +592,11 @@ namespace WorkPlan
             {
                 ListViewItem lvitem = lvBuste.SelectedItems[0];
                 BustaPaga busta = (BustaPaga)lvitem.Tag;
-                DlgBusta dlgb = new DlgBusta(busta);
+                BustaPaga busDaMod = new BustaPaga(busta.Id, busta.IdDip, busta.Mese, busta.Anno, busta.Importo);
+                foreach (var vp in busta.Voci)
+                    busDaMod.Voci.Add(vp);
+
+                DlgBusta dlgb = new DlgBusta(busDaMod);
 
                 if (dlgb.ShowDialog() == DialogResult.OK)
                 {

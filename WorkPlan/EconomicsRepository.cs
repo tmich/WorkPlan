@@ -176,10 +176,31 @@ namespace WorkPlan
                     cmd.Parameters.Add(newId);
 
                     int res = cmd.ExecuteNonQuery();
-
-                    if(res > 0)
+                    
+                    if (res > 0)
                     {
-                        busta = new BustaPaga(busta, int.Parse(newId.Value.ToString()));
+                        int bId = int.Parse(newId.Value.ToString());
+                        busta = new BustaPaga(busta, bId);
+
+                        // salvo il dettaglio delle voci
+                        MySqlCommand vcmd = conn.CreateCommand();
+                        vcmd.CommandType = System.Data.CommandType.Text;
+
+                        foreach (var vp in busta.Voci)
+                        {
+                            string s_imp = vp.Importo.ToString().Replace(",", ".");
+
+                            vcmd.CommandText = String.Format("Insert into voce_busta (busta_id, descrizione, importo) values ({0}, '{1}', {2});",
+                                bId, vp.Descrizione, s_imp
+                            );
+                            //System.Diagnostics.Debug.WriteLine(vcmd.CommandText);
+
+                            int rows = vcmd.ExecuteNonQuery();
+                            if(rows!=1)
+                            {
+                                throw new InvalidOperationException("Si è verificato un errore durante il salvataggio della busta paga");
+                            }
+                        }
                     }
                 }
                 catch(MySqlException msex)
@@ -233,6 +254,24 @@ namespace WorkPlan
 
                         BustaPaga bp = new BustaPaga(id, dipid, mese, anno, importo);
                         buste.Add(bp);
+                    }
+                    rdr.Close();
+
+                    // carico le voci
+                    MySqlCommand cmdVoci = conn.CreateCommand();
+                    foreach (var busta in buste)
+                    {
+                        cmdVoci.CommandText = string.Format("select id, descrizione, importo from voce_busta where busta_id={0}", busta.Id);
+                        var rdrVoci = cmdVoci.ExecuteReader();
+                        while (rdrVoci.Read())
+                        {
+                            int idVoce = rdrVoci.GetInt32(0);
+                            string descVoce = rdrVoci.GetString(1);
+                            double impVoce = rdrVoci.GetDouble(2);
+                            VocePaga vp = new VocePaga(idVoce, descVoce, impVoce);
+                            busta.Voci.Add(vp);
+                        }
+                        rdrVoci.Close();
                     }
                 }
                 catch (Exception)
@@ -437,6 +476,30 @@ namespace WorkPlan
                     if (res == 0)
                     {
                         throw new InvalidOperationException("Aggiornamento non riuscito");
+                    }
+                    else
+                    {
+                        // salvo il dettaglio delle voci
+                        MySqlCommand vcmd = conn.CreateCommand();
+                        vcmd.CommandType = System.Data.CommandType.Text;
+                        vcmd.CommandText = string.Format("delete from voce_busta where busta_id={0}", busta.Id);
+                        int deleted = vcmd.ExecuteNonQuery();
+
+                        foreach (var vp in busta.Voci)
+                        {
+                            string s_imp = vp.Importo.ToString().Replace(",", ".");
+
+                            vcmd.CommandText = String.Format("Insert into voce_busta (busta_id, descrizione, importo) values ({0}, '{1}', {2});",
+                                busta.Id, vp.Descrizione, s_imp
+                            );
+                            //System.Diagnostics.Debug.WriteLine(vcmd.CommandText);
+
+                            int rows = vcmd.ExecuteNonQuery();
+                            if (rows != 1)
+                            {
+                                throw new InvalidOperationException("Si è verificato un errore durante il salvataggio della busta paga");
+                            }
+                        }
                     }
                 }
                 catch (Exception)

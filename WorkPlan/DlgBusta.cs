@@ -33,18 +33,25 @@ namespace WorkPlan
         public DlgBusta(BustaPaga busta)
             :this(busta.IdDip)
         {
-            mBusta = busta;
+            mBusta = new BustaPaga(busta, busta.Id);
 
             txtImporto.Text = mBusta.Importo.ToString("N2");
             cmbAnno.SelectedItem = mBusta.Anno;
+            cmbAnno.Enabled = false;
             cmbMese.SelectedIndex = mBusta.Mese - 1;
+            cmbMese.Enabled = false;
+
+            foreach (var vp in mBusta.Voci)
+            {
+                AddVoce(vp);
+            }
         }
 
         public DlgBusta(int IdDipendente)
             :this()
         {
             mIdDipendente = IdDipendente;
-            
+            mBusta = new BustaPaga(mIdDipendente, Mese, Anno, 0);
         }
         
         public BustaPaga BustaPaga
@@ -57,7 +64,10 @@ namespace WorkPlan
                 }
                 else
                 {
-                    return new BustaPaga(mBusta.Id, mBusta.IdDip, Mese, Anno, Importo);
+                    //return new BustaPaga(mBusta.Id, mBusta.IdDip, Mese, Anno, Importo);
+                    mBusta.Mese = Mese;
+                    mBusta.Anno = Anno;
+                    return mBusta;
                 }
             }
         }
@@ -99,13 +109,8 @@ namespace WorkPlan
 
             set
             {
-                txtImporto.Text = value.ToString();
+                txtImporto.Text = value.ToString("N2");
             }
-        }
-
-        private void btnOk_Click(object sender, EventArgs e)
-        {
-            
         }
 
         private void DlgBusta_FormClosing(object sender, FormClosingEventArgs e)
@@ -119,6 +124,75 @@ namespace WorkPlan
                     e.Cancel = true;
                 }
             }
+            else
+            {
+                //foreach (var vp in mBusta.Voci.ToArray())
+                //{
+                //    if (vp.Id == 0)
+                //    {
+                //        mBusta.Voci.Remove(vp);
+                //    }
+                //}
+            }
+        }
+
+        private void AddVoce(VocePaga vp)
+        {
+            ListViewItem li = new ListViewItem();
+            li.Text = vp.Descrizione;
+            li.SubItems.Add(vp.Importo.ToString("N2"));
+            li.Tag = vp;
+
+            lvVoci.Items.Add(li);
+        }
+        
+
+        private void btnNuovaVoce_Click(object sender, EventArgs e)
+        {
+            var dlgvoce = new DlgVoceBusta();
+            if (dlgvoce.ShowDialog() == DialogResult.OK)
+            {
+                VocePaga vp = new VocePaga(dlgvoce.Descrizione, dlgvoce.Importo);
+                mBusta.Voci.Add(vp);
+                txtImporto.Text = mBusta.Importo.ToString("N2");
+
+                AddVoce(vp);
+            }
+        }
+
+        private void lvVoci_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvVoci.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            VocePaga vp = (VocePaga)(lvVoci.SelectedItems[0].Tag);
+            var dlgvoce = new DlgVoceBusta(vp);
+            if (dlgvoce.ShowDialog() == DialogResult.OK)
+            {
+                mBusta.Voci.Remove(vp);
+                lvVoci.Items.RemoveAt(lvVoci.SelectedIndices[0]);
+                
+                vp = new VocePaga(dlgvoce.Descrizione, dlgvoce.Importo);
+                mBusta.Voci.Add(vp);
+                txtImporto.Text = mBusta.Importo.ToString("N2");
+
+                AddVoce(vp);
+            }
+        }
+
+        private void btnEliminaVoce_Click(object sender, EventArgs e)
+        {
+            if (lvVoci.SelectedItems.Count == 0)
+            {
+                return;
+            }
+
+            VocePaga vp = (VocePaga)(lvVoci.SelectedItems[0].Tag);
+            mBusta.Voci.Remove(vp);
+            lvVoci.Items.RemoveAt(lvVoci.SelectedIndices[0]);
+            txtImporto.Text = mBusta.Importo.ToString("N2");
         }
     }
 }
