@@ -29,7 +29,9 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScheduleView));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
             this.cmdPrint = new System.Windows.Forms.Button();
             this.monthCalendar1 = new System.Windows.Forms.MonthCalendar();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -42,7 +44,6 @@
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tbPrint = new System.Windows.Forms.ToolStripButton();
             this.label1 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -76,6 +77,19 @@
             this.splitContainer1.SplitterDistance = 320;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 3;
+            // 
+            // button1
+            // 
+            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button1.Image = ((System.Drawing.Image)(resources.GetObject("button1.Image")));
+            this.button1.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.Location = new System.Drawing.Point(10, 283);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(295, 43);
+            this.button1.TabIndex = 3;
+            this.button1.Text = "Resoconto mensile";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // cmdPrint
             // 
@@ -206,17 +220,6 @@
             this.label1.Size = new System.Drawing.Size(313, 29);
             this.label1.TabIndex = 5;
             this.label1.Text = "Gestione Turni e Assenze";
-            // 
-            // button1
-            // 
-            this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(10, 283);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(295, 43);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Resoconto mensile";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // ScheduleView
             // 

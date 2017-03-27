@@ -73,6 +73,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>hr32.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MySql.Data, Version=6.9.8.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.8\lib\net45\MySql.Data.dll</HintPath>
@@ -96,11 +99,18 @@
     <Compile Include="ChildForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ChooseEmployees.cs" />
     <Compile Include="DlgBusta.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="DlgBusta.Designer.cs">
       <DependentUpon>DlgBusta.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DlgChooseEmployee.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DlgChooseEmployee.Designer.cs">
+      <DependentUpon>DlgChooseEmployee.cs</DependentUpon>
     </Compile>
     <Compile Include="DlgChooseMonthYear.cs">
       <SubType>Form</SubType>
@@ -207,6 +217,9 @@
     <EmbeddedResource Include="DlgBusta.resx">
       <DependentUpon>DlgBusta.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="DlgChooseEmployee.resx">
+      <DependentUpon>DlgChooseEmployee.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DlgChooseMonthYear.resx">
       <DependentUpon>DlgChooseMonthYear.cs</DependentUpon>
     </EmbeddedResource>
@@ -265,6 +278,8 @@
     <None Include="Resources\1464893762_Coin.ico" />
     <None Include="Resources\1464893822_resolutions-16.ico" />
     <None Include="Resources\1464894170_sun.ico" />
+    <Content Include="hr.ico" />
+    <Content Include="hr32.ico" />
     <Content Include="res\abacus.png" />
     <Content Include="res\basket.png" />
     <Content Include="res\book.png" />

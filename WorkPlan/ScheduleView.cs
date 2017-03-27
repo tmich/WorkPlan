@@ -370,7 +370,7 @@ namespace WorkPlan
                     if (e.RowIndex >= 0 && e.ColumnIndex >= 0)
                     {
                         var cell = dataGridView1[e.ColumnIndex, e.RowIndex];
-                        Debug.WriteLine(string.Format("Painting cell {0}, {1}", e.RowIndex, e.ColumnIndex));
+                        //Debug.WriteLine(string.Format("Painting cell {0}, {1}", e.RowIndex, e.ColumnIndex));
                         Employee employee = (Employee)dataGridView1.Rows[e.RowIndex].Tag;
                         DateTime datetime = (DateTime)dataGridView1.Columns[e.ColumnIndex].Tag;
 

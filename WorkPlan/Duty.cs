@@ -73,5 +73,10 @@ namespace WorkPlan
         {
             return base.GetHashCode() ^ Id;
         }
+
+        public TimeSpan GetDuration()
+        {
+            return mEndDate.Subtract(mStartDate);
+        }
     }
 }

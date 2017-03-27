@@ -22,6 +22,7 @@ namespace WorkPlan
             }
 
             cbYears.SelectedIndex = cbYears.Items.Count - 1;
+            rbSintesi.Checked = true;
         }
 
         public int ChosenYear
@@ -52,7 +53,7 @@ namespace WorkPlan
         {
             get
             {
-                return chkDettaglio.Checked;
+                return rbDettaglio.Checked;
             }
         }
     }

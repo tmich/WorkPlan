@@ -81,5 +81,10 @@ namespace WorkPlan
         {
             return Id;
         }
+
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }

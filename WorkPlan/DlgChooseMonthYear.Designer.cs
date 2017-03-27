@@ -28,13 +28,90 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.cbMonths = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.rbDettaglio = new System.Windows.Forms.RadioButton();
+            this.rbSintesi = new System.Windows.Forms.RadioButton();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.cbYears = new System.Windows.Forms.ComboBox();
-            this.chkDettaglio = new System.Windows.Forms.CheckBox();
+            this.cbMonths = new System.Windows.Forms.ComboBox();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // btnOk
+            // 
+            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOk.Location = new System.Drawing.Point(274, 217);
+            this.btnOk.Name = "btnOk";
+            this.btnOk.Size = new System.Drawing.Size(75, 29);
+            this.btnOk.TabIndex = 2;
+            this.btnOk.Text = "Ok";
+            this.btnOk.UseVisualStyleBackColor = true;
+            // 
+            // btnCancel
+            // 
+            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Location = new System.Drawing.Point(193, 217);
+            this.btnCancel.Name = "btnCancel";
+            this.btnCancel.Size = new System.Drawing.Size(75, 29);
+            this.btnCancel.TabIndex = 3;
+            this.btnCancel.Text = "Annulla";
+            this.btnCancel.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.rbDettaglio);
+            this.groupBox1.Controls.Add(this.rbSintesi);
+            this.groupBox1.Location = new System.Drawing.Point(12, 81);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(337, 130);
+            this.groupBox1.TabIndex = 12;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Tipo report";
+            // 
+            // rbDettaglio
+            // 
+            this.rbDettaglio.AutoSize = true;
+            this.rbDettaglio.Location = new System.Drawing.Point(6, 65);
+            this.rbDettaglio.Name = "rbDettaglio";
+            this.rbDettaglio.Size = new System.Drawing.Size(321, 38);
+            this.rbDettaglio.TabIndex = 13;
+            this.rbDettaglio.TabStop = true;
+            this.rbDettaglio.Text = "Report dettagliato: una pagina per dipendente\r\ncon la situazione giornaliera.";
+            this.rbDettaglio.UseVisualStyleBackColor = true;
+            // 
+            // rbSintesi
+            // 
+            this.rbSintesi.AutoSize = true;
+            this.rbSintesi.Location = new System.Drawing.Point(6, 21);
+            this.rbSintesi.Name = "rbSintesi";
+            this.rbSintesi.Size = new System.Drawing.Size(321, 38);
+            this.rbSintesi.TabIndex = 12;
+            this.rbSintesi.TabStop = true;
+            this.rbSintesi.Text = "Report sintetico: una sola pagina riepilogativa \r\ndella situazione mensile. ";
+            this.rbSintesi.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.cbYears);
+            this.groupBox2.Controls.Add(this.cbMonths);
+            this.groupBox2.Location = new System.Drawing.Point(12, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(337, 63);
+            this.groupBox2.TabIndex = 13;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Periodo di riferimento";
+            // 
+            // cbYears
+            // 
+            this.cbYears.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cbYears.FormattingEnabled = true;
+            this.cbYears.Location = new System.Drawing.Point(209, 21);
+            this.cbYears.Name = "cbYears";
+            this.cbYears.Size = new System.Drawing.Size(96, 24);
+            this.cbYears.TabIndex = 7;
             // 
             // cbMonths
             // 
@@ -53,85 +130,38 @@
             "Ottobre",
             "Novembre",
             "Dicembre"});
-            this.cbMonths.Location = new System.Drawing.Point(13, 59);
+            this.cbMonths.Location = new System.Drawing.Point(6, 21);
             this.cbMonths.Name = "cbMonths";
-            this.cbMonths.Size = new System.Drawing.Size(176, 24);
-            this.cbMonths.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 36);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(234, 17);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "Scegli il mese e l\'anno di riferimento";
-            // 
-            // btnOk
-            // 
-            this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(216, 171);
-            this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 29);
-            this.btnOk.TabIndex = 2;
-            this.btnOk.Text = "Ok";
-            this.btnOk.UseVisualStyleBackColor = true;
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(135, 171);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 29);
-            this.btnCancel.TabIndex = 3;
-            this.btnCancel.Text = "Annulla";
-            this.btnCancel.UseVisualStyleBackColor = true;
-            // 
-            // cbYears
-            // 
-            this.cbYears.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cbYears.FormattingEnabled = true;
-            this.cbYears.Location = new System.Drawing.Point(195, 59);
-            this.cbYears.Name = "cbYears";
-            this.cbYears.Size = new System.Drawing.Size(96, 24);
-            this.cbYears.TabIndex = 5;
-            // 
-            // chkDettaglio
-            // 
-            this.chkDettaglio.AutoSize = true;
-            this.chkDettaglio.Location = new System.Drawing.Point(145, 89);
-            this.chkDettaglio.Name = "chkDettaglio";
-            this.chkDettaglio.Size = new System.Drawing.Size(146, 21);
-            this.chkDettaglio.TabIndex = 6;
-            this.chkDettaglio.Text = "Stampa il dettaglio";
-            this.chkDettaglio.UseVisualStyleBackColor = true;
+            this.cbMonths.Size = new System.Drawing.Size(197, 24);
+            this.cbMonths.TabIndex = 6;
             // 
             // DlgChooseMonthYear
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(308, 212);
-            this.Controls.Add(this.chkDettaglio);
-            this.Controls.Add(this.cbYears);
+            this.ClientSize = new System.Drawing.Size(359, 255);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.cbMonths);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "DlgChooseMonthYear";
-            this.Text = "Periodo di riferimento";
+            this.Text = "Stampa resoconto mensile";
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.ComboBox cbMonths;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnOk;
         private System.Windows.Forms.Button btnCancel;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton rbDettaglio;
+        private System.Windows.Forms.RadioButton rbSintesi;
+        private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.ComboBox cbYears;
-        private System.Windows.Forms.CheckBox chkDettaglio;
+        private System.Windows.Forms.ComboBox cbMonths;
     }
 }
