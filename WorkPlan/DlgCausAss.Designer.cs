@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DlgCausAss));
             this.lbCausali = new System.Windows.Forms.ListBox();
             this.cmdElimina = new System.Windows.Forms.Button();
             this.cmdNuovo = new System.Windows.Forms.Button();
@@ -162,6 +163,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.txtId);
             this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DlgCausAss";
             this.Text = "Causali Assenza";
             this.ResumeLayout(false);

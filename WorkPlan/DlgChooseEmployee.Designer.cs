@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DlgChooseEmployee));
             this.lstEmployees = new System.Windows.Forms.CheckedListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.lblTotPagine = new System.Windows.Forms.Label();
@@ -75,6 +76,7 @@
             this.Controls.Add(this.lblTotPagine);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.lstEmployees);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DlgChooseEmployee";
             this.Text = "Scegli dipendente";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DlgChooseEmployee_FormClosing);

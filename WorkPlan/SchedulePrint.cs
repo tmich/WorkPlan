@@ -26,7 +26,8 @@ namespace WorkPlan
         int cellHeadHeight = 20;
 
         List<int> printed_positions;
-        
+        IEnumerable<Position> positionsToPrint;
+
         // allineamento centrato
         StringFormat centerAlignedFormat = new StringFormat()
         {
@@ -59,22 +60,31 @@ namespace WorkPlan
             pd.DefaultPageSettings.Margins.Right = 20;
 
             printed_positions = new List<int>();
+            positionsToPrint = new List<Position>();
         }
 
         public void Print()
         {
-            PrintDialog printDialog = new PrintDialog();
-            printDialog.Document = pd;
-
-            if (printDialog.ShowDialog() == DialogResult.OK)
+            // Tiziano 28/03/2017: scelta reparti per stampa
+            DlgChoosePosition positionsDialog = new DlgChoosePosition();
+            if(positionsDialog.ShowDialog() == DialogResult.OK)
             {
-                var pserv = new PeriodService();
+                positionsToPrint = positionsDialog.Positions;
 
-                shiftsCassa = pserv.GetCassaByDateRangeDict(StartDate, EndDate);
-                shifts = pserv.GetNotCassaByDateRangeDict(StartDate, EndDate);
+                PrintDialog printDialog = new PrintDialog();
+                printDialog.Document = pd;
 
-                PageNumber = 1;
-                pd.Print();
+                if (printDialog.ShowDialog() == DialogResult.OK)
+                {
+                    var pserv = new PeriodService();
+
+
+                    shifts = pserv.GetNotCassaByDateRangeDict(StartDate, EndDate);
+                    shiftsCassa = pserv.GetCassaByDateRangeDict(StartDate, EndDate);
+                    
+                    PageNumber = 1;
+                    pd.Print();
+                }
             }
         }
 
@@ -92,11 +102,14 @@ namespace WorkPlan
 
             PrintColonne(ref e);
 
-            if (shiftsCassa.Count > 0)
+            if (positionsToPrint.Count(pos => pos.Id == 1) > 0)
             {
-                g.DrawString(string.Format("Cassa"), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
-                PrintCassa(ref e);
-                //topMargin += 50;
+                if (shiftsCassa.Count > 0)
+                {
+                    g.DrawString(string.Format("Cassa"), new Font("Arial", 14.0f, FontStyle.Bold), Brushes.Black, new Point(leftMargin, topMargin - 30));
+                    PrintCassa(ref e);
+                    //topMargin += 50;
+                }
             }
 
             if (shifts.Count > 0)
@@ -188,17 +201,22 @@ namespace WorkPlan
             }
         }
 
+        private IEnumerable<Employee> getEmployees()
+        {
+            var repo = new EmployeeRepository();
+            var employees = repo.All();
+            employees.Sort(new EmployeeFullNameComparer());
+            return employees;
+        }
+
         private void PrintTurni(ref PrintPageEventArgs e)
         {
-            var erep = new EmployeeRepository();
-            //var employees = shifts.Keys.ToList();
-            var employees = erep.All();
-            employees.Sort(new EmployeeFullNameComparer());
+            IEnumerable<Employee> employees = getEmployees();
             //employees.Sort(new EmployeeDefaultPositionComparer());
-            
-            var positions = new PositionDao().GetAll().ToList();
-            
-            foreach (var pos in positions)
+
+            //var positions = new PositionDao().GetAll().ToList();
+
+            foreach (var pos in positionsToPrint)
             {
                 if (!pos.Desc.Equals("Cassa"))
                 {

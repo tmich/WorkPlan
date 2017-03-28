@@ -60,7 +60,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.lvEmployees);
             this.splitContainer1.Size = new System.Drawing.Size(845, 532);
-            this.splitContainer1.SplitterDistance = 380;
+            this.splitContainer1.SplitterDistance = 379;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -74,11 +74,12 @@
             this.colPosition});
             this.lvEmployees.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEmployees.FullRowSelect = true;
+            this.lvEmployees.GridLines = true;
             this.lvEmployees.Location = new System.Drawing.Point(0, 0);
             this.lvEmployees.Margin = new System.Windows.Forms.Padding(4);
             this.lvEmployees.MultiSelect = false;
             this.lvEmployees.Name = "lvEmployees";
-            this.lvEmployees.Size = new System.Drawing.Size(380, 532);
+            this.lvEmployees.Size = new System.Drawing.Size(379, 532);
             this.lvEmployees.TabIndex = 2;
             this.lvEmployees.UseCompatibleStateImageBehavior = false;
             this.lvEmployees.View = System.Windows.Forms.View.Details;

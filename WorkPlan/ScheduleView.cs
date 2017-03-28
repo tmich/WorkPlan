@@ -54,7 +54,7 @@ namespace WorkPlan
             dutyRepo = new DutyRepository();
             noworkRepo = new NoWorkRepository();
             //duties = dutyRepo.All
-            employees = repo.All();
+            employees = getEmployees();
             //dutiesToDraw = new List<Duty>[DaysToShow, employees.Count];
             //dutyService = new DutyService();
             periodService = new PeriodService();
@@ -84,12 +84,25 @@ namespace WorkPlan
             UpdateData();
         }
 
+        private List<Employee> getEmployees()
+        {
+            var repo = new EmployeeRepository();
+            var employees = repo.All();
+            employees.Sort((x, y) =>
+            {
+                int ord1 = x.DefaultPosition.Desc.CompareTo(y.DefaultPosition.Desc);
+                return ord1 != 0 ? ord1 : x.FullName.CompareTo(y.FullName);
+            });
+            //employees.Sort(new EmployeeFullNameComparer());
+            return employees;
+        }
+
         public void UpdateData()
         {
             try
             {
-                employees = repo.All();
-
+                employees = getEmployees();
+                
                 allDuties = periodService.GetByDateRangeDict(startDate, endDate);
                 dutyCassa = periodService.GetCassaByDateRangeDict(startDate, endDate);
                 dutiesMap = periodService.GetNotCassaByDateRangeDict(startDate, endDate);
@@ -143,7 +156,7 @@ namespace WorkPlan
             int e = 0;
             foreach (var emp in employees)
             {
-                dataGridView1.Rows[e].HeaderCell.Value = emp.FullName;
+                dataGridView1.Rows[e].HeaderCell.Value = string.Format("{0}\n({1})", emp.FullName, emp.DefaultPosition.Desc);
                 dataGridView1.Rows[e++].Tag = emp;
             }
 

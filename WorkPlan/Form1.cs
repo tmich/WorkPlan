@@ -1,5 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
+using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace WorkPlan
@@ -11,7 +13,6 @@ namespace WorkPlan
 
         public Form1()
         {
-            
             InitializeComponent();
 
             EmployeeRepository employeeRepo = new EmployeeRepository();
@@ -27,8 +28,16 @@ namespace WorkPlan
             scheduleView.Dock = DockStyle.Fill;
             scheduleView.Name = "uc";
             tabContainer.TabPages[0].Controls.Add(scheduleView);
-            
+
             //stampaToolStripMenuItem.Enabled = false;
+
+            var attributes = typeof(Program).GetTypeInfo().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute));
+            var assemblyTitleAttribute = attributes.SingleOrDefault() as AssemblyTitleAttribute;
+
+            string assemblyTitle = assemblyTitleAttribute.Title;
+            Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            string assemblyVersion = string.Format("{0}.{1}", version.Major, version.Minor);
+            Text = string.Format("{0} v.{1}", assemblyTitle, assemblyVersion);
         }
         
         private void esciToolStripMenuItem_Click(object sender, EventArgs e)
@@ -70,6 +79,12 @@ namespace WorkPlan
         {
             var dlgCausAss = new DlgCausAss();
             dlgCausAss.ShowDialog(this);
+        }
+
+        private void infoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DlgInfo infoBox = new DlgInfo();
+            infoBox.ShowDialog(this);
         }
     }
 }
