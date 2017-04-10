@@ -131,7 +131,7 @@ namespace WorkPlan
                             Employee = employee,
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
-                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5) },
+                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5), Code = rdr.GetString(6) },
                             Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
                             FullDay = rdr.GetBoolean(8)
                         });
@@ -174,7 +174,7 @@ namespace WorkPlan
                             Employee = employee,
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
-                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5) },
+                            Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5), Code = rdr.GetString(6) },
                             Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
                             FullDay = rdr.GetBoolean(8)
                         });

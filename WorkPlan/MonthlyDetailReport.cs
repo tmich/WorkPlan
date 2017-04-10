@@ -25,12 +25,12 @@ namespace WorkPlan
         int topMargin = 50;
         int cellWidth = 100;
         int cellHeight = 30;
-        Font bigboldFont = new Font("Arial", 14.0f, FontStyle.Bold);
-        Font baseFont = new Font("Arial", 12.0f);
-        Font bigFont = new Font("Arial", 14.0f, FontStyle.Regular);
-        Font italicFont = new Font("Arial", 12.0f, FontStyle.Italic);
-        Font boldFont = new Font("Arial", 12.0f, FontStyle.Bold);
-        Font miniFont = new Font("Arial", 8.0f, FontStyle.Regular);
+        Font bigboldFont = new Font("Arial", 12.0f, FontStyle.Bold);
+        Font baseFont = new Font("Arial", 10.0f);
+        Font bigFont = new Font("Arial", 12.0f, FontStyle.Regular);
+        Font italicFont = new Font("Arial", 10.0f, FontStyle.Italic);
+        Font boldFont = new Font("Arial", 10.0f, FontStyle.Bold);
+        Font miniFont = new Font("Arial", 7.0f, FontStyle.Regular);
         List<String> dipendenti = new List<string>();
         List<Employee> employees = new List<Employee>();
 
@@ -191,6 +191,8 @@ namespace WorkPlan
             Graphics g = e.Graphics;
             bool mancanoOrePattuite = false;
 
+            List<NoWork> assenzeMensili = new List<NoWork>();
+
             //if (PageNumber == 1)
             //{
             //    PrintDocTitle(ref e);
@@ -216,7 +218,7 @@ namespace WorkPlan
             TimeSpan tsTotaleOreLavorate = new TimeSpan();
             TimeSpan tsTotaleOreAssenza = new TimeSpan();
             TimeSpan tsTotaleDifferenza = new TimeSpan();
-            int iTotaleGgAssenza = 0;
+            //int iTotaleGgAssenza = 0;
 
             // ore giornaliere
             EconomicsRepository ecoRepo = new EconomicsRepository();
@@ -281,6 +283,8 @@ namespace WorkPlan
                         tsTotaleOreAssenza = tsTotaleOreAssenza.Add(ore_assenza);
                         causale = assenzeHH[0].Reason.ToString();
                     }
+
+                    assenzeMensili.AddRange(assenze);
                 }
                 g.DrawRectangle(Pens.DarkGray, cell2);
                 g.DrawString(oa, baseFont, Brushes.Black, cell2, centerAlignedFormat);
@@ -289,14 +293,29 @@ namespace WorkPlan
                 // (4) GIORNO ASSENZA
                 string ga = "";
                 var cell3 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
-                List<NoWork> assenzeGG = assenze.FindAll(delegate (NoWork nw) { return nw.FullDay == true; });
+                List<NoWork> assenzeGG = assenze.FindAll(delegate (NoWork nw) 
+                {
+                    return nw.FullDay == true;
+                });
+
                 if (assenzeGG.Count > 0)
                 {
                     giorno_assenza++;
                     ga = "1";
-                    iTotaleGgAssenza++;
+
+                    if(assenzeGG[0].Reason.Code.Equals("RIP"))
+                    {
+                        // il riposo è figurativo
+                        ga = "(1)";
+                    }
+                    
+                    //iTotaleGgAssenza++;
+
                     causale = assenzeGG[0].Reason.ToString();
+
+                    assenzeMensili.AddRange(assenzeGG);
                 }
+
                 g.DrawRectangle(Pens.DarkGray, cell3);
                 g.DrawString(ga, baseFont, Brushes.Black, cell3, centerAlignedFormat);
                 leftMargin += cell3.Width;
@@ -368,26 +387,60 @@ namespace WorkPlan
             leftMargin += cellTot2.Width;
 
             // gg assenza
+            // 10/04/2017: riporto le assenze a giornata intera in ore
             var cellTot3 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+
+            //var assenzeGiornataIntera = assenzeMensili.FindAll(delegate (NoWork nw)
+            //{
+            //    return nw.FullDay == true; // && nw.Reason.Code.Equals("RIP");
+            //});
+
+            var assenzeGiornataInteraSenzaRiposi = assenzeMensili.FindAll(delegate (NoWork nw)
+            {
+                return nw.FullDay == true && !nw.Reason.Code.Equals("RIP");
+            });
+
+            double ggToHh = orePattuite.TotalHours * assenzeGiornataInteraSenzaRiposi.Count;
+            TimeSpan tsGGAssenzaInOre = new TimeSpan((int)ggToHh, 0, 0);
+            string sTotGGAssenzaInOre = FormatTimeSpan(tsGGAssenzaInOre);
             g.DrawRectangle(Pens.DarkGray, cellTot3);
-            g.DrawString(iTotaleGgAssenza.ToString(), boldFont, Brushes.Black, cellTot3, centerAlignedFormat);
+            g.DrawString(sTotGGAssenzaInOre, boldFont, Brushes.Black, cellTot3, centerAlignedFormat);
             leftMargin += (cellTot3.Width) * 2;     // salto la casella della causale
 
             // diff.
+            // 10/04/2017: la differenza è calcolata a partire da un valore medio di 208 hh lavorative (26 gg)
+            //             non considero i riposi
+
+            //var assenzeGiornataInteraSenzaRiposi = assenzeMensili.FindAll(delegate (NoWork nw)
+            //{
+            //    return nw.FullDay == true && !nw.Reason.Code.Equals("RIP");
+            //});
+
+            int ggMediLavorabili = 26;
+            int hhTotaliLavorabili = (int)(ggMediLavorabili * orePattuite.TotalHours);
+            TimeSpan tsTotaleMensileLavorabile = new TimeSpan(hhTotaliLavorabili, 0, 0);
+            TimeSpan tsDifferenzaMensile = tsTotaleMensileLavorabile.Subtract(tsTotaleOreLavorate);
+            TimeSpan tsAssenzeGiornataInteraSenzaRiposi = new TimeSpan((int)(assenzeGiornataInteraSenzaRiposi.Count * orePattuite.TotalHours), 0, 0);
+            tsDifferenzaMensile = tsDifferenzaMensile.Subtract(tsTotaleOreAssenza);
+            tsDifferenzaMensile = tsDifferenzaMensile.Subtract(tsAssenzeGiornataInteraSenzaRiposi);
+
             var cellTot4 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
             g.DrawRectangle(Pens.DarkGray, cellTot4);
-            string sTotDifferenza = FormatTimeSpan(tsTotaleDifferenza);
-            if (tsTotaleDifferenza == TimeSpan.Zero)
+            string sTotDifferenza = FormatTimeSpan(tsDifferenzaMensile);
+            if (tsDifferenzaMensile == TimeSpan.Zero)
             {
                 sTotDifferenza = "";
             }
             else
             {
-                sTotDifferenza = string.Format("{0}{1}", (tsTotaleDifferenza < TimeSpan.Zero ? "-" : "+"), sTotDifferenza);
+                sTotDifferenza = string.Format("{0}{1}", (tsDifferenzaMensile > TimeSpan.Zero ? "-" : "+"), sTotDifferenza);
             }
 
-            g.DrawString(sTotDifferenza, boldFont, (tsTotaleDifferenza < TimeSpan.Zero ? Brushes.Red : Brushes.Black), cellTot4, centerAlignedFormat);
+            g.DrawString(sTotDifferenza, boldFont, (tsDifferenzaMensile > TimeSpan.Zero ? Brushes.Red : Brushes.Black), cellTot4, centerAlignedFormat);
             leftMargin += cellTot4.Width;
+
+            var cellTot5 = new Rectangle(leftMargin, topMargin, cellWidth, cellHeight);
+            g.DrawString(string.Format(" su {0} ore medie mensili", (int)tsTotaleMensileLavorabile.TotalHours), baseFont, Brushes.Black, cellTot5, centerAlignedFormat);
 
             // Riga Avvisi
             topMargin += cellHeight;
@@ -400,7 +453,7 @@ namespace WorkPlan
             }
 
             // Piè di pagina
-            var cellFooter = new Rectangle(e.MarginBounds.Left, e.MarginBounds.Bottom - 20, e.MarginBounds.Width, cellHeight);
+            var cellFooter = new Rectangle(e.MarginBounds.Left, e.MarginBounds.Bottom - 50, e.MarginBounds.Width, cellHeight);
             g.DrawString(string.Format("Data stampa: {0} {1}", DateTime.Now.ToLongDateString(), DateTime.Now.ToShortTimeString()), 
                 miniFont, Brushes.Black, cellFooter, rightAlignedFormat);
 
