@@ -582,6 +582,36 @@ namespace WorkPlan
             }
         }
 
+        // 10/04/2017: prova nuovo report
+        private void button2_Click(object sender, EventArgs e)
+        {
+            DlgChooseMonthYear d = new DlgChooseMonthYear();
+            d.ChosenMonth = monthCalendar1.SelectionStart.Month - 1;
+            d.ChosenYear = monthCalendar1.SelectionStart.Year;
+            var r = d.ShowDialog();
+            if (r == DialogResult.OK)
+            {
+                int month = d.ChosenMonth;
+                int year = d.ChosenYear;
+
+                // scelta dei dipendenti
+                ChooseEmployees choose = new ChooseEmployees();
+                employees = choose.AskUser();
+                employees.Sort((emp1, emp2) => emp1.FullName.CompareTo(emp2.FullName));
+
+                List<MonthReport> reports = new List<MonthReport>();
+                foreach (var emp in employees)
+                {
+                    MonthReport monthReport = new MonthReport(emp, month, year);
+                    reports.Add(monthReport);
+                }
+
+                MonthReportView mview = new MonthReportView(reports);
+                mview.ShowDialog(this);
+            }
+                
+        }
+
         private void tbPrint_Click(object sender, EventArgs e)
         {
             Print();

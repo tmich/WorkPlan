@@ -16,5 +16,23 @@ namespace WorkPlan
         {
             return Value;
         }
+
+        public override bool Equals(Object rhs)
+        {
+            // If parameter is null return false:
+            if ((object)rhs == null)
+            {
+                return false;
+            }
+
+            NoWorkReason nwr = rhs as NoWorkReason;
+
+            return (Id == nwr.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }
