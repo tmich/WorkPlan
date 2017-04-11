@@ -565,20 +565,54 @@ namespace WorkPlan
             d.ChosenMonth = monthCalendar1.SelectionStart.Month - 1;
             d.ChosenYear = monthCalendar1.SelectionStart.Year;
             var r = d.ShowDialog();
-            if(r == DialogResult.OK)
+            if (r == DialogResult.OK)
             {
                 int month = d.ChosenMonth;
                 int year = d.ChosenYear;
-                IMonthlyReport report;
+
                 if (d.Detail)
                 {
-                    report = new MonthlyDetailReport(month, year);
+                    // scelta dei dipendenti
+                    ChooseEmployees choose = new ChooseEmployees();
+                    employees = choose.AskUser();
+                    employees.Sort((emp1, emp2) => emp1.FullName.CompareTo(emp2.FullName));
+
+                    List<MonthReport> reports = new List<MonthReport>();
+                    foreach (var emp in employees)
+                    {
+                        MonthReport monthReport = new MonthReport(emp, month, year);
+                        reports.Add(monthReport);
+                    }
+
+                    MonthReportView mview = new MonthReportView(reports);
+                    mview.ShowDialog(this);
                 }
                 else
                 {
-                    report = new MonthlySummaryReport(month, year);
+                    //IMonthlyReport report = new MonthlySummaryReport(month, year);
+                    //report.Print();
+
+                    // ----------------------------
+                    EmployeeRepository emprepo = new EmployeeRepository();
+                    var employees = emprepo.All();
+                    employees.Sort((emp1, emp2) => emp1.FullName.CompareTo(emp2.FullName));
+                    List<MonthReport> reports = new List<MonthReport>();
+                    foreach (var emp in employees)
+                    {
+                        MonthReport monthReport = new MonthReport(emp, month, year);
+                        monthReport.Calculate();
+                        reports.Add(monthReport);
+                        //var totals = monthReport.Totals;
+                        //foreach (var tot in totals)
+                        //{
+                        //    Debug.Print(emp.FullName + " " + tot.Key + ":" + tot.Value);
+                        //}
+                    }
+
+                    MonthSummaryView mview = new MonthSummaryView(reports);
+                    mview.ShowDialog(this);
+                    // ----------------------------
                 }
-                report.Print();
             }
         }
 

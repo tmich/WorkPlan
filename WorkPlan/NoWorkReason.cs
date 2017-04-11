@@ -26,6 +26,10 @@ namespace WorkPlan
             }
 
             NoWorkReason nwr = rhs as NoWorkReason;
+            if(nwr == null)
+            {
+                return false;
+            }
 
             return (Id == nwr.Id);
         }

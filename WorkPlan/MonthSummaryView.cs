@@ -11,32 +11,16 @@ using System.Windows.Forms;
 
 namespace WorkPlan
 {
-    public partial class MonthReportView : Form
+    public partial class MonthSummaryView : Form
     {
         private List<MonthReport> m_Reports;
-        int idx;
         protected PrintDocument pd;
         protected int PageNumber = 0;
 
-        // allineamento a destra
-        StringFormat rightAlignedFormat = new StringFormat()
-        {
-            Alignment = StringAlignment.Far,
-            LineAlignment = StringAlignment.Center
-        };
-
-        public MonthReportView(List<MonthReport> reports)
+        public MonthSummaryView(List<MonthReport> reports)
         {
             InitializeComponent();
             m_Reports = reports;
-            nPagina.Maximum = m_Reports.Count;
-            nPagina.Minimum = 1;
-
-            idx = 0;
-            nPagina.Value = 1;
-
-            foreach(var rep in m_Reports)
-                rep.Calculate();
 
             pd = new PrintDocument();
             pd.PrintPage += new PrintPageEventHandler(PrintPage);
@@ -51,25 +35,39 @@ namespace WorkPlan
             pd.DefaultPageSettings.Margins.Right = 30;
         }
 
-        protected void PrintPage(object sender, PrintPageEventArgs e)
+        private void PaintTotals(object sender, Graphics g)
         {
-            var rep = m_Reports[PageNumber];
-            rep.Draw(e.Graphics);
-            rep.DrawFooter(e.Graphics, e.MarginBounds.Left, e.MarginBounds.Bottom - 50, e.MarginBounds.Width, 20);
+            int marginLeft = 50;
+            int marginTop = 50;
+            int y = marginTop;
+            int x = marginLeft;
 
-            e.HasMorePages = (++PageNumber < m_Reports.Count);
+            Font smallBoldFont = new Font("Arial", 8, FontStyle.Bold);
+
+            Rectangle rTitle = new Rectangle(x, y, 400, 20);
+            g.DrawString(m_Reports[0].StartDate.ToString("MMMM yyyy"), smallBoldFont, Brushes.Black, rTitle);
+
+            //testata
+            y += 20;
+            m_Reports[0].DrawTotalsHeaders(g, x, y);
+
+            foreach (var report in m_Reports)
+            {
+                y += 20;
+                report.DrawTotals(g, marginLeft, y);
+            }
         }
 
-
-        private void nPagina_ValueChanged(object sender, EventArgs e)
+        private void PrintPage(object sender, PrintPageEventArgs e)
         {
-            idx = (int)nPagina.Value - 1;
-            pictureBox1.Invalidate();
+            PaintTotals(sender, e.Graphics);
+            m_Reports[0].DrawFooter(e.Graphics, e.MarginBounds.Left, e.MarginBounds.Bottom - 50, e.MarginBounds.Width, 20);
+            e.HasMorePages = false;
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            m_Reports[idx].Draw(e.Graphics);
+            PaintTotals(sender, e.Graphics);
         }
 
         private void cmdPrint_Click(object sender, EventArgs e)
