@@ -19,7 +19,12 @@ namespace WorkPlan
 
             try
             {
-                Application.Run(new Form1());
+                LoginForm lform = new LoginForm();
+                lform.ShowDialog();
+                if(lform.DialogResult == DialogResult.OK)
+                {
+                    Application.Run(new Form1());
+                }
             }
             catch (Exception e)
             {

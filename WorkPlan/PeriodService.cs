@@ -152,11 +152,25 @@ namespace WorkPlan
             DutyVM dutyVm = shift as DutyVM;
             if (dutyVm != null)
             {
+                if (!User.CurrentUser.CanDelete(dutyVm))
+                {
+                    GuiUtils.Error("Non autorizzato", null, "Errore");
+                    return;
+                }
+
                 dutyRepository.Delete(dutyVm.Id);
             }
             else
             {
-                noworkRepository.Delete(shift.Id);
+                NoworkVM noworkVm = shift as NoworkVM;
+                
+                if(!User.CurrentUser.CanDelete(noworkVm))
+                {
+                    GuiUtils.Error("Non autorizzato", null, "Errore");
+                    return;
+                }
+
+                noworkRepository.Delete(noworkVm.Id);
             }
         }
 

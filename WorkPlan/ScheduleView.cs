@@ -47,6 +47,23 @@ namespace WorkPlan
         //private int rowsPrinted = 0;
         //private int currentPage = 0;
 
+        private void CheckProfiloUtente()
+        {
+            cmdPrint.Visible = User.CurrentUser.IsAuthorized(Function.StampaTurni);
+            button1.Visible = User.CurrentUser.IsAuthorized(Function.StampaResocontoMensile);
+
+            // menu contestuale delle celle
+            nuovoToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.InserisciTurno) ||
+                User.CurrentUser.IsAuthorized(Function.InserisciAssenza);
+            turnoToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.InserisciTurno);
+            assenzaToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.InserisciAssenza);
+
+            //modificaToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.ModificaTurno) ||
+            //    User.CurrentUser.IsAuthorized(Function.ModificaAssenza);
+            //eliminaToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.EliminaTurno) ||
+            //    User.CurrentUser.IsAuthorized(Function.EliminaAssenza);
+        }
+
         public ScheduleView()
         {
             InitializeComponent();
@@ -65,6 +82,8 @@ namespace WorkPlan
             UpdateData();
 
             CreateGrid(monthCalendar1.SelectionStart);
+
+            CheckProfiloUtente();
         }
         
         public void Print()
@@ -202,6 +221,11 @@ namespace WorkPlan
                     }
                 }
 
+                //if (!User.CurrentUser.IsAuthorized(Function.EliminaTurno))
+                //{
+                //    GuiUtils.Error("Non autorizzato", this);
+                //}
+
                 if (AskUserToDelete(shiftToDelete))
                 {
                     periodService.DeleteShift(shiftToDelete);
@@ -246,6 +270,11 @@ namespace WorkPlan
                 if (dutyVM != null)
                 {
                     // turno
+                    if (!User.CurrentUser.CanEdit(dutyVM))
+                    {
+                        GuiUtils.Error("Non autorizzato", this, "Errore");
+                        return;
+                    }
                     DlgDuty dlg = new DlgDuty(dutyVM);
 
                     if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -265,6 +294,11 @@ namespace WorkPlan
                 {
                     // assenza
                     NoworkVM nwvm = dutyToEdit as NoworkVM;
+                    if(!User.CurrentUser.CanEdit(nwvm))
+                    {
+                        GuiUtils.Error("Non autorizzato", this, "Errore");
+                        return;
+                    }
                     DlgNowork dlg = new DlgNowork(nwvm);
                     List<IShiftVM> dutiesOfTheDay = GetDutiesAt(dataGridView1.SelectedCells[0]);
                     dlg.CanSelectFullDay = (dutiesOfTheDay.Count == 0);
@@ -364,6 +398,18 @@ namespace WorkPlan
             
             modificaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
             eliminaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
+
+            if (dutiesOfTheDay.Count > 0)
+            {
+                if (!User.CurrentUser.IsAdmin())
+                {
+                    // l'utente normale non può modificare le date passate
+                    DateTime day = dutiesOfTheDay[0].StartDate.Date;
+                    nuovoToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
+                    modificaToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
+                    eliminaToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
+                }
+            }
         }
 
         private List<IShiftVM> GetDutiesAt(DataGridViewCell cell)
@@ -453,6 +499,17 @@ namespace WorkPlan
 
                 if (periods.Count > 0)
                 {
+                    if (!User.CurrentUser.IsAdmin())
+                    {
+                        // l'utente normale non può modificare le date passate
+                        DateTime day = periods[0].StartDate.Date;
+
+                        if(day < DateTime.Now.Date)
+                        {
+                            return;
+                        }
+                    }
+
                     EditShiftAt(e.ColumnIndex, e.RowIndex);
                 }
                 else
@@ -539,7 +596,8 @@ namespace WorkPlan
         private void modificaToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             EditShiftAt(dataGridView1.SelectedCells[0].ColumnIndex,
-                dataGridView1.SelectedCells[0].RowIndex);
+                    dataGridView1.SelectedCells[0].RowIndex);
+            
         }
 
         private void turnoToolStripMenuItem_Click(object sender, EventArgs e)

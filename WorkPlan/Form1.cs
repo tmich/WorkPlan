@@ -28,9 +28,7 @@ namespace WorkPlan
             scheduleView.Dock = DockStyle.Fill;
             scheduleView.Name = "uc";
             tabContainer.TabPages[0].Controls.Add(scheduleView);
-
-            //stampaToolStripMenuItem.Enabled = false;
-
+            
             var attributes = typeof(Program).GetTypeInfo().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute));
             var assemblyTitleAttribute = attributes.SingleOrDefault() as AssemblyTitleAttribute;
 
@@ -38,6 +36,19 @@ namespace WorkPlan
             Version version = Assembly.GetExecutingAssembly().GetName().Version;
             string assemblyVersion = string.Format("{0}.{1}", version.Major, version.Minor);
             Text = string.Format("{0} v.{1}", assemblyTitle, assemblyVersion);
+
+            CheckProfiloUtente();
+        }
+
+        private void CheckProfiloUtente()
+        {
+            configurazioneToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.Configurazione);
+
+            // visualizzazione dipendenti
+            if (!User.CurrentUser.IsAuthorized(Function.VisualizzaDipendenti))
+            {
+                tabContainer.TabPages.RemoveAt(1);
+            }
         }
         
         private void esciToolStripMenuItem_Click(object sender, EventArgs e)

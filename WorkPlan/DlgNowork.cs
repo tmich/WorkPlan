@@ -22,11 +22,25 @@ namespace WorkPlan
         {
             InitializeComponent();
             nwRepo = new NoWorkRepository();
-            SetReasons(nwRepo.GetReasons());
+            //SetReasons(nwRepo.GetReasons());
             CanSelectFullDay = true;
             //var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
             //dtPickerStart.Value = tmPickerStart.Value = now;
             //dtPickerEnd.Value = tmPickerEnd.Value = now.AddHours(1);
+
+            CheckProfiloUtente();
+        }
+
+        private void CheckProfiloUtente()
+        {
+            List<NoWorkReason> reasons = nwRepo.GetReasons();
+
+            if (!User.CurrentUser.IsAdmin())
+            {
+                reasons.RemoveAll(r => !r.Code.Equals("GEN"));
+            }
+
+            SetReasons(reasons);
         }
 
         public DlgNowork(Employee employee, DateTime dutyDate)

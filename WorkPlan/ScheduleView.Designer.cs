@@ -62,7 +62,7 @@
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
             this.splitContainer1.IsSplitterFixed = true;
             this.splitContainer1.Location = new System.Drawing.Point(0, 71);
-            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.splitContainer1.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainer1.Name = "splitContainer1";
             // 
             // splitContainer1.Panel1
@@ -83,7 +83,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(11, 334);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.button2.Margin = new System.Windows.Forms.Padding(4);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(295, 28);
             this.button2.TabIndex = 4;
@@ -112,7 +112,7 @@
             this.cmdPrint.Image = global::WorkPlan.Resources.printer;
             this.cmdPrint.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.cmdPrint.Location = new System.Drawing.Point(11, 233);
-            this.cmdPrint.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.cmdPrint.Margin = new System.Windows.Forms.Padding(4);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(295, 43);
             this.cmdPrint.TabIndex = 2;
@@ -140,7 +140,7 @@
             this.dataGridView1.ContextMenuStrip = this.contextMenuStrip1;
             this.dataGridView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridView1.Location = new System.Drawing.Point(0, 0);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.MultiSelect = false;
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
