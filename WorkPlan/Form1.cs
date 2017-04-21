@@ -42,8 +42,8 @@ namespace WorkPlan
             CheckProfiloUtente();
 
             // status bar
-            toolStripStatusLabel1.Text = string.Format("Utente connesso: {0}", User.CurrentUser.Username);
-            toolStripStatusLabel2.Text = string.Format("Ruolo: {0}", User.CurrentUser.Profile.ToString());
+            toolStripStatusLabel1.Text = string.Format("Utente connesso: {0}. Ruolo: {1}", 
+                User.CurrentUser.Username, User.CurrentUser.Profile.ToString());
         }
 
         private void CheckProfiloUtente()

@@ -47,6 +47,15 @@ namespace WorkPlan
         //private int rowsPrinted = 0;
         //private int currentPage = 0;
 
+        private DateTime FirstDayOfWeek(DateTime date)
+        {
+            DateTime lunedi = date;
+            while (lunedi.DayOfWeek > DayOfWeek.Monday)
+                lunedi = lunedi.AddDays(-1);
+
+            return lunedi;
+        }
+
         private void CheckProfiloUtente()
         {
             cmdPrint.Visible = User.CurrentUser.IsAuthorized(Function.StampaTurni);
@@ -62,6 +71,13 @@ namespace WorkPlan
             //    User.CurrentUser.IsAuthorized(Function.ModificaAssenza);
             //eliminaToolStripMenuItem.Visible = User.CurrentUser.IsAuthorized(Function.EliminaTurno) ||
             //    User.CurrentUser.IsAuthorized(Function.EliminaAssenza);
+            
+            // l'utente normale può visualizzare soltanto l'ultima settimana
+            if (!User.CurrentUser.IsAuthorized(Function.VisualizzaTurniPassati))
+            {
+                var lunedi = FirstDayOfWeek(DateTime.Now);
+                monthCalendar1.MinDate = lunedi;
+            }
         }
 
         public ScheduleView()

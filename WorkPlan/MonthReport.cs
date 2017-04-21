@@ -80,6 +80,7 @@ namespace WorkPlan
         TimeSpan orePattuite;
         DutyRepository dutyRepo;
         NoWorkRepository noRepo;
+        int firstCellHeight = 40;
         int firstCellWidth = 140;
         int cellWidth = 60;
         int cellHeight = 20;
@@ -94,7 +95,7 @@ namespace WorkPlan
         }
         
 
-        int marginTop = 50;
+        int marginTop = 10;
         TimeSpan oreLavorate, oreTotaliGiustificate;
         Font drawFont, boldFont, italicFont, smallBoldFont, smallItalicFont;
         Dictionary<string, TimeSpan> totals;
@@ -242,6 +243,11 @@ namespace WorkPlan
         private Rectangle CreateCell(int x, int y, int width)
         {
             return new Rectangle(x, y, width, cellHeight);
+        }
+
+        private Rectangle CreateCell(int x, int y, int width, int height)
+        {
+            return new Rectangle(x, y, width, height);
         }
 
         private string FormatTimeSpan(TimeSpan ts, bool signed = false)

@@ -18,7 +18,8 @@ namespace WorkPlan
         VisualizzaDipendenti,
         Configurazione,
         StampaTurni,
-        StampaResocontoMensile
+        StampaResocontoMensile,
+        VisualizzaTurniPassati
     }
 
     public abstract class Profile
