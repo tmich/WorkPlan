@@ -28,7 +28,7 @@ namespace WorkPlan
             ps.RawKind = (int)PaperKind.A4;
 
             pd.DefaultPageSettings.PaperSize = ps;
-            pd.DefaultPageSettings.Landscape = false;
+            pd.DefaultPageSettings.Landscape = true;
             pd.DefaultPageSettings.Margins.Top = 30;
             pd.DefaultPageSettings.Margins.Bottom = 30;
             pd.DefaultPageSettings.Margins.Left = 30;

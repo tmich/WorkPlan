@@ -17,6 +17,7 @@ namespace WorkPlan
             InitializeComponent();
 
             DialogResult = DialogResult.Cancel;
+            Text = string.Format("Accesso {0}", MyAppDomain.ToString());
         }
 
         private void button1_Click(object sender, EventArgs e)

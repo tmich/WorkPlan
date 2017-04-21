@@ -230,6 +230,7 @@
     <Compile Include="MonthSummaryView.Designer.cs">
       <DependentUpon>MonthSummaryView.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyAppDomain.cs" />
     <Compile Include="NoWork.cs" />
     <Compile Include="NoWorkReason.cs" />
     <Compile Include="NoWorkRepository.cs" />
@@ -349,6 +350,7 @@
     <None Include="Resources\1464894170_sun.ico" />
     <Content Include="hr.ico" />
     <Content Include="hr32.ico" />
+    <None Include="res\10x10FT-Light-Blue-Geometric-Triangle.jpg" />
     <Content Include="res\abacus.png" />
     <Content Include="res\basket.png" />
     <Content Include="res\book.png" />
@@ -373,11 +375,14 @@
     <Content Include="res\folder.png" />
     <Content Include="res\folders.png" />
     <Content Include="res\glue.png" />
+    <None Include="res\Icon_HumanResources.png" />
+    <None Include="res\gradient-1629715_640.jpg" />
     <Content Include="res\id-card.png" />
     <Content Include="res\lamp.png" />
     <Content Include="res\laptop.png" />
     <Content Include="res\letter.png" />
     <Content Include="res\letters.png" />
+    <None Include="res\login.png" />
     <Content Include="res\marker.png" />
     <Content Include="res\mouse.png" />
     <None Include="res\new.png" />

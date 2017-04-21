@@ -28,16 +28,22 @@ namespace WorkPlan
             scheduleView.Dock = DockStyle.Fill;
             scheduleView.Name = "uc";
             tabContainer.TabPages[0].Controls.Add(scheduleView);
+
+            //var attributes = typeof(Program).GetTypeInfo().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute));
+            //var assemblyTitleAttribute = attributes.SingleOrDefault() as AssemblyTitleAttribute;
+
+            //string assemblyTitle = assemblyTitleAttribute.Title;
+            //Version version = Assembly.GetExecutingAssembly().GetName().Version;
+            //string assemblyVersion = string.Format("{0}.{1}", version.Major, version.Minor);
+            //Text = string.Format("{0} v.{1}", assemblyTitle, assemblyVersion);
+
+            Text = MyAppDomain.ToString();
             
-            var attributes = typeof(Program).GetTypeInfo().Assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute));
-            var assemblyTitleAttribute = attributes.SingleOrDefault() as AssemblyTitleAttribute;
-
-            string assemblyTitle = assemblyTitleAttribute.Title;
-            Version version = Assembly.GetExecutingAssembly().GetName().Version;
-            string assemblyVersion = string.Format("{0}.{1}", version.Major, version.Minor);
-            Text = string.Format("{0} v.{1}", assemblyTitle, assemblyVersion);
-
             CheckProfiloUtente();
+
+            // status bar
+            toolStripStatusLabel1.Text = string.Format("Utente connesso: {0}", User.CurrentUser.Username);
+            toolStripStatusLabel2.Text = string.Format("Ruolo: {0}", User.CurrentUser.Profile.ToString());
         }
 
         private void CheckProfiloUtente()

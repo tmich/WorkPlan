@@ -81,7 +81,7 @@ namespace WorkPlan
         DutyRepository dutyRepo;
         NoWorkRepository noRepo;
         int firstCellWidth = 140;
-        int cellWidth = 80;
+        int cellWidth = 60;
         int cellHeight = 20;
         int marginLeft = 50;
 
