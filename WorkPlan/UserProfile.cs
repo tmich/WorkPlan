@@ -24,6 +24,17 @@ namespace WorkPlan
 
     public abstract class Profile
     {
+        public static Profile Create(string userProfile)
+        {
+            switch(userProfile)
+            {
+                case "A":
+                    return new AdminProfile();
+                default:
+                    return new UserProfile();
+            }
+        }
+
         public abstract bool IsAuthorized(Function function);
 
         public virtual bool IsAdmin()
@@ -36,10 +47,11 @@ namespace WorkPlan
             return base.ToString();
         }
 
-        public abstract bool CanDelete(NoworkVM noworkVM);
-        public abstract bool CanDelete(DutyVM dutyVm);
-        public abstract bool CanEdit(NoworkVM noWorkVM);
-        public abstract bool CanEdit(DutyVM dutyVM);
+        //public abstract bool CanDelete(IShiftVM shift);
+        //public abstract bool CanDelete(NoworkVM noworkVM);
+        //public abstract bool CanDelete(DutyVM dutyVm);
+        //public abstract bool CanEdit(NoworkVM noWorkVM);
+        //public abstract bool CanEdit(DutyVM dutyVM);
     }
     
     public class UserProfile : Profile
@@ -66,25 +78,25 @@ namespace WorkPlan
             return "UTENTE";
         }
 
-        public override bool CanDelete(NoworkVM noworkVM)
-        {
-            return noworkVM.Reason.Code.Equals("GEN");
-        }
+        //public override bool CanDelete(IShiftVM shift)
+        //{
+        //    return noworkVM.Reason.Code.Equals("GEN");
+        //}
 
-        public override bool CanDelete(DutyVM dutyVm)
-        {
-            return false;
-        }
+        //public override bool CanDelete(DutyVM dutyVm)
+        //{
+        //    return false;
+        //}
 
-        public override bool CanEdit(NoworkVM noworkVM)
-        {
-            return noworkVM.Reason.Code.Equals("GEN");
-        }
+        //public override bool CanEdit(NoworkVM noworkVM)
+        //{
+        //    return noworkVM.Reason.Code.Equals("GEN");
+        //}
 
-        public override bool CanEdit(DutyVM dutyVM)
-        {
-            return false;
-        }
+        //public override bool CanEdit(DutyVM dutyVM)
+        //{
+        //    return false;
+        //}
     }
 
     public class AdminProfile : Profile
@@ -105,24 +117,24 @@ namespace WorkPlan
             return "AMMINISTRATORE";
         }
 
-        public override bool CanDelete(NoworkVM noworkVM)
-        {
-            return true;
-        }
+        //public override bool CanDelete(NoworkVM noworkVM)
+        //{
+        //    return true;
+        //}
 
-        public override bool CanDelete(DutyVM dutyVm)
-        {
-            return true;
-        }
+        //public override bool CanDelete(DutyVM dutyVm)
+        //{
+        //    return true;
+        //}
 
-        public override bool CanEdit(NoworkVM noworkVM)
-        {
-            return true;
-        }
+        //public override bool CanEdit(NoworkVM noworkVM)
+        //{
+        //    return true;
+        //}
 
-        public override bool CanEdit(DutyVM dutyVM)
-        {
-            return true;
-        }
+        //public override bool CanEdit(DutyVM dutyVM)
+        //{
+        //    return true;
+        //}
     }
 }

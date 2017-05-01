@@ -39,7 +39,8 @@ namespace WorkPlan
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
                             Position = rdr.GetString(4),
-                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
+                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5),
+                            User = new User(rdr.GetInt32(6), rdr.GetString(7), Profile.Create(rdr.GetString(8)))
                         });
                     }
 
@@ -66,7 +67,6 @@ namespace WorkPlan
                     conn.Open();
                     MySqlCommand cmd = conn.CreateCommand();
                     cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    //cmd.CommandText = "GetTurniByEmployeeAndDateRange";
                     cmd.CommandText = "GetTurniByDipDateRange";
                     cmd.Parameters.Add("pDipendenteId", MySqlDbType.Int32).Value = employee.Id;
                     cmd.Parameters.Add("pData1", MySqlDbType.DateTime).Value = startDate.Date;
@@ -83,7 +83,8 @@ namespace WorkPlan
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
                             Position = rdr.GetString(4),
-                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
+                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5),
+                            User = new User(rdr.GetInt32(6), rdr.GetString(7), Profile.Create(rdr.GetString(8)))
                         });
                     }
 
@@ -140,7 +141,8 @@ namespace WorkPlan
                                 Email = rdr.IsDBNull(16) ? "" : rdr.GetString(16),
                                 BirthDate = rdr.GetDateTime(17),
                                 DefaultPosition = new Position(rdr.IsDBNull(18) ? 0 : rdr.GetInt32(18), rdr.IsDBNull(19) ? "" : rdr.GetString(19))
-                            }
+                            },
+                            User = new User(rdr.GetInt32(20), rdr.GetString(21), Profile.Create(rdr.GetString(22)))
                         });
                     }
 
@@ -183,7 +185,8 @@ namespace WorkPlan
                             StartDate = rdr.GetDateTime(2),
                             EndDate = rdr.GetDateTime(3),
                             Position = rdr.GetString(4),
-                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5)
+                            Notes = rdr.IsDBNull(5) ? String.Empty : rdr.GetString(5),
+                            User = new User(rdr.GetInt32(6), rdr.GetString(7), Profile.Create(rdr.GetString(8)))
                         });
                     }
 
@@ -219,6 +222,7 @@ namespace WorkPlan
                     cmd.Parameters.Add("pDataFine", MySqlDbType.DateTime).Value = duty.EndDate;
                     cmd.Parameters.Add("pPosizione", MySqlDbType.VarChar, 50).Value = duty.Position;
                     cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = duty.Notes;
+                    cmd.Parameters.Add("pUtenteId", MySqlDbType.Int32, 50).Value = duty.User.Id;
 
                     var lid = new MySqlParameter("LID", MySqlDbType.Int32);
                     lid.Direction = System.Data.ParameterDirection.InputOutput;

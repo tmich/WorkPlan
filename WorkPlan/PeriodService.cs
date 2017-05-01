@@ -137,11 +137,6 @@ namespace WorkPlan
                 var val = results.GetOrAdd(nowork.Employee, new List<IShiftVM>());
                 val.Add(nowvm);
                 results[nowvm.Employee] = val;
-                //if (!results.ContainsKey(nowvm.Employee))
-                //{
-                //    results.Add(nowvm.Employee, new List<IShiftVM>());
-                //}
-                //results[nowvm.Employee].Add(nowvm);
             }
 
             return results;
@@ -152,12 +147,6 @@ namespace WorkPlan
             DutyVM dutyVm = shift as DutyVM;
             if (dutyVm != null)
             {
-                if (!User.CurrentUser.CanDelete(dutyVm))
-                {
-                    GuiUtils.Error("Non autorizzato", null, "Errore");
-                    return;
-                }
-
                 dutyRepository.Delete(dutyVm.Id);
             }
             else

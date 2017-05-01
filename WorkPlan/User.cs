@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 
 namespace WorkPlan
 {
-    
-    class User
+    public class User
     {
         protected static string connstr = System.Configuration.ConfigurationManager.AppSettings["ConnectionString"].ToString();
 
@@ -16,6 +15,12 @@ namespace WorkPlan
         {
             Username = username;
             Profile = profile;
+        }
+
+        public User(int id, string username, Profile profile)
+            : this(username, profile)
+        {
+            Id = id;
         }
 
         public bool IsAdmin()
@@ -27,16 +32,38 @@ namespace WorkPlan
         {
             return Profile.IsAuthorized(function);
         }
-        
-        public bool CanDelete(NoworkVM noworkVM)
+
+        public bool CanDelete(IShiftVM shift)
         {
-            return Profile.CanDelete(noworkVM);
+            if (shift.User.Equals(this))
+                return true;
+
+            return Profile.IsAdmin();
         }
 
-        public bool CanEdit(NoworkVM noworkVM)
+        internal bool CanEdit(IShiftVM shift)
         {
-            return Profile.CanEdit(noworkVM);
+            if (shift.User.Equals(this))
+                return true;
+
+            return Profile.IsAdmin();
         }
+
+        //public bool CanDelete(NoworkVM noworkVM)
+        //{
+        //    if (noworkVM.User.Equals(this))
+        //        return true;
+
+        //    return Profile.CanDelete(noworkVM);
+        //}
+
+        //public bool CanEdit(NoworkVM noworkVM)
+        //{
+        //    if (noworkVM.User.Equals(this))
+        //        return true;
+
+        //    return Profile.CanEdit(noworkVM);
+        //}
 
         public static bool Login(string username, string password)
         {
@@ -47,7 +74,7 @@ namespace WorkPlan
                 conn.Open();
                 MySqlCommand cmd = conn.CreateCommand();
                 cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = string.Format("select username, profilo from utenti where username='{0}' and password = '{1}';", username, password);
+                cmd.CommandText = string.Format("select id, username, profilo from utenti where username='{0}' and password = '{1}';", username, password);
 
                 var rdr = cmd.ExecuteReader();
                 
@@ -55,7 +82,8 @@ namespace WorkPlan
                 {
                     Profile p = null;
                     ret = true;
-                    char prof = rdr.GetChar(1);
+                    int id = rdr.GetInt32(0);
+                    char prof = rdr.GetChar(2);
 
                     switch(prof)
                     {
@@ -67,7 +95,7 @@ namespace WorkPlan
                             break;
                     }
 
-                    CurrentUser = new User(username, p);
+                    CurrentUser = new User(id, username, p);
                 }
 
                 conn.Close();
@@ -94,14 +122,44 @@ namespace WorkPlan
             protected set;
         }
 
-        public bool CanDelete(DutyVM dutyVm)
+        public int Id { get; protected set; }
+
+        //public bool CanDelete(DutyVM dutyVm)
+        //{
+        //    if (dutyVm.User.Equals(this))
+        //        return true;
+
+        //    return Profile.CanDelete(dutyVm);
+        //}
+
+        //public bool CanEdit(DutyVM dutyVm)
+        //{
+        //    if (dutyVm.User.Equals(this))
+        //        return true;
+
+        //    return Profile.CanEdit(dutyVm);
+        //}
+
+        public override bool Equals(object obj)
         {
-            return Profile.CanDelete(dutyVm);
+            User rhs = obj as User;
+            if (rhs == null)
+                return false;
+
+            return rhs.Id == this.Id;
         }
 
-        public bool CanEdit(DutyVM dutyVM)
+        public override int GetHashCode()
         {
-            return Profile.CanEdit(dutyVM);
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + Username.GetHashCode();
+                hash = hash * 23 + Id.GetHashCode();
+                hash = hash * 23 + this.Profile.GetHashCode();
+                return hash;
+            }
         }
     }
 }

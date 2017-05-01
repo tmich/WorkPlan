@@ -18,5 +18,6 @@ namespace WorkPlan
         void Draw(DataGridViewCellPaintingEventArgs e, int order = 0);
         void Print(PrintPageEventArgs e, Rectangle cell, int totalPerDay, int order = 0);
         bool IsAfternoon { get; }
+        User User { get; set; }
     }
 }

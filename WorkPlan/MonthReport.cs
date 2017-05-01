@@ -80,7 +80,7 @@ namespace WorkPlan
         TimeSpan orePattuite;
         DutyRepository dutyRepo;
         NoWorkRepository noRepo;
-        int firstCellHeight = 40;
+        //int firstCellHeight = 40;
         int firstCellWidth = 140;
         int cellWidth = 60;
         int cellHeight = 20;

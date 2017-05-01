@@ -133,7 +133,8 @@ namespace WorkPlan
                             EndDate = rdr.GetDateTime(3),
                             Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5), Code = rdr.GetString(6) },
                             Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
-                            FullDay = rdr.GetBoolean(8)
+                            FullDay = rdr.GetBoolean(8),
+                            User = new User(rdr.GetInt32(9), rdr.GetString(10), Profile.Create(rdr.GetString(11)))
                         });
                     }
 
@@ -176,7 +177,8 @@ namespace WorkPlan
                             EndDate = rdr.GetDateTime(3),
                             Reason = new NoWorkReason() { Id = rdr.GetInt32(4), Value = rdr.GetString(5), Code = rdr.GetString(6) },
                             Notes = rdr.IsDBNull(7) ? String.Empty : rdr.GetString(7),
-                            FullDay = rdr.GetBoolean(8)
+                            FullDay = rdr.GetBoolean(8),
+                            User = new User(rdr.GetInt32(9), rdr.GetString(10), Profile.Create(rdr.GetString(11)))
                         });
                     }
 
@@ -248,7 +250,7 @@ namespace WorkPlan
                             FullDay = rdr.GetBoolean(8),
                             Employee = new Employee()
                             {
-                                Id=rdr.GetInt32(9),
+                                Id = rdr.GetInt32(9),
                                 Name = rdr.GetString(10),
                                 LastName = rdr.GetString(11),
                                 CodFisc = rdr.GetString(12),
@@ -261,7 +263,8 @@ namespace WorkPlan
                                 HireDate = rdr.IsDBNull(19) ? new DateTime(1900, 1, 1) : rdr.GetDateTime(19),
                                 Email = rdr.IsDBNull(20) ? "" : rdr.GetString(20),
                                 BirthDate = rdr.GetDateTime(21)
-                            }
+                            },
+                            User = new User(rdr.GetInt32(29), rdr.GetString(30), Profile.Create(rdr.GetString(31)))
                         });
                     }
 
@@ -293,6 +296,7 @@ namespace WorkPlan
                     cmd.Parameters.Add("pGiornataIntera", MySqlDbType.Int16).Value = nowork.FullDay;
                     cmd.Parameters.Add("pMotivo", MySqlDbType.VarChar, 50).Value = nowork.Reason.Id;
                     cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = nowork.Notes;
+                    cmd.Parameters.Add("pUtenteId", MySqlDbType.Int32, 50).Value = nowork.User.Id;
 
                     var lid = new MySqlParameter("LID", MySqlDbType.Int32);
                     lid.Direction = System.Data.ParameterDirection.InputOutput;

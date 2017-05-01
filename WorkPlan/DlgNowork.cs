@@ -67,6 +67,7 @@ namespace WorkPlan
             txNotes.Text = nowork.Notes;
             chkFullDay.Checked = nowork.IsFullDay;
             Text = string.Format("Modifica assenza per {0}", mEmployee.FullName);
+            lblUsername.Text = string.Format("Inserita da {0}", nowork.User.Username);
         }
 
         public bool CanSelectFullDay

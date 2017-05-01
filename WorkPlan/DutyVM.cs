@@ -21,7 +21,10 @@ namespace WorkPlan
             Id = duty.Id;
             Notes = duty.Notes;
             Position = duty.Position;
+            User = duty.User;
         }
+
+        public User User { get; set; }
 
         public string Position { get; set; }
 
@@ -129,7 +132,7 @@ namespace WorkPlan
         {
             get
             {
-                return false;
+                return EndDate.Date > StartDate.Date;
             }
         }
 

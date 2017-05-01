@@ -20,8 +20,11 @@ namespace WorkPlan
             Id = nowork.Id;
             Notes = nowork.Notes;
             Reason = nowork.Reason;
+            User = nowork.User;
             rect = new Rectangle();
         }
+
+        public User User { get; set; }
         
         protected Rectangle rect;
 

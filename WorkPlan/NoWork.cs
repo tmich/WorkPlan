@@ -17,6 +17,8 @@ namespace WorkPlan
             set { mReason = value; }
         }
 
+        public User User { get; set; }
+
         private Employee mEmployee;
         public Employee Employee
         {

@@ -40,6 +40,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.lblUsername = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -53,7 +54,6 @@
             // 
             // dtPickerStart
             // 
-            this.dtPickerStart.Enabled = false;
             this.dtPickerStart.Location = new System.Drawing.Point(76, 12);
             this.dtPickerStart.Name = "dtPickerStart";
             this.dtPickerStart.Size = new System.Drawing.Size(174, 20);
@@ -71,7 +71,6 @@
             // 
             // dtPickerEnd
             // 
-            this.dtPickerEnd.Enabled = false;
             this.dtPickerEnd.Location = new System.Drawing.Point(76, 38);
             this.dtPickerEnd.Name = "dtPickerEnd";
             this.dtPickerEnd.Size = new System.Drawing.Size(174, 20);
@@ -153,11 +152,22 @@
             this.button2.Text = "&Annulla";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // lblUsername
+            // 
+            this.lblUsername.AutoSize = true;
+            this.lblUsername.ForeColor = System.Drawing.Color.Silver;
+            this.lblUsername.Location = new System.Drawing.Point(13, 244);
+            this.lblUsername.Name = "lblUsername";
+            this.lblUsername.Size = new System.Drawing.Size(0, 13);
+            this.lblUsername.TabIndex = 20;
+            this.lblUsername.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // DlgDuty
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(336, 235);
+            this.ClientSize = new System.Drawing.Size(336, 266);
+            this.Controls.Add(this.lblUsername);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label4);
@@ -196,5 +206,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label lblUsername;
     }
 }

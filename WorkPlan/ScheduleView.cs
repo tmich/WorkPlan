@@ -47,14 +47,7 @@ namespace WorkPlan
         //private int rowsPrinted = 0;
         //private int currentPage = 0;
 
-        private DateTime FirstDayOfWeek(DateTime date)
-        {
-            DateTime lunedi = date;
-            while (lunedi.DayOfWeek > DayOfWeek.Monday)
-                lunedi = lunedi.AddDays(-1);
-
-            return lunedi;
-        }
+        
 
         private void CheckProfiloUtente()
         {
@@ -75,7 +68,7 @@ namespace WorkPlan
             // l'utente normale può visualizzare soltanto l'ultima settimana
             if (!User.CurrentUser.IsAuthorized(Function.VisualizzaTurniPassati))
             {
-                var lunedi = FirstDayOfWeek(DateTime.Now);
+                var lunedi = DateUtils.FirstDayOfWeek(DateTime.Now);
                 monthCalendar1.MinDate = lunedi;
             }
         }
@@ -242,13 +235,21 @@ namespace WorkPlan
                 //    GuiUtils.Error("Non autorizzato", this);
                 //}
 
-                if (AskUserToDelete(shiftToDelete))
+                if (!User.CurrentUser.CanDelete(shiftToDelete))
                 {
-                    periodService.DeleteShift(shiftToDelete);
-                    UpdateData();
-                    //dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
-                    for (int d = 0; d < DaysToShow; d++)
-                        dataGridView1.InvalidateCell(d, dataGridView1.CurrentCell.RowIndex);
+                    GuiUtils.Error("Non autorizzato", null, "Errore");
+                    return;
+                }
+                else
+                {
+                    if (AskUserToDelete(shiftToDelete))
+                    {
+                        periodService.DeleteShift(shiftToDelete);
+                        UpdateData();
+                        //dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+                        for (int d = 0; d < DaysToShow; d++)
+                            dataGridView1.InvalidateCell(d, dataGridView1.CurrentCell.RowIndex);
+                    }
                 }
             }
         }
@@ -309,12 +310,13 @@ namespace WorkPlan
                 else
                 {
                     // assenza
-                    NoworkVM nwvm = dutyToEdit as NoworkVM;
-                    if(!User.CurrentUser.CanEdit(nwvm))
+                    if(!User.CurrentUser.CanEdit(dutyToEdit))
                     {
                         GuiUtils.Error("Non autorizzato", this, "Errore");
                         return;
                     }
+
+                    NoworkVM nwvm = dutyToEdit as NoworkVM;
                     DlgNowork dlg = new DlgNowork(nwvm);
                     List<IShiftVM> dutiesOfTheDay = GetDutiesAt(dataGridView1.SelectedCells[0]);
                     dlg.CanSelectFullDay = (dutiesOfTheDay.Count == 0);
@@ -362,11 +364,15 @@ namespace WorkPlan
                 duty.EndDate = dlgDuty.DutyEnd;
                 duty.Position = dlgDuty.Position;
                 duty.Notes = dlgDuty.Notes;
+                duty.User = User.CurrentUser;
                 
                 dutyRepo.Add(ref duty);
                 UpdateData();
 
-                dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+                //dataGridView1.InvalidateCell(dataGridView1.CurrentCell);
+                var days = duty.EndDate.Subtract(duty.StartDate).Days;
+                for (int d = dataGridView1.CurrentCell.ColumnIndex; d <= dataGridView1.CurrentCell.ColumnIndex + days; d++)
+                    dataGridView1.InvalidateCell(d, dataGridView1.CurrentCell.RowIndex);
             }
         }
 
@@ -387,6 +393,7 @@ namespace WorkPlan
                 nowork.Reason = dlgNw.Reason;
                 nowork.Notes = dlgNw.Notes;
                 nowork.FullDay = dlgNw.FullDay;
+                nowork.User = User.CurrentUser;
 
                 noworkRepo.Add(ref nowork);
                 UpdateData();
@@ -415,17 +422,17 @@ namespace WorkPlan
             modificaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
             eliminaToolStripMenuItem.Enabled = (dutiesOfTheDay.Count > 0);
 
-            if (dutiesOfTheDay.Count > 0)
-            {
-                if (!User.CurrentUser.IsAdmin())
-                {
-                    // l'utente normale non può modificare le date passate
-                    DateTime day = dutiesOfTheDay[0].StartDate.Date;
-                    nuovoToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
-                    modificaToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
-                    eliminaToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
-                }
-            }
+            //if (dutiesOfTheDay.Count > 0)
+            //{
+            //    if (!User.CurrentUser.IsAdmin())
+            //    {
+            //        // l'utente normale non può modificare le date passate
+            //        DateTime day = dutiesOfTheDay[0].StartDate.Date;
+            //        nuovoToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
+            //        modificaToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
+            //        eliminaToolStripMenuItem.Enabled = (day >= DateTime.Now.Date);
+            //    }
+            //}
         }
 
         private List<IShiftVM> GetDutiesAt(DataGridViewCell cell)
@@ -515,16 +522,16 @@ namespace WorkPlan
 
                 if (periods.Count > 0)
                 {
-                    if (!User.CurrentUser.IsAdmin())
-                    {
-                        // l'utente normale non può modificare le date passate
-                        DateTime day = periods[0].StartDate.Date;
+                    //if (!User.CurrentUser.IsAdmin())
+                    //{
+                    //    // l'utente normale non può modificare le date passate
+                    //    DateTime day = periods[0].StartDate.Date;
 
-                        if(day < DateTime.Now.Date)
-                        {
-                            return;
-                        }
-                    }
+                    //    if(day < DateTime.Now.Date)
+                    //    {
+                    //        return;
+                    //    }
+                    //}
 
                     EditShiftAt(e.ColumnIndex, e.RowIndex);
                 }

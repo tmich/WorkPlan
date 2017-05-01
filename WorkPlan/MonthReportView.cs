@@ -59,8 +59,7 @@ namespace WorkPlan
 
             e.HasMorePages = (++PageNumber < m_Reports.Count);
         }
-
-
+        
         private void nPagina_ValueChanged(object sender, EventArgs e)
         {
             idx = (int)nPagina.Value - 1;

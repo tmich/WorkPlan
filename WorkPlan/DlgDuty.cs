@@ -75,6 +75,18 @@ namespace WorkPlan
             var now = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, DateTime.Now.Hour, 0, 0);
             dtPickerStart.Value = tmPickerStart.Value = now;
             dtPickerEnd.Value = tmPickerEnd.Value = now.AddHours(1);
+            CheckProfiloUtente();
+        }
+
+        private void CheckProfiloUtente()
+        {
+            // l'utente normale può visualizzare soltanto l'ultima settimana
+            if (!User.CurrentUser.IsAuthorized(Function.VisualizzaTurniPassati))
+            {
+                var lunedi = DateUtils.FirstDayOfWeek(DateTime.Now);
+                dtPickerStart.MinDate = lunedi;
+                dtPickerEnd.MinDate = lunedi;
+            }
         }
 
         public DlgDuty(Employee employee, DateTime dutyDate)
@@ -109,6 +121,8 @@ namespace WorkPlan
             cbPositions.SelectedIndex = cbPositions.FindStringExact(duty.Position);
             txNotes.Text = duty.Notes;
             Text = string.Format("Modifica turno per {0}", mEmployee.FullName);
+            lblUsername.Text = string.Format("Inserito da {0}", duty.User.Username);
+            //CheckProfiloUtente();
         }
 
         private void button1_Click(object sender, EventArgs e)

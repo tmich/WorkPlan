@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="ChooseEmployees.cs" />
     <Compile Include="Counter.cs" />
+    <Compile Include="DateUtils.cs" />
     <Compile Include="DlgBusta.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -269,6 +270,7 @@
       <DependentUpon>UserControl1.cs</DependentUpon>
     </Compile>
     <Compile Include="UserProfile.cs" />
+    <Compile Include="UserRepository.cs" />
     <EmbeddedResource Include="DlgBusta.resx">
       <DependentUpon>DlgBusta.cs</DependentUpon>
     </EmbeddedResource>

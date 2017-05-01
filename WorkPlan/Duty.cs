@@ -17,6 +17,8 @@ namespace WorkPlan
             set { mEmployee = value; }
         }
 
+        public User User { get; set; }
+
         private DateTime mStartDate;
         public DateTime StartDate
         {
