@@ -185,13 +185,23 @@ namespace WorkPlan
             oreTotaliGiustificate = new TimeSpan();
 
             // scorro i giorni
+            List<int> ids = new List<int>();
             DateTime dx = StartDate;
             while (dx <= EndDate)
             {
                 var day = new MonthReportDay(dx);
 
                 // presenze
-                List<Duty> turniGiornalieri = dutyRepo.GetBy(m_employee, dx);
+                List<Duty> turniGiornalieri = new List<Duty>();
+
+                // splitto i turni che hanno data inizio diversa dalla data fine
+                foreach(var d in dutyRepo.GetBy(m_employee, dx))
+                {
+                    DutySplitter splitter = new DutySplitter(d);
+                    var tmpList = splitter.Split();
+                    turniGiornalieri.Add(tmpList.Find(x => x.StartDate.Date == dx));
+                }
+
                 foreach (var du in turniGiornalieri)
                 {
                     day.Add(du);

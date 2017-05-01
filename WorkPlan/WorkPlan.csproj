@@ -191,6 +191,7 @@
     <Compile Include="DutyList.cs" />
     <Compile Include="DutyRepository.cs" />
     <Compile Include="DutyService.cs" />
+    <Compile Include="DutySplitter.cs" />
     <Compile Include="DutyVM.cs" />
     <Compile Include="EconomicsRepository.cs" />
     <Compile Include="Employee.cs" />
@@ -216,9 +217,6 @@
     <Compile Include="LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MonthlyDetailReport.cs" />
-    <Compile Include="MonthlyReportCmd.cs" />
-    <Compile Include="MonthlySummaryReport.cs" />
     <Compile Include="MonthReportView.cs">
       <SubType>Form</SubType>
     </Compile>

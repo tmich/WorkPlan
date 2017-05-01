@@ -331,6 +331,7 @@ namespace WorkPlan
                     cmd.Parameters.Add("pGiornataIntera", MySqlDbType.Int16).Value = nw.FullDay;
                     cmd.Parameters.Add("pMotivo", MySqlDbType.VarChar, 50).Value = nw.Reason.Id;
                     cmd.Parameters.Add("pNote", MySqlDbType.VarChar, 50).Value = nw.Notes;
+                    cmd.Parameters.Add("pUtenteId", MySqlDbType.Int32).Value = User.CurrentUser.Id;
 
                     cmd.ExecuteNonQuery();
                     conn.Close();

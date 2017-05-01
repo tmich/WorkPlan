@@ -76,6 +76,14 @@ namespace WorkPlan
             return base.GetHashCode() ^ Id;
         }
 
+        public bool IsMultipleDays
+        {
+            get
+            {
+                return EndDate.Date > StartDate.Date;
+            }
+        }
+
         public TimeSpan GetDuration()
         {
             return mEndDate.Subtract(mStartDate);

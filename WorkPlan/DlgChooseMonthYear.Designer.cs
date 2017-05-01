@@ -43,9 +43,10 @@
             // btnOk
             // 
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(274, 217);
+            this.btnOk.Location = new System.Drawing.Point(206, 176);
+            this.btnOk.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(75, 29);
+            this.btnOk.Size = new System.Drawing.Size(56, 24);
             this.btnOk.TabIndex = 2;
             this.btnOk.Text = "Ok";
             this.btnOk.UseVisualStyleBackColor = true;
@@ -53,9 +54,10 @@
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(193, 217);
+            this.btnCancel.Location = new System.Drawing.Point(145, 176);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 29);
+            this.btnCancel.Size = new System.Drawing.Size(56, 24);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "Annulla";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -64,9 +66,11 @@
             // 
             this.groupBox1.Controls.Add(this.rbDettaglio);
             this.groupBox1.Controls.Add(this.rbSintesi);
-            this.groupBox1.Location = new System.Drawing.Point(12, 81);
+            this.groupBox1.Location = new System.Drawing.Point(9, 66);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(337, 130);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox1.Size = new System.Drawing.Size(253, 106);
             this.groupBox1.TabIndex = 12;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Tipo report";
@@ -74,9 +78,10 @@
             // rbDettaglio
             // 
             this.rbDettaglio.AutoSize = true;
-            this.rbDettaglio.Location = new System.Drawing.Point(6, 65);
+            this.rbDettaglio.Location = new System.Drawing.Point(4, 53);
+            this.rbDettaglio.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rbDettaglio.Name = "rbDettaglio";
-            this.rbDettaglio.Size = new System.Drawing.Size(321, 38);
+            this.rbDettaglio.Size = new System.Drawing.Size(242, 30);
             this.rbDettaglio.TabIndex = 13;
             this.rbDettaglio.TabStop = true;
             this.rbDettaglio.Text = "Report dettagliato: una pagina per dipendente\r\ncon la situazione giornaliera.";
@@ -85,9 +90,10 @@
             // rbSintesi
             // 
             this.rbSintesi.AutoSize = true;
-            this.rbSintesi.Location = new System.Drawing.Point(6, 21);
+            this.rbSintesi.Location = new System.Drawing.Point(4, 17);
+            this.rbSintesi.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.rbSintesi.Name = "rbSintesi";
-            this.rbSintesi.Size = new System.Drawing.Size(321, 38);
+            this.rbSintesi.Size = new System.Drawing.Size(242, 30);
             this.rbSintesi.TabIndex = 12;
             this.rbSintesi.TabStop = true;
             this.rbSintesi.Text = "Report sintetico: una sola pagina riepilogativa \r\ndella situazione mensile. ";
@@ -97,9 +103,11 @@
             // 
             this.groupBox2.Controls.Add(this.cbYears);
             this.groupBox2.Controls.Add(this.cbMonths);
-            this.groupBox2.Location = new System.Drawing.Point(12, 12);
+            this.groupBox2.Location = new System.Drawing.Point(9, 10);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(337, 63);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.groupBox2.Size = new System.Drawing.Size(253, 51);
             this.groupBox2.TabIndex = 13;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Periodo di riferimento";
@@ -108,9 +116,10 @@
             // 
             this.cbYears.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbYears.FormattingEnabled = true;
-            this.cbYears.Location = new System.Drawing.Point(209, 21);
+            this.cbYears.Location = new System.Drawing.Point(157, 17);
+            this.cbYears.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbYears.Name = "cbYears";
-            this.cbYears.Size = new System.Drawing.Size(96, 24);
+            this.cbYears.Size = new System.Drawing.Size(73, 21);
             this.cbYears.TabIndex = 7;
             // 
             // cbMonths
@@ -130,21 +139,24 @@
             "Ottobre",
             "Novembre",
             "Dicembre"});
-            this.cbMonths.Location = new System.Drawing.Point(6, 21);
+            this.cbMonths.Location = new System.Drawing.Point(4, 17);
+            this.cbMonths.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.cbMonths.Name = "cbMonths";
-            this.cbMonths.Size = new System.Drawing.Size(197, 24);
+            this.cbMonths.Size = new System.Drawing.Size(149, 21);
             this.cbMonths.TabIndex = 6;
             // 
             // DlgChooseMonthYear
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(359, 255);
+            this.ClientSize = new System.Drawing.Size(269, 207);
+            this.ControlBox = false;
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOk);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "DlgChooseMonthYear";
             this.Text = "Stampa resoconto mensile";
             this.groupBox1.ResumeLayout(false);
