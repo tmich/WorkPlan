@@ -143,7 +143,8 @@ namespace WorkPlan
             int topMargin = cell.Y; //+ (height * order);
             int width = cell.Width / 2;
             int x = cell.X;
-            var str = string.Format("{1}-{2}\n{0}", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            //var str = string.Format("{1}-{2}\n{0}", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
+            var str = string.Format("{0}-{1}", StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
 
             if (IsCassa)
             {
@@ -164,20 +165,26 @@ namespace WorkPlan
             // allineamento centrato
             StringFormat stringFormat = new StringFormat()
             {
-                Alignment = StringAlignment.Center,
-                LineAlignment = StringAlignment.Center
+                Alignment = StringAlignment.Center
             };
 
             Font myFont = new Font("Arial", 8.0f, FontStyle.Regular);
             var cellDuty = new Rectangle(x, topMargin, width, height);
+            if (cellDuty == lastCellPrinted)
+            {
+                str = string.Format("\n{0}", str);
+            }
             //e.Graphics.FillRectangle(bgBrush, cellDuty);
             e.Graphics.DrawRectangle(Pens.Black, cellDuty);
             e.Graphics.DrawString(str, myFont, Brushes.Black, cellDuty, stringFormat);
+            lastCellPrinted = cellDuty;
         }
 
         public override string ToString()
         {
             return string.Format("{0} [{1}-{2}]", Position, StartDate.ToShortTimeString(), EndDate.ToShortTimeString());
         }
+
+        protected static Rectangle lastCellPrinted;
     }
 }
