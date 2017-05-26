@@ -174,8 +174,13 @@ namespace WorkPlan
                 dateStart = dateStart.AddDays(1);
             }
 
+            // data riferimento
+            DateTime dateRif = dateStart;
+
             // create rows
             dataGridView1.Rows.Clear();
+            employees = employees.FindAll(d => d.HasOpenRelationship(dateRif));
+
             if (employees.Count > 0)
             {
                 dataGridView1.Rows.Add(employees.Count);
@@ -184,8 +189,11 @@ namespace WorkPlan
             int e = 0;
             foreach (var emp in employees)
             {
-                dataGridView1.Rows[e].HeaderCell.Value = string.Format("{0}\n({1})", emp.FullName, emp.DefaultPosition.Desc);
-                dataGridView1.Rows[e++].Tag = emp;
+                if (emp.HasOpenRelationship(dateRif))
+                {
+                    dataGridView1.Rows[e].HeaderCell.Value = string.Format("{0}\n({1})", emp.FullName, emp.DefaultPosition.Desc);
+                    dataGridView1.Rows[e++].Tag = emp;
+                }
             }
 
             // restore selected cell and offset
@@ -651,11 +659,17 @@ namespace WorkPlan
                 int month = d.ChosenMonth;
                 int year = d.ChosenYear;
 
+                DateTime dateRif = new DateTime(d.ChosenYear, d.ChosenMonth, 1);
+                dateRif = dateRif.AddMonths(1);
+                dateRif = dateRif.AddDays(-1);
+
                 if (d.Detail)
                 {
                     // scelta dei dipendenti
-                    ChooseEmployees choose = new ChooseEmployees();
+                    ChooseEmployees choose = new ChooseEmployees(dateRif);
                     employees = choose.AskUser();
+                    if (employees.Count == 0)
+                        return;
                     employees.Sort((emp1, emp2) => emp1.FullName.CompareTo(emp2.FullName));
 
                     List<MonthReport> reports = new List<MonthReport>();
@@ -680,14 +694,12 @@ namespace WorkPlan
                     List<MonthReport> reports = new List<MonthReport>();
                     foreach (var emp in employees)
                     {
-                        MonthReport monthReport = new MonthReport(emp, month, year);
-                        monthReport.Calculate();
-                        reports.Add(monthReport);
-                        //var totals = monthReport.Totals;
-                        //foreach (var tot in totals)
-                        //{
-                        //    Debug.Print(emp.FullName + " " + tot.Key + ":" + tot.Value);
-                        //}
+                        if (emp.HasOpenRelationship(dateRif))
+                        {
+                            MonthReport monthReport = new MonthReport(emp, month, year);
+                            monthReport.Calculate();
+                            reports.Add(monthReport);
+                        }
                     }
 
                     MonthSummaryView mview = new MonthSummaryView(reports);
@@ -710,7 +722,10 @@ namespace WorkPlan
                 int year = d.ChosenYear;
 
                 // scelta dei dipendenti
-                ChooseEmployees choose = new ChooseEmployees();
+                DateTime dateRif = new DateTime(d.ChosenYear, d.ChosenMonth, 1);
+                dateRif = dateRif.AddMonths(1);
+                dateRif = dateRif.AddDays(-1);
+                ChooseEmployees choose = new ChooseEmployees(dateRif);
                 employees = choose.AskUser();
                 employees.Sort((emp1, emp2) => emp1.FullName.CompareTo(emp2.FullName));
 

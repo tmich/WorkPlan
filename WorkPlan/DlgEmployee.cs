@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace WorkPlan
@@ -16,6 +17,45 @@ namespace WorkPlan
                 cbReparti.Items.Add(item);
             }
             cbReparti.SelectedIndex = 0;
+        }
+
+        public List<EmploymentRelationship> Relationships
+        {
+            get
+            {
+                List<EmploymentRelationship> relationships = new List<EmploymentRelationship>();
+                foreach (var lvi in lvRelationships.Items)
+                {
+                    var li = (ListViewItem)lvi;
+
+                    EmploymentRelationship rel = (EmploymentRelationship)li.Tag;
+                    relationships.Add(rel);
+                }
+
+                return relationships;
+            }
+
+            set
+            {
+                lvRelationships.Items.Clear();
+
+                foreach (var rel in value)
+                {
+                    AddRelationshipToListView(rel);
+                }
+            }
+        }
+
+        private void AddRelationshipToListView(EmploymentRelationship rel)
+        {
+            ListViewItem lvi = new ListViewItem(rel.Id.ToString());
+            lvi.Tag = rel;
+            lvi.SubItems.Add(rel.HiringDate.ToShortDateString());
+            string sub2 = "IN ESSERE";
+            if (!rel.IsOpen())
+                sub2 = rel.FiringDate.ToShortDateString();
+            lvi.SubItems.Add(sub2);
+            lvRelationships.Items.Add(lvi);
         }
 
         public decimal EmployeeSalary
@@ -215,7 +255,7 @@ namespace WorkPlan
                 {
                     throw;
                 }
-                
+
                 return ts;
             }
 
@@ -241,7 +281,7 @@ namespace WorkPlan
                 {
 
                     throw;
-                }                               
+                }
 
                 return ts;
             }
@@ -437,7 +477,7 @@ namespace WorkPlan
 
         private bool ValidateDate(TextBoxBase tx, string message = null)
         {
-            if(ValidateNonEmpty(tx, message))
+            if (ValidateNonEmpty(tx, message))
             {
                 try
                 {
@@ -518,14 +558,14 @@ namespace WorkPlan
         private void AddToListView(BustaPaga busta)
         {
             ListViewItem lv = CreateListViewItem(busta);
-            
+
             lvBuste.Items.Add(lv);
         }
 
         private void InsertToListView(BustaPaga busta, int index)
         {
             ListViewItem lv = CreateListViewItem(busta);
-            
+
             lvBuste.Items.RemoveAt(index);
             lvBuste.Items.Insert(index, lv);
         }
@@ -533,7 +573,7 @@ namespace WorkPlan
         private void btnAggRetrib_Click(object sender, EventArgs e)
         {
             DlgBusta dlgb = new DlgBusta(EmployeeId);
-            if(dlgb.ShowDialog() == DialogResult.OK)
+            if (dlgb.ShowDialog() == DialogResult.OK)
             {
                 EconomicsRepository ecorep = new EconomicsRepository();
                 BustaPaga busta = dlgb.BustaPaga;
@@ -546,7 +586,7 @@ namespace WorkPlan
                 {
                     GuiUtils.Error(exc.Message, this);
                 }
-                
+
             }
         }
 
@@ -554,7 +594,7 @@ namespace WorkPlan
         {
             if (tabControl1.SelectedIndex == 2)
             {
-                if(!busteCaricate)
+                if (!busteCaricate)
                 {
                     CaricaBustePaga();
                 }
@@ -570,7 +610,7 @@ namespace WorkPlan
 
                 if (GuiUtils.Confirm(String.Format("Eliminare {0}?", busta.ToString()), this) == DialogResult.Yes)
                 {
-                    
+
                     EconomicsRepository ecorep = new EconomicsRepository();
                     try
                     {
@@ -612,6 +652,78 @@ namespace WorkPlan
                         GuiUtils.Error(ex.Message, this);
                         throw;
                     }
+                }
+            }
+        }
+
+        private void btnNewRelationship_Click(object sender, EventArgs e)
+        {
+            DlgRelationship dlg = new DlgRelationship();
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                var rel = new EmploymentRelationship()
+                {
+                    HiringDate = dlg.HiringDate,
+                    FiringDate = dlg.FiringDate
+                };
+
+                //Relationships.Add(rel);
+                AddRelationshipToListView(rel);
+            }
+        }
+
+        private void lvRelationships_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvRelationships.SelectedIndices.Count == 1)
+            {
+                var idx = lvRelationships.SelectedIndices[0];
+                ListViewItem lvitem = lvRelationships.SelectedItems[0];
+                EmploymentRelationship rel = (EmploymentRelationship)lvitem.Tag;
+
+                DlgRelationship dlg = new DlgRelationship(rel);
+
+                if (dlg.ShowDialog() == DialogResult.OK)
+                {
+                    RemoveRelationshipFromListView(idx);
+
+                    rel = new EmploymentRelationship()
+                    {
+                        Id = dlg.Id,
+                        HiringDate = dlg.HiringDate,
+                        FiringDate = dlg.FiringDate
+                    };
+
+                    AddRelationshipToListView(rel);
+                }
+
+            }
+        }
+
+        private void RemoveRelationshipFromListView(int idx)
+        {
+            lvRelationships.Items.RemoveAt(idx);
+        }
+
+        private void btnDelRelationship_Click(object sender, EventArgs e)
+        {
+            if (lvRelationships.SelectedIndices.Count == 1)
+            {
+                var idx = lvRelationships.SelectedIndices[0];
+
+                if(lvRelationships.Items.Count == 1)
+                {
+                    GuiUtils.Warning("Impossibile eliminare il rapporto di lavoro", this, "Attenzione");
+                    return;
+                }
+                
+                if(GuiUtils.Confirm("Sicuro di voler eliminare il rapporto?", this, "Conferma") == DialogResult.Yes)
+                {
+                    EmploymentRelationship r = (EmploymentRelationship)lvRelationships.Items[idx].Tag;
+                    EmployeeRepository repo = new EmployeeRepository();
+                    if (repo.DeleteRelationship(r))
+                        RemoveRelationshipFromListView(idx);
+                    else
+                        GuiUtils.Error("Si è verificato un errore", this);
                 }
             }
         }

@@ -19,14 +19,15 @@ namespace WorkPlan
             lblTotPagine.Text = string.Format("Totale pagine da stampare: {0}", (employees.Count > 0 ? employees.Count.ToString() : "nessuna"));
         }
 
-        public DlgChooseEmployee()
+        public DlgChooseEmployee(DateTime dateRif)
         {
             InitializeComponent();
             employees = new List<Employee>();
             EmployeeRepository repo = new EmployeeRepository();
             foreach(Employee e in repo.All())
             {
-                lstEmployees.Items.Add(e);
+                if(e.HasOpenRelationship(dateRif))
+                    lstEmployees.Items.Add(e);
             }
 
             UpdatePagesNumber();

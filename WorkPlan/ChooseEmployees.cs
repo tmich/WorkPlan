@@ -11,14 +11,18 @@ namespace WorkPlan
     {
         private List<Employee> employees;
 
-        public ChooseEmployees()
+        public ChooseEmployees(DateTime? dateRif)
         {
             employees = new List<Employee>();
+            m_dateRif = dateRif;
         }
         
         public List<Employee> AskUser()
         {
-            DlgChooseEmployee dlg = new DlgChooseEmployee();
+            if (!m_dateRif.HasValue)
+                m_dateRif = DateTime.Now;
+
+            DlgChooseEmployee dlg = new DlgChooseEmployee(m_dateRif.Value);
             if (dlg.ShowDialog() == DialogResult.OK)
             {
                 employees = dlg.GetSelectedEmployees();
@@ -26,5 +30,7 @@ namespace WorkPlan
 
             return employees;
         }
+
+        private DateTime? m_dateRif;
     }
 }

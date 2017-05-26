@@ -34,6 +34,11 @@ namespace WorkPlan
                 lvi.SubItems.Add(employee.LastName);
                 lvi.SubItems.Add(employee.Name);
                 lvi.SubItems.Add(employee.DefaultPosition.Desc);
+                if(!employee.HasOpenRelationship(DateTime.Now))
+                {
+                    lvi.BackColor = System.Drawing.Color.Coral;
+                    lvi.SubItems.Add(String.Format("RAPPORTO TERMINATO IL {0}", employee.CurrentRelationship.FiringDate.ToShortDateString()));
+                }
                 //lvi.SubItems.Add(employee.HireDate.ToShortDateString());
                 lvi.Tag = employee.Id;
                 lvEmployees.Items.Add(lvi);
@@ -60,6 +65,8 @@ namespace WorkPlan
             emp.CityDom = dlgEmp.EmployeeCityDom;
             emp.AddressDom = dlgEmp.EmployeeAddressDom;
             emp.MobileNo2 = dlgEmp.EmployeeMobileNo2;
+
+            emp.Relationships = dlgEmp.Relationships;
         }
 
         private void btNewEmployee_Click(object sender, EventArgs e)
@@ -107,6 +114,8 @@ namespace WorkPlan
                 EmployeeAddressDom = emp.AddressDom,
                 EmployeeMobileNo2 = emp.MobileNo2
             };
+
+            dlgEmp.Relationships = emp.Relationships;
 
             // leggo il salario e le ore lavorative pattuite
             EconomicsRepository econRepo = new EconomicsRepository();

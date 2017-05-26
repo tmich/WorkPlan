@@ -49,6 +49,21 @@ namespace WorkPlan
         public Employee()
         {
             DefaultPosition = new Position(0, "");
+            Relationships = new List<EmploymentRelationship>();
+        }
+
+        public void Fire(DateTime FiringDate)
+        {
+            CurrentRelationship.FiringDate = FiringDate;
+        }
+
+        public void Hire(DateTime HiringDate)
+        {
+            Relationships.Add(new EmploymentRelationship()
+            {
+                HiringDate = HiringDate,
+                FiringDate = new DateTime(9999, 12, 31)
+            });
         }
 
         public string FullName {
@@ -85,6 +100,28 @@ namespace WorkPlan
         public override string ToString()
         {
             return FullName;
+        }
+
+        public List<EmploymentRelationship> Relationships { get; set; }
+
+        public EmploymentRelationship CurrentRelationship
+        {
+            get
+            {
+                return Relationships.Last();
+            }
+        }
+
+        public bool HasOpenRelationship(DateTime daterif)
+        {
+            bool ret = false;
+
+            foreach(var rel in Relationships)
+            {
+                ret = (daterif >= rel.HiringDate && daterif <= rel.FiringDate);
+            }
+
+            return ret;
         }
     }
 }

@@ -91,6 +91,14 @@
             this.lvBuste = new System.Windows.Forms.ListView();
             this.colPeriodo = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colImporto = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.btnDelRelationship = new System.Windows.Forms.Button();
+            this.btnNewRelationship = new System.Windows.Forms.Button();
+            this.lvRelationships = new System.Windows.Forms.ListView();
+            this.chId = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chInizio = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chFine = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -101,6 +109,8 @@
             this.groupBox3.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.groupBox7.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
@@ -131,6 +141,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -755,6 +766,78 @@
             this.colImporto.Text = "Importo";
             this.colImporto.Width = 120;
             // 
+            // tabPage4
+            // 
+            this.tabPage4.Controls.Add(this.groupBox7);
+            this.tabPage4.Location = new System.Drawing.Point(4, 25);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(568, 497);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Rapporti Lav.";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.btnDelRelationship);
+            this.groupBox7.Controls.Add(this.btnNewRelationship);
+            this.groupBox7.Controls.Add(this.lvRelationships);
+            this.groupBox7.Location = new System.Drawing.Point(6, 6);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(556, 485);
+            this.groupBox7.TabIndex = 1;
+            this.groupBox7.TabStop = false;
+            // 
+            // btnDelRelationship
+            // 
+            this.btnDelRelationship.Location = new System.Drawing.Point(464, 62);
+            this.btnDelRelationship.Name = "btnDelRelationship";
+            this.btnDelRelationship.Size = new System.Drawing.Size(75, 35);
+            this.btnDelRelationship.TabIndex = 4;
+            this.btnDelRelationship.Text = "Rimuovi";
+            this.btnDelRelationship.UseVisualStyleBackColor = true;
+            this.btnDelRelationship.Click += new System.EventHandler(this.btnDelRelationship_Click);
+            // 
+            // btnNewRelationship
+            // 
+            this.btnNewRelationship.Location = new System.Drawing.Point(464, 21);
+            this.btnNewRelationship.Name = "btnNewRelationship";
+            this.btnNewRelationship.Size = new System.Drawing.Size(75, 35);
+            this.btnNewRelationship.TabIndex = 3;
+            this.btnNewRelationship.Text = "Aggiungi";
+            this.btnNewRelationship.UseVisualStyleBackColor = true;
+            this.btnNewRelationship.Click += new System.EventHandler(this.btnNewRelationship_Click);
+            // 
+            // lvRelationships
+            // 
+            this.lvRelationships.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chId,
+            this.chInizio,
+            this.chFine});
+            this.lvRelationships.FullRowSelect = true;
+            this.lvRelationships.Location = new System.Drawing.Point(6, 21);
+            this.lvRelationships.Name = "lvRelationships";
+            this.lvRelationships.Size = new System.Drawing.Size(452, 458);
+            this.lvRelationships.TabIndex = 1;
+            this.lvRelationships.UseCompatibleStateImageBehavior = false;
+            this.lvRelationships.View = System.Windows.Forms.View.Details;
+            this.lvRelationships.DoubleClick += new System.EventHandler(this.lvRelationships_DoubleClick);
+            // 
+            // chId
+            // 
+            this.chId.Text = "Id";
+            this.chId.Width = 0;
+            // 
+            // chInizio
+            // 
+            this.chInizio.Text = "Inizio";
+            this.chInizio.Width = 120;
+            // 
+            // chFine
+            // 
+            this.chFine.Text = "Fine";
+            this.chFine.Width = 120;
+            // 
             // DlgEmployee
             // 
             this.AcceptButton = this.button1;
@@ -789,6 +872,8 @@
             this.groupBox3.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.groupBox7.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -856,5 +941,13 @@
         private System.Windows.Forms.ListView lvBuste;
         private System.Windows.Forms.ColumnHeader colPeriodo;
         private System.Windows.Forms.ColumnHeader colImporto;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.ListView lvRelationships;
+        private System.Windows.Forms.ColumnHeader chInizio;
+        private System.Windows.Forms.ColumnHeader chFine;
+        private System.Windows.Forms.ColumnHeader chId;
+        private System.Windows.Forms.Button btnDelRelationship;
+        private System.Windows.Forms.Button btnNewRelationship;
     }
 }

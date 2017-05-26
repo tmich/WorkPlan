@@ -23,6 +23,7 @@ namespace WorkPlan
 
             cbYears.SelectedIndex = cbYears.Items.Count - 1;
             rbSintesi.Checked = true;
+            DialogResult = DialogResult.Cancel;
         }
 
         public int ChosenYear
@@ -55,6 +56,11 @@ namespace WorkPlan
             {
                 return rbDettaglio.Checked;
             }
+        }
+
+        private void btnOk_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.OK;
         }
     }
 }

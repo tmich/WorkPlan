@@ -35,6 +35,7 @@
             this.colSurname = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colPosition = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.chNote = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.tbNuovo = new System.Windows.Forms.ToolStripButton();
@@ -60,7 +61,7 @@
             // 
             this.splitContainer1.Panel1.Controls.Add(this.lvEmployees);
             this.splitContainer1.Size = new System.Drawing.Size(845, 532);
-            this.splitContainer1.SplitterDistance = 379;
+            this.splitContainer1.SplitterDistance = 377;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 2;
             // 
@@ -71,7 +72,8 @@
             this.colMatr,
             this.colSurname,
             this.colName,
-            this.colPosition});
+            this.colPosition,
+            this.chNote});
             this.lvEmployees.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lvEmployees.FullRowSelect = true;
             this.lvEmployees.GridLines = true;
@@ -79,7 +81,7 @@
             this.lvEmployees.Margin = new System.Windows.Forms.Padding(4);
             this.lvEmployees.MultiSelect = false;
             this.lvEmployees.Name = "lvEmployees";
-            this.lvEmployees.Size = new System.Drawing.Size(379, 532);
+            this.lvEmployees.Size = new System.Drawing.Size(377, 532);
             this.lvEmployees.TabIndex = 2;
             this.lvEmployees.UseCompatibleStateImageBehavior = false;
             this.lvEmployees.View = System.Windows.Forms.View.Details;
@@ -88,22 +90,27 @@
             // colMatr
             // 
             this.colMatr.Text = "Matricola";
-            this.colMatr.Width = 30;
+            this.colMatr.Width = 40;
             // 
             // colSurname
             // 
             this.colSurname.Text = "Cognome";
-            this.colSurname.Width = 150;
+            this.colSurname.Width = 300;
             // 
             // colName
             // 
             this.colName.Text = "Nome";
-            this.colName.Width = 150;
+            this.colName.Width = 300;
             // 
             // colPosition
             // 
             this.colPosition.Text = "Reparto";
             this.colPosition.Width = 100;
+            // 
+            // chNote
+            // 
+            this.chNote.Text = "Note";
+            this.chNote.Width = 600;
             // 
             // imageList1
             // 
@@ -185,5 +192,6 @@
         private System.Windows.Forms.ToolStripButton tbEdit;
         private System.Windows.Forms.ToolStripButton tbDelete;
         private System.Windows.Forms.ColumnHeader colPosition;
+        private System.Windows.Forms.ColumnHeader chNote;
     }
 }
