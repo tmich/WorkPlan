@@ -188,6 +188,10 @@ namespace WorkPlan
                     conn.Close();
 
                     //CreateNewRelationship(ref employee, null);
+                    EmploymentRelationship rel = new EmploymentRelationship();
+                    rel.HiringDate = employee.HireDate; //new DateTime(2000, 1, 1);
+                    employee.Relationships.Add(rel);
+                    SaveRelationships(ref employee);
                 }
                 catch (MySqlException)
                 {
